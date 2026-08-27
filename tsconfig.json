@@ -12,7 +12,6 @@
   ],
   "compilerOptions": {
     "incremental": true,
-    "ignoreDeprecations": "6.0",
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
     "noEmit": true,
     "module": "ESNext",

@@ -303,3 +303,62 @@ left join campuses c on c.id = s.campus_id
 left join payments p on p.student_id = s.id
 left join enrollments e on e.student_id = s.id
 group by s.id, c.name;
+
+
+create table next_of_kin (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references students(id) on delete cascade,
+  full_name text not null,
+  relationship text not null,
+  email text,
+  phone text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table suggestions (
+  id uuid primary key default gen_random_uuid(),
+  submitted_by uuid references users(id) on delete set null,
+  name text,
+  email text,
+  category text not null,
+  message text not null,
+  status text not null default 'new',
+  created_at timestamptz not null default now()
+);
+
+create table support_requests (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid references students(id) on delete set null,
+  subject text not null,
+  category text not null,
+  message text not null,
+  status text not null default 'open',
+  staff_response text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table apprenticeship_opportunities (
+  id uuid primary key default gen_random_uuid(),
+  employer text not null,
+  title text not null,
+  opportunity_type text not null,
+  location text,
+  description text,
+  closing_date date,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create table apprenticeship_applications (
+  id uuid primary key default gen_random_uuid(),
+  opportunity_id uuid not null references apprenticeship_opportunities(id) on delete cascade,
+  applicant_id uuid references users(id) on delete set null,
+  full_name text not null,
+  email text not null,
+  phone text,
+  cv_file_url text,
+  status text not null default 'submitted',
+  created_at timestamptz not null default now()
+);
