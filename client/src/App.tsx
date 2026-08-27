@@ -13,6 +13,10 @@ import { toast, Toaster } from "sonner";
 
 type Icon = typeof ArrowRight;
 type Status = "Active" | "Suspended" | "Completed" | "Alumni";
+type NextOfKin = { name: string; relationship: string; email: string; phone: string };
+type ApprenticeshipPost = { id: string; title: string; employer: string; location: string; type: string; closing: string; description: string };
+type Suggestion = { id: string; name: string; email: string; category: string; message: string; date: string };
+type Complaint = { id: string; subject: string; category: string; message: string; status: string; date: string };
 
 type Course = {
   id: string;
@@ -42,7 +46,8 @@ type Student = {
   termAverage: number;
   initials: string;
   guardian: string;
-  remarks: string
+  remarks: string;
+  nextOfKin?: NextOfKin
 };
 type Announcement = {
   id: string;
@@ -87,7 +92,10 @@ type AppData = {
     requester: string;
     email: string;
     status: string
-  }[]
+  }[];
+  suggestions: Suggestion[];
+  apprenticeships: ApprenticeshipPost[];
+  complaints: Complaint[]
 };
 
 const gold = "#D4AF37";
@@ -144,12 +152,19 @@ const seedData: AppData = {
     { id: "p3", label: "March tuition", amount: 3000, date: "2026-03-03", status: "Paid" },
   ],
   graduateRequests: [],
+  suggestions: [],
+  apprenticeships: [
+    { id: "ap1", title: "Electrical Engineering Apprentice", employer: "Mokoena Power Services", location: "Johannesburg, Gauteng", type: "Apprenticeship · 12 months", closing: "30 Jun 2026", description: "Join a supervised electrical maintenance team while completing workplace experience." },
+    { id: "ap2", title: "Junior Boilermaker Internship", employer: "Ubuntu Industrial Works", location: "Middelburg, Mpumalanga", type: "Internship · 6 months", closing: "12 Jul 2026", description: "A practical placement for emerging welders and boilermakers with workshop exposure." },
+    { id: "ap3", title: "IT Support Intern", employer: "CivicTech South Africa", location: "Hybrid · Gauteng", type: "Internship · 12 months", closing: "24 Jul 2026", description: "Support internal users, document systems and build real-world technical confidence." }
+  ],
+  complaints: [],
 };
 
 function loadData(): AppData {
   if (typeof window === "undefined") return seedData;
   const saved = localStorage.getItem("nstc-data");
-  if (saved) { try { return JSON.parse(saved) as AppData; } catch { return seedData; } }
+  if (saved) { try { const parsed = JSON.parse(saved) as Partial<AppData>; return { ...seedData, ...parsed, suggestions: parsed.suggestions ?? [], apprenticeships: parsed.apprenticeships ?? seedData.apprenticeships, complaints: parsed.complaints ?? [] }; } catch { return seedData; } }
   localStorage.setItem("nstc-data", JSON.stringify(seedData));
   return seedData;
 }
@@ -267,6 +282,7 @@ function PublicNav({ onApply }: { onApply: () => void }) {
           <a href="#about">About</a>
           <a href="#programmes">Programmes</a>
           <a href="#skills">Skills & trades</a>
+          <a href="/apprenticeships">Apprenticeships</a>
           <a href="#fees">Fees</a>
           <a href="#contact">Contact</a>
         </nav>
@@ -280,6 +296,7 @@ function PublicNav({ onApply }: { onApply: () => void }) {
         <a href="#about" onClick={() => setOpen(false)}>About</a>
         <a href="#programmes" onClick={() => setOpen(false)}>Programmes</a>
         <a href="#skills" onClick={() => setOpen(false)}>Skills & trades</a>
+        <a href="/apprenticeships" onClick={() => setOpen(false)}>Apprenticeships</a>
         <a href="#fees" onClick={() => setOpen(false)}>Fees</a>
         <a href="/portal">Student portal</a>
         <Button onClick={onApply}>Apply now</Button>
@@ -836,6 +853,23 @@ function Contact() {
   );
 }
 
+function Apprenticeships({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
+  const [selected, setSelected] = useState<ApprenticeshipPost | null>(null);
+  const [sent, setSent] = useState(false);
+  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); setData((old) => ({ ...old, suggestions: [...old.suggestions, { id: crypto.randomUUID(), name: String(f.get("name") || "Applicant"), email: String(f.get("email") || ""), category: `Apprenticeship application: ${selected?.title || "Open role"}`, message: `CV submitted: ${String(f.get("cv") || "No filename")}`, date: new Date().toISOString().slice(0, 10) }] })); setSent(true); };
+  return <section id="apprenticeships" className="section-pad bg-white"><div className="container"><div className="flex flex-col justify-between gap-6 md:flex-row md:items-end"><SectionTitle eyebrow="Workplace experience" title="Your next opportunity starts here." body="Browse live internship and apprenticeship opportunities from NSTC industry partners. Submit your CV through our application sub-portal." /><Pill tone="green">{data.apprenticeships.length} open opportunities</Pill></div><div className="mt-10 grid gap-5 lg:grid-cols-3">{data.apprenticeships.map((post) => <article key={post.id} className="rounded-2xl border border-slate-200 bg-[#f8f6f1] p-6 transition hover:-translate-y-1 hover:shadow-lg"><div className="flex items-center justify-between gap-3"><Pill>{post.type}</Pill><span className="text-xs text-slate-400">Closes {post.closing}</span></div><h3 className="mt-5 font-display text-2xl text-slate-950">{post.title}</h3><p className="mt-2 text-sm font-semibold text-[#8b6b12]">{post.employer}</p><p className="mt-3 text-sm leading-6 text-slate-600">{post.description}</p><p className="mt-4 flex items-center gap-2 text-xs text-slate-500"><MapPin className="h-4 w-4 text-[#a27e10]" />{post.location}</p><Button className="mt-6 w-full justify-center" onClick={() => { setSelected(post); setSent(false); }}>Apply with CV <ArrowRight className="h-4 w-4" /></Button></article>)}</div></div>{selected && <Modal title={sent ? "Application received" : `Apply: ${selected.title}`} onClose={() => setSelected(null)}>{sent ? <div className="py-8 text-center"><Check className="mx-auto h-10 w-10 text-emerald-600" /><h3 className="mt-4 font-display text-2xl">CV submitted successfully.</h3><p className="mt-2 text-sm text-slate-600">The partner employer and NSTC placement team can now review your profile.</p><Button className="mt-6" onClick={() => setSelected(null)}>Close</Button></div> : <form onSubmit={submit} className="mt-5 space-y-4"><p className="rounded-xl bg-[#fbf7e8] p-4 text-sm text-slate-600">Applying for <strong className="text-slate-950">{selected.title}</strong> with {selected.employer}.</p><label>Full name<input name="name" className="field" required /></label><label>Email address<input name="email" className="field" type="email" required /></label><label>Phone number<input name="phone" className="field" required /></label><label>Upload CV<input name="cv" className="field" type="file" accept=".pdf,.doc,.docx" required /></label><p className="text-xs leading-5 text-slate-400">Prototype note: your CV filename and application details are stored locally; production should connect this to secure file storage.</p><Button type="submit" className="w-full justify-center">Submit application <ArrowRight className="h-4 w-4" /></Button></form>}</Modal>}</section>;
+}
+
+function SuggestionBox({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
+  const [sent, setSent] = useState(false);
+  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); setData((old) => ({ ...old, suggestions: [...old.suggestions, { id: crypto.randomUUID(), name: String(f.get("name") || "Anonymous"), email: String(f.get("email") || ""), category: String(f.get("category") || "General improvement"), message: String(f.get("message") || ""), date: new Date().toISOString().slice(0, 10) }] })); setSent(true); };
+  return <section id="suggestions" className="section-pad bg-[#fbf7e8]"><div className="container grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-center"><SectionTitle eyebrow="Your voice shapes NSTC" title="Leave a suggestion." body="Tell us what would make your learning, campus or support experience stronger. Suggestions are reviewed by the student success team." />{sent ? <div className="rounded-2xl bg-white p-8 text-center shadow-sm"><Check className="mx-auto h-10 w-10 text-emerald-600" /><h3 className="mt-4 font-display text-3xl text-slate-950">Thank you for sharing.</h3><p className="mt-3 text-sm leading-6 text-slate-600">Your suggestion has been added to the student voice register.</p><Button className="mt-6" onClick={() => setSent(false)}>Share another suggestion</Button></div> : <form onSubmit={submit} className="rounded-2xl bg-white p-7 shadow-[0_20px_60px_rgba(15,23,42,.07)] md:p-9"><div className="grid gap-5 sm:grid-cols-2"><label>Your name<input name="name" className="field" placeholder="Optional" /></label><label>Email address<input name="email" className="field" type="email" placeholder="Optional" /></label></div><label className="mt-5 block">Suggestion type<select name="category" className="field"><option>General improvement</option><option>Teaching & learning</option><option>Campus facilities</option><option>Student support</option><option>Anonymous feedback</option></select></label><label className="mt-5 block">Your suggestion<textarea name="message" required className="field min-h-[130px] py-3" placeholder="What should NSTC know?" /></label><Button type="submit" className="mt-5">Submit suggestion <ArrowRight className="h-4 w-4" /></Button></form>}</div></section>;
+}
+
+function ApprenticeshipPortal({ data, setData, onApply }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; onApply: () => void }) {
+  return <div className="public-page"><div className="bg-[#090909] pb-14"><PublicNav onApply={onApply} /><div className="container pt-20"><SectionTitle light eyebrow="Apprenticeship & internship placement" title="Step into the workplace." body="Find a live opportunity, submit your CV securely through this placement sub-portal, and let NSTC connect your practical training with industry." /></div></div><Apprenticeships data={data} setData={setData} /><Footer /></div>;
+}
+
 function Footer() {
   return (
     <footer className="bg-[#090909] py-12 text-white">
@@ -848,6 +882,8 @@ function Footer() {
           <a href="#about" className="hover:text-white">About NSTC</a>
           <a href="/portal" className="hover:text-white">Student portal</a>
           <a href="#programmes" className="hover:text-white">Programmes</a>
+          <a href="/apprenticeships" className="hover:text-white">Apprenticeships</a>
+          <a href="#suggestions" className="hover:text-white">Suggestion box</a>
           <a href="/admin" className="hover:text-white">Staff workspace</a>
         </div>
       </div>
@@ -868,6 +904,7 @@ function Landing({ data, setData, onApply }: {
       <About />
       <Programmes onApply={onApply} />
       <Skills data={data} setData={setData} />
+      <Apprenticeships data={data} setData={setData} />
       <Fees />
       <Gallery />
       <Team />
@@ -887,10 +924,31 @@ function Landing({ data, setData, onApply }: {
           </div>
         </div>
       </section>
+      <SuggestionBox data={data} setData={setData} />
       <Contact />
       <Footer />
     </div>
   );
+}
+
+function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
+  const [mode, setMode] = useState<"login" | "forgot" | "reset">("login");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); if (mode === "login") { const email = String(f.get("email") || ""); const number = String(f.get("studentNo") || ""); const password = String(f.get("password") || ""); if (email === "thabo.mokoena@example.com" && number === "NSTC-26-0014" && password === (localStorage.getItem("nstc-password") || "nstc2026")) { localStorage.setItem("nstc-portal-session", "active"); onAuthenticated(); } else setError("Demo login: thabo.mokoena@example.com · NSTC-26-0014 · nstc2026"); } else if (mode === "forgot") { setMessage("If the account exists, a reset link has been prepared for this demo."); setMode("reset"); } else { const next = String(f.get("newPassword") || ""); if (next.length < 6) setError("Use at least 6 characters."); else { localStorage.setItem("nstc-password", next); setMessage("Password updated. You can now sign in."); setMode("login"); } } };
+  return <div className="registration-page"><div className="registration-top"><Logo light /><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">Secure student access</p><h1 className="mt-2 font-display text-4xl text-slate-950">{mode === "login" ? "Welcome back." : mode === "forgot" ? "Recover your access." : "Set a new password."}</h1><p className="mt-3 text-sm leading-6 text-slate-500">{mode === "login" ? "Sign in with your NSTC learner details to view your academic workspace." : mode === "forgot" ? "Enter your student email and we will guide you through a password reset." : "Choose a new password for your student portal account."}</p>{message && <p className="mt-5 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}{error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5">{mode !== "reset" && <><label>Email address<input name="email" className="field" type="email" required placeholder="student@email.com" /></label><label>Student number<input name="studentNo" className="field" required placeholder="NSTC-26-0014" /></label></>}{mode === "login" && <label>Password<input name="password" className="field" type="password" required placeholder="Your password" /></label>}{mode === "reset" && <label>New password<input name="newPassword" className="field" type="password" required placeholder="At least 6 characters" /></label>}<Button type="submit" className="w-full justify-center">{mode === "login" ? "Sign in to student portal" : mode === "forgot" ? "Send reset instructions" : "Save new password"} <ArrowRight className="h-4 w-4" /></Button></form><div className="mt-6 flex flex-wrap justify-between gap-3 text-sm font-semibold text-slate-500">{mode === "login" ? <button onClick={() => { setMode("forgot"); setError(""); }}>Forgot password?</button> : <button onClick={() => { setMode("login"); setError(""); }}>Back to sign in</button>}<a href="/parent">Family / next-of-kin access</a></div><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>thabo.mokoena@example.com</strong>, <strong>NSTC-26-0014</strong>, password <strong>nstc2026</strong>.</p></div></div>;
+}
+
+function StudentSupport({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
+  const [sent, setSent] = useState(false);
+  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); setData((old) => ({ ...old, complaints: [...old.complaints, { id: crypto.randomUUID(), subject: String(f.get("subject") || "Support request"), category: String(f.get("category") || "Query"), message: String(f.get("message") || ""), status: "Open", date: new Date().toISOString().slice(0, 10) }] })); setSent(true); };
+  return <><PageHeading eyebrow="Student support" title="Complaints & queries" body="Ask for help, report a concern or follow up on an unresolved student matter." />{sent ? <div className="portal-card text-center"><Check className="mx-auto h-10 w-10 text-emerald-600" /><h3 className="mt-4 font-display text-2xl">Your support request is open.</h3><p className="mt-2 text-sm text-slate-600">Student success will respond through your registered contact details.</p><Button className="mt-6" onClick={() => setSent(false)}>Create another request</Button></div> : <div className="portal-card max-w-2xl"><form onSubmit={submit} className="space-y-5"><label>Subject<input name="subject" className="field" required placeholder="What do you need help with?" /></label><label>Request type<select name="category" className="field"><option>Query</option><option>Complaint</option><option>Academic support</option><option>Finance support</option><option>Technical support</option></select></label><label>Details<textarea name="message" className="field min-h-[150px] py-3" required placeholder="Tell us what happened or what you need." /></label><Button type="submit">Submit to student success <ArrowRight className="h-4 w-4" /></Button></form></div>}<div className="mt-6 portal-card"><p className="eyebrow">Your request history</p><div className="mt-4 space-y-3">{data.complaints.length ? data.complaints.map((c) => <div key={c.id} className="list-row"><div><p className="font-semibold text-slate-950">{c.subject}</p><p className="mt-1 text-xs text-slate-500">{c.category} · {c.date}</p></div><Pill tone={c.status === "Open" ? "gold" : "green"}>{c.status}</Pill></div>) : <p className="mt-3 text-sm text-slate-500">No support requests yet.</p>}</div></div></>;
+}
+
+function StudentSettings({ onSignOut }: { onSignOut: () => void }) {
+  const [saved, setSaved] = useState(false);
+  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); const next = String(f.get("newPassword") || ""); const confirm = String(f.get("confirmPassword") || ""); if (next !== confirm) { toast.error("New passwords do not match."); return; } if (next.length < 6) { toast.error("Use at least 6 characters."); return; } localStorage.setItem("nstc-password", next); setSaved(true); };
+  return <><PageHeading eyebrow="Account settings" title="Keep your account secure" body="Update your student portal password and manage your current session." /><div className="grid gap-5 lg:grid-cols-[1fr_.8fr]"><div className="portal-card"><p className="eyebrow">Change password</p>{saved && <p className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">Password updated successfully.</p>}<form onSubmit={submit} className="mt-5 max-w-md space-y-5"><label>Current password<input name="currentPassword" className="field" type="password" required /></label><label>New password<input name="newPassword" className="field" type="password" required minLength={6} /></label><label>Confirm new password<input name="confirmPassword" className="field" type="password" required minLength={6} /></label><Button type="submit">Update password <Check className="h-4 w-4" /></Button></form></div><div className="portal-card bg-[#111] text-white"><p className="eyebrow text-[#D4AF37]">Session</p><h3 className="mt-3 font-display text-2xl">Thabo Mokoena</h3><p className="mt-2 text-sm leading-6 text-white/55">NSTC-26-0014 · thabo.mokoena@example.com</p><Button variant="light" className="mt-6" onClick={onSignOut}>Sign out</Button></div></div></>;
 }
 
 function PortalShell({ children, active, onNavigate, role = "Student" }: {
@@ -906,7 +964,9 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
       { label: "My learning", icon: BookOpen, path: "/portal/learning" },
       { label: "Assignments", icon: ClipboardCheck, path: "/portal/assignments" },
       { label: "Results & attendance", icon: BarChart3, path: "/portal/results" },
-      { label: "Finances", icon: WalletCards, path: "/portal/finances" }
+      { label: "Finances", icon: WalletCards, path: "/portal/finances" },
+      { label: "Complaints & queries", icon: MessageCircle, path: "/portal/support" },
+      { label: "Account settings", icon: ShieldCheck, path: "/portal/settings" }
     ] :
     [
       { label: "Overview", icon: LayoutDashboard, path: "/admin" },
@@ -1417,7 +1477,11 @@ type ApplicationDraft = {
   field: string;
   level: string;
   period: string;
-  refundable: string
+  refundable: string;
+  kinName: string;
+  kinRelationship: string;
+  kinEmail: string;
+  kinPhone: string
 };
 
 function Registration({ onComplete }: {
@@ -1434,7 +1498,11 @@ function Registration({ onComplete }: {
     field: "Engineering Studies",
     level: "N1",
     period: "Trimester 2",
-    refundable: "Refundable"
+    refundable: "Refundable",
+    kinName: "",
+    kinRelationship: "",
+    kinEmail: "",
+    kinPhone: ""
   });
   const { loading, run } = useAction();
 
@@ -1487,6 +1555,7 @@ function Registration({ onComplete }: {
         <label>Identity document / passport
           <input className="field" type="file" />
         </label>
+        <div className="rounded-xl border border-slate-200 p-4"><p className="eyebrow text-[#a27e10]">Next of kin</p><div className="mt-4 grid gap-4 sm:grid-cols-2"><label>Full name<input value={form.kinName} onChange={(e) => update("kinName", e.target.value)} className="field" placeholder="Parent / guardian name" /></label><label>Relationship<input value={form.kinRelationship} onChange={(e) => update("kinRelationship", e.target.value)} className="field" placeholder="e.g. Mother" /></label><label>Email<input value={form.kinEmail} onChange={(e) => update("kinEmail", e.target.value)} className="field" type="email" placeholder="family@email.com" /></label><label>Phone<input value={form.kinPhone} onChange={(e) => update("kinPhone", e.target.value)} className="field" placeholder="+27 ..." /></label></div></div>
         <p className="text-xs leading-5 text-slate-400">This demo stores registration information in your browser only. No real documents or payments are processed.</p>
       </div>
       }
@@ -1584,6 +1653,8 @@ function StudentPortal({ data, setData, path, navigate }: {
   navigate: (path: string) => void
 }) {
   const [register, setRegister] = useState(path === "/portal/apply");
+  const [loggedIn, setLoggedIn] = useState(() => path === "/portal/apply" || localStorage.getItem("nstc-portal-session") === "active");
+  if (path !== "/portal/apply" && !loggedIn) return <StudentAuth onAuthenticated={() => setLoggedIn(true)} />;
   if (register)
     return (
       <div className="registration-page">
@@ -1610,7 +1681,8 @@ function StudentPortal({ data, setData, path, navigate }: {
                 balance: 500,
                 termAverage: 0,
                 initials: initials(application.name || "New learner"),
-                guardian: "",
+                guardian: application.kinName || "",
+                nextOfKin: { name: application.kinName || "", relationship: application.kinRelationship || "", email: application.kinEmail || "", phone: application.kinPhone || "" },
                 remarks: "Newly registered learner awaiting first assessment."
               }]
             }));
@@ -1626,7 +1698,11 @@ function StudentPortal({ data, setData, path, navigate }: {
       ? "/portal/results"
       : path.startsWith("/portal/finances")
         ? "/portal/finances"
-        : path.startsWith("/portal/learning")
+        : path.startsWith("/portal/support")
+          ? "/portal/support"
+          : path.startsWith("/portal/settings")
+            ? "/portal/settings"
+            : path.startsWith("/portal/learning")
           ? "/portal/learning"
           : "/portal";
 
@@ -1649,6 +1725,12 @@ function StudentPortal({ data, setData, path, navigate }: {
       }
       {active === "/portal/finances" &&
         <StudentFinances data={data} />
+      }
+      {active === "/portal/support" &&
+        <StudentSupport data={data} setData={setData} />
+      }
+      {active === "/portal/settings" &&
+        <StudentSettings onSignOut={() => { localStorage.removeItem("nstc-portal-session"); setLoggedIn(false); }} />
       }
     </PortalShell>
   );
@@ -2137,16 +2219,17 @@ function ParentPortal({ data, navigate }: {
   const [logged, setLogged] = useState(false);
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const student = data.students[0];
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    const found = data.students.find((s) => s.email === email.trim() && s.studentNo === number.trim());
+    const found = data.students.find((s) => s.email === email.trim() && s.studentNo === number.trim() && s.phone === phone.trim());
     if (found) {
       setLogged(true);
       setError("");
-    } else setError("For the demo, use thabo.mokoena@example.com and NSTC-26-0014.");
+    } else setError("For the demo, use thabo.mokoena@example.com · NSTC-26-0014 · +27 71 234 8821.");
   };
 
   if (!logged) return (
@@ -2164,12 +2247,15 @@ function ParentPortal({ data, navigate }: {
         <form onSubmit={submit} className="parent-form">
           <p className="eyebrow">Parent portal</p>
           <h2 className="mt-2 font-display text-3xl text-slate-950">Sign in to view progress.</h2>
-          <p className="mt-3 text-sm leading-6 text-slate-500">Use the student’s email and NSTC student number.</p>
+          <p className="mt-3 text-sm leading-6 text-slate-500">Use the student’s email, NSTC student number and registered phone number.</p>
           <label className="mt-7 block">Student email
             <input className="field" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="student@email.com" />
           </label>
           <label className="mt-5 block">Student number / ID
             <input className="field" value={number} onChange={(e) => setNumber(e.target.value)} required placeholder="NSTC-26-0014" />
+          </label>
+          <label className="mt-5 block">Registered phone number
+            <input className="field" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="+27 71 234 8821" />
           </label>
           {error &&
             <p className="mt-4 rounded-lg bg-red-50 p-3 text-xs text-red-700">{error}</p>
@@ -2201,6 +2287,7 @@ function App() {
 
   let page: ReactNode;
   if (location === "/" || location === "") page = <Landing data={data} setData={setData} onApply={() => { setApply(true); navigate("/portal/apply"); }} />;
+  else if (location === "/apprenticeships") page = <ApprenticeshipPortal data={data} setData={setData} onApply={() => go("/portal/apply")} />;
   else if (location.startsWith("/portal")) page = <StudentPortal data={data} setData={setData} path={location} navigate={go} />;
   else if (location === "/parent") page = <ParentPortal data={data} navigate={go} />;
   else if (location === "/admin/students") page = <AdminStudents data={data} navigate={go} />;
