@@ -130,3 +130,31 @@ textarea.field { resize: vertical; }
 @media (min-width: 1024px) { .portal-sidebar { transform: none; }.portal-main { margin-left: 250px; width: calc(100% - 250px); }.portal-header { padding-inline: 32px; }.portal-main > main { max-width: 1400px; }.lg\:hidden { display: none !important; } }
 @media (max-width: 767px) { .section-pad { padding: 72px 0; }.container { width: min(100% - 32px, 1180px); }.hero { min-height: auto; }.hero-card-wrap { justify-self: stretch; }.hero-card { min-height: 390px; }.hero-stamp { right: 5px; }.team-track { width: 400%; }.team-card { width: 25%; padding-right: 12px; }.team-photo { height: 250px; }.registration-card { padding: 23px; }.parent-login { margin-top: 35px; }.parent-login-art { min-height: 270px; padding: 28px; }.parent-form { padding: 28px; } }
 @media (prefers-reduced-motion: reduce) { *, *:before, *:after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+/* Outline enhancements: scroll-revealed image interstitials and teaching workspace. */
+.image-band { position: relative; min-height: 330px; overflow: hidden; background-position: center; background-size: cover; background-attachment: fixed; isolation: isolate; }
+.image-band:after { position: absolute; inset: 0; z-index: -1; background: linear-gradient(120deg, rgba(212,175,55,.12), transparent 55%); content: ''; pointer-events: none; }
+.image-band-content { display: flex; min-height: 330px; flex-direction: column; justify-content: center; }
+.notification-badge { position: relative; display: inline-flex; height: 34px; width: 34px; align-items: center; justify-content: center; border-radius: 9px; background: #fbf4d9; color: #916e0a; }
+.notification-badge span { position: absolute; right: -5px; top: -6px; display: flex; height: 18px; min-width: 18px; align-items: center; justify-content: center; border: 2px solid #f8f9fa; border-radius: 999px; background: #b42318; color: #fff; font-size: 9px; font-weight: 800; }
+.lecturer-shell .portal-sidebar { border-right-color: #dedfe2; }
+.lecturer-shell .portal-header { background: rgba(250,250,249,.94); }
+.lecturer-table { min-width: 1120px; }
+.drawer-backdrop { position: fixed; inset: 0; z-index: 55; background: rgba(8,9,10,.42); backdrop-filter: blur(3px); }
+.calendar-drawer { position: absolute; right: 0; top: 0; display: flex; height: 100%; width: min(680px, 100%); flex-direction: column; overflow-y: auto; background: #fff; padding: 28px; box-shadow: -20px 0 55px rgba(0,0,0,.16); animation: drawer-in .28s cubic-bezier(.23,1,.32,1); }
+@keyframes drawer-in { from { opacity: .6; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+.calendar-weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.calendar-weekdays { gap: 5px; color: #a0a4ab; font-family: 'DM Mono', monospace; font-size: 9px; text-align: center; text-transform: uppercase; }
+.calendar-days { gap: 5px; margin-top: 5px; }
+.calendar-day { min-height: 72px; overflow: hidden; border: 1px solid #edf0f2; border-radius: 8px; background: #fff; padding: 7px; }
+.calendar-day.today { border-color: #d4af37; box-shadow: inset 0 0 0 1px #d4af37; }
+.calendar-day-number { display: block; color: #6f737b; font-size: 11px; font-weight: 700; }
+.calendar-event { overflow: hidden; margin-top: 5px; border-radius: 4px; padding: 3px 4px; color: #4d3a06; font-size: 8px; font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.calendar-event.class { background: #fbf4d9; }
+.calendar-event.assignment { background: #e6f6ed; color: #17633d; }
+.calendar-event.exam { background: #ffebe8; color: #9d281e; }
+.legend-dot { display: inline-block; height: 8px; width: 8px; margin-right: 4px; border-radius: 50%; background: #d4af37; }
+.legend-dot.assignment { background: #47a675; }
+.legend-dot.exam { background: #d65f54; }
+@media (max-width: 767px) { .image-band { min-height: 270px; background-attachment: scroll; }.image-band-content { min-height: 270px; }.calendar-drawer { padding: 22px 17px; }.calendar-day { min-height: 61px; padding: 5px; }.calendar-event { font-size: 7px; } }
+@media (prefers-reduced-motion: reduce) { .calendar-drawer { animation: none; } .image-band { background-attachment: scroll; } }

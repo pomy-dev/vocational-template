@@ -362,3 +362,32 @@ create table apprenticeship_applications (
   status text not null default 'submitted',
   created_at timestamptz not null default now()
 );
+
+-- Lecturer workspace support: evidence files, transcript remarks and notification read state.
+create table if not exists support_request_attachments (
+  id uuid primary key default gen_random_uuid(),
+  support_request_id uuid not null references support_requests(id) on delete cascade,
+  file_url text not null,
+  file_name text not null,
+  mime_type text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists transcript_requests (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references students(id) on delete cascade,
+  lecturer_id uuid references users(id) on delete set null,
+  remarks text not null,
+  generated_at timestamptz not null default now()
+);
+
+create table if not exists announcement_reads (
+  announcement_id uuid not null references announcements(id) on delete cascade,
+  user_id uuid not null references users(id) on delete cascade,
+  read_at timestamptz not null default now(),
+  primary key (announcement_id, user_id)
+);
+
+create index if not exists support_attachment_request_idx on support_request_attachments(support_request_id);
+create index if not exists transcript_student_idx on transcript_requests(student_id);
+create index if not exists announcement_reads_user_idx on announcement_reads(user_id);
