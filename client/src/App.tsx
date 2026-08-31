@@ -256,6 +256,7 @@ function useData() {
   useEffect(() => { localStorage.setItem("nstc-data", JSON.stringify(data)); }, [data]);
   return [data, setData] as const;
 }
+
 function delay(ms = 650) { return new Promise((resolve) => window.setTimeout(resolve, ms)); }
 
 function useAction() {
