@@ -11,6 +11,12 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
+// ============================ Static Images =============================== //
+import StudentGrad from "/assets/students-in-grad.jpg";
+import TertiaryExperience from "/assets/tertiary-experience.jpg";
+import GradOfTwo from "/assets/grad.jpg";
+import NSTCLogo from "/assets/NSTC.png";
+
 type Icon = typeof ArrowRight;
 type Status = "Active" | "Suspended" | "Completed" | "Alumni";
 type NextOfKin = { name: string; relationship: string; email: string; phone: string };
@@ -345,7 +351,7 @@ function Confirm({ title, body, onCancel, onConfirm, loading }: {
 function Logo({ light = false }: { light?: boolean }) {
   return (
     <a href="/" className={`flex items-center gap-3 ${light ? "text-white" : "text-slate-950"}`}>
-      <span className="logo-mark">N</span>
+      <img src={NSTCLogo} alt="NSTC Logo" className="logo-mark" />
       <span>
         <span className="block font-display text-lg leading-none">National Skills</span>
         <span className={`block text-[9px] font-bold uppercase tracking-[.22em] ${light ? "text-white/55" : "text-slate-500"}`}>Technical College</span>
@@ -413,19 +419,45 @@ function PublicNav({ onApply }: { onApply: () => void }) {
 }
 
 function Hero({ onApply }: { onApply: () => void }) {
+  const [showMore, setShowMore] = useState(false);
+
   return (
     <section className="hero">
       <div className="hero-grid" />
       <PublicNav onApply={onApply} />
       <div className="container relative grid min-h-[660px] items-center gap-10 pb-16 pt-20 lg:grid-cols-[1.05fr_.95fr]">
         <div className="max-w-2xl">
-          <div className="eyebrow text-[#D4AF37]">South Africa · Skills for tomorrow</div>
-          <h1 className="mt-5 font-display text-6xl leading-[.98] text-white md:text-8xl">Your future is <span className="gold-text">our concern.</span></h1>
-          <p className="mt-7 max-w-xl text-lg leading-8 text-white/65">Practical education, recognised pathways and human mentorship for learners ready to build a life of purpose.</p>
+          <div className="eyebrow text-[#D4AF37]">Future Skills · Skills In Demand · Learn Today Lead Tomorrow</div>
+          <h1 className="mt-5 font-display text-4xl leading-[.98] text-white md:text-8l">Fighting Unemployment <span className="gold-text">& Poverty Through Education.</span></h1>
+          <div className="mt-7 max-w-xl text-lg leading-8 text-white/65">
+            <p>An Occupational Certificate is a nationally recognized qualification developed by the Quality Council for Trades and Occupations.</p>
+            <button
+              type="button"
+              className="mt-4 inline-flex items-center gap-2 border-b border-[#D4AF37]/60 pb-1 text-sm font-bold text-[#D4AF37] transition hover:border-[#D4AF37] hover:text-white"
+              onClick={() => setShowMore((value) => !value)}
+              aria-expanded={showMore}
+              aria-controls="certificate-outcomes"
+            >
+              {showMore ? "Less" : "More"}
+              <ChevronDown className={`h-4 w-4 transition-transform ${showMore ? "rotate-180" : ""}`} />
+            </button>
+            {showMore && (
+              <div id="certificate-outcomes" className="mt-5 border-l-2 border-[#D4AF37] pl-5 text-base leading-7 text-white/70">
+                <p className="mb-3 text-sm font-bold uppercase tracking-[.16em] text-white/45">It equips you with</p>
+                <ul className="space-y-3">
+                  <li><strong className="text-white">Knowledge</strong><span className="text-white/45"> · Theory</span> — concepts and principles for your chosen occupation.</li>
+                  <li><strong className="text-white">Practical skills</strong> — hands-on training in a simulated or controlled environment.</li>
+                  <li><strong className="text-white">Workplace experience</strong> — real-life training in a workplace setting.</li>
+                </ul>
+              </div>
+            )}
+          </div>
+          {/* Application handles */}
           <div className="mt-9 flex flex-wrap gap-3">
             <Button onClick={onApply}>Start your application <ArrowRight className="h-4 w-4" /></Button>
             <a className="hero-link" href="#programmes"><Play className="h-4 w-4 fill-current" /> Explore programmes</a>
           </div>
+          {/* preliminary stats */}
           <div className="mt-12 flex flex-wrap gap-8 text-white/60">
             <div>
               <strong className="block font-display text-3xl text-white">25,500<span className="gold-text">+</span></strong>
@@ -441,12 +473,15 @@ function Hero({ onApply }: { onApply: () => void }) {
             </div>
           </div>
         </div>
+        {/* Hero card */}
         <div className="hero-card-wrap">
           <div className="hero-card">
             <div className="flex items-start justify-between">
-              <span className="eyebrow text-white/45">Featured pathway</span>
-              <span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">Popular</span>
+              <span className="eyebrow text-white/45">Authentic Assurance</span>
+              <span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">Sponsors</span>
             </div>
+
+            {/* ============ content to be changed & modified start here ============= */}
             <div className="mt-16">
               <p className="text-sm text-white/50">National Certificate</p>
               <h3 className="mt-2 font-display text-4xl text-white">Electrical<br />
@@ -464,7 +499,9 @@ function Hero({ onApply }: { onApply: () => void }) {
               </div>
             </div>
             <a href="/portal" className="mt-7 flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15">View pathway <ArrowUpRight className="h-4 w-4" /></a>
+            {/* ============ content to be changed & modified Ends here ============= */}
           </div>
+
           <div className="hero-stamp">
             <Award className="h-5 w-5" />
             <span>DHET<br /><b>Registered</b></span>
@@ -479,7 +516,7 @@ function Stats() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [started, setStarted] = useState(false);
   const [values, setValues] = useState([0, 0, 0, 0]);
-  const targets = [25500, 100, 10, 2];
+  const targets = [25500, 100, 10, 30];
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -508,7 +545,7 @@ function Stats() {
     return () => cancelAnimationFrame(frame);
   }, [started]);
 
-  const suffixes = ["+", "%", "", ""];
+  const suffixes = ["+", "%", "", "+"];
   const labels = [
     "NSTC learners in jobs, mines & municipalities",
     "Employment & mentorship guarantee",
@@ -526,6 +563,7 @@ function Stats() {
     </section>
   );
 }
+
 function About() {
   return (
     <section id="about" className="section-pad bg-[#f8f6f1]">
@@ -1186,7 +1224,11 @@ function Footer() {
   );
 }
 
-function ScrollImageBand({ image, eyebrow, title }: { image: string; eyebrow: string; title: string }) {
+function ScrollImageBand({ image, eyebrow, title }: {
+  image: string;
+  eyebrow: string;
+  title: string
+}) {
   return (
     <section className="image-band" style={{ backgroundImage: `linear-gradient(90deg, rgba(10,10,10,.78), rgba(10,10,10,.26)), url(${image})` }} aria-label={title}>
       <div className="container image-band-content">
@@ -1208,10 +1250,10 @@ function Landing({ data, setData, onApply }: {
       <Stats />
       <About />
       <Programmes onApply={onApply} />
-      <ScrollImageBand image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=2200&q=85" eyebrow="Talent on demand" title="Learning that moves with the world of work." />
+      <ScrollImageBand image={StudentGrad} eyebrow="Talent on demand" title="Learning that moves with the world of work." />
       <Skills data={data} setData={setData} />
       <Apprenticeships data={data} setData={setData} />
-      <ScrollImageBand image="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2200&q=85" eyebrow="Workplace experience" title="Confidence built in the workshop, carried into the workplace." />
+      <ScrollImageBand image={GradOfTwo} eyebrow="Workplace experience" title="Confidence built in the workshop, carried into the workplace." />
       <Fees />
       <Gallery />
       <Team />
@@ -1231,19 +1273,87 @@ function Landing({ data, setData, onApply }: {
           </div>
         </div>
       </section>
-      <ScrollImageBand image="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=2200&q=85" eyebrow="Your voice matters" title="A better learning experience starts with a conversation." />
+      <ScrollImageBand image={TertiaryExperience} eyebrow="Your voice matters" title="A better learning experience starts with a conversation." />
       <SuggestionBox data={data} setData={setData} />
       <Contact />
       <Footer />
     </div>
   );
 }
+
 function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [mode, setMode] = useState<"login" | "forgot" | "reset">("login");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = new FormData(e.currentTarget); if (mode === "login") { const email = String(f.get("email") || ""); const number = String(f.get("studentNo") || ""); const password = String(f.get("password") || ""); if (email === "thabo.mokoena@example.com" && number === "NSTC-26-0014" && password === (localStorage.getItem("nstc-password") || "nstc2026")) { localStorage.setItem("nstc-portal-session", "active"); onAuthenticated(); } else setError("Demo login: thabo.mokoena@example.com · NSTC-26-0014 · nstc2026"); } else if (mode === "forgot") { setMessage("If the account exists, a reset link has been prepared for this demo."); setMode("reset"); } else { const next = String(f.get("newPassword") || ""); if (next.length < 6) setError("Use at least 6 characters."); else { localStorage.setItem("nstc-password", next); setMessage("Password updated. You can now sign in."); setMode("login"); } } };
-  return <div className="registration-page"><div className="registration-top"><Logo light /><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">Secure student access</p><h1 className="mt-2 font-display text-4xl text-slate-950">{mode === "login" ? "Welcome back." : mode === "forgot" ? "Recover your access." : "Set a new password."}</h1><p className="mt-3 text-sm leading-6 text-slate-500">{mode === "login" ? "Sign in with your NSTC learner details to view your academic workspace." : mode === "forgot" ? "Enter your student email and we will guide you through a password reset." : "Choose a new password for your student portal account."}</p>{message && <p className="mt-5 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}{error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5">{mode !== "reset" && <><label>Email address<input name="email" className="field" type="email" required placeholder="student@email.com" /></label><label>Student number<input name="studentNo" className="field" required placeholder="NSTC-26-0014" /></label></>}{mode === "login" && <label>Password<input name="password" className="field" type="password" required placeholder="Your password" /></label>}{mode === "reset" && <label>New password<input name="newPassword" className="field" type="password" required placeholder="At least 6 characters" /></label>}<Button type="submit" className="w-full justify-center">{mode === "login" ? "Sign in to student portal" : mode === "forgot" ? "Send reset instructions" : "Save new password"} <ArrowRight className="h-4 w-4" /></Button></form><div className="mt-6 flex flex-wrap justify-between gap-3 text-sm font-semibold text-slate-500">{mode === "login" ? <button onClick={() => { setMode("forgot"); setError(""); }}>Forgot password?</button> : <button onClick={() => { setMode("login"); setError(""); }}>Back to sign in</button>}<a href="/parent">Family / next-of-kin access</a></div><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>thabo.mokoena@example.com</strong>, <strong>NSTC-26-0014</strong>, password <strong>nstc2026</strong>.</p></div></div>;
+
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    if (mode === "login") {
+      const email = String(f.get("email") || "");
+      const number = String(f.get("studentNo") || "");
+      const password = String(f.get("password") || "");
+      if (email === "thabo.mokoena@example.com" && number === "NSTC-26-0014" && password === (localStorage.getItem("nstc-password") || "nstc2026")) {
+        localStorage.setItem("nstc-portal-session", "active");
+        onAuthenticated();
+      } else setError("Demo login: thabo.mokoena@example.com · NSTC-26-0014 · nstc2026");
+    } else if (mode === "forgot") {
+      setMessage("If the account exists, a reset link has been prepared for this demo.");
+      setMode("reset");
+    } else {
+      const next = String(f.get("newPassword") || "");
+      if (next.length < 6) setError("Use at least 6 characters.");
+      else {
+        localStorage.setItem("nstc-password", next);
+        setMessage("Password updated. You can now sign in.");
+        setMode("login");
+      }
+    }
+  };
+
+  return (
+    <div className="registration-page">
+      <div className="registration-top">
+        <Logo light />
+        <a href="/" className="text-sm font-semibold text-white/60">Back to website</a>
+      </div>
+      <div className="registration-card max-w-[520px]">
+        <p className="eyebrow">Secure student access</p>
+        <h1 className="mt-2 font-display text-4xl text-slate-950">
+          {mode === "login" ? "Welcome back." : mode === "forgot" ? "Recover your access." : "Set a new password."}
+        </h1>
+        <p className="mt-3 text-sm leading-6 text-slate-500">
+          {mode === "login"
+            ? "Sign in with your NSTC learner details to view your academic workspace."
+            : mode === "forgot"
+              ? "Enter your student email and we will guide you through a password reset."
+              : "Choose a new password for your student portal account."
+          }
+        </p>
+        {message && <p className="mt-5 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
+        {error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <form onSubmit={submit} className="mt-7 space-y-5">
+          {mode !== "reset" &&
+            <>
+              <label>Email address<input name="email" className="field" type="email" required placeholder="student@email.com" /></label>
+              <label>Student number<input name="studentNo" className="field" required placeholder="NSTC-26-0014" /></label>
+            </>
+          }
+          {mode === "login" && <label>Password<input name="password" className="field" type="password" required placeholder="Your password" /></label>}
+          {mode === "reset" && <label>New password<input name="newPassword" className="field" type="password" required placeholder="At least 6 characters" /></label>}
+          <Button type="submit" className="w-full justify-center">{mode === "login" ? "Sign in to student portal" : mode === "forgot" ? "Send reset instructions" : "Save new password"} <ArrowRight className="h-4 w-4" /></Button>
+        </form>
+        <div className="mt-6 flex flex-wrap justify-between gap-3 text-sm font-semibold text-slate-500">
+          {mode === "login"
+            ? <button onClick={() => { setMode("forgot"); setError(""); }}>Forgot password?</button>
+            : <button onClick={() => { setMode("login"); setError(""); }}>Back to sign in</button>
+          }
+          <a href="/parent">Family / next-of-kin access</a>
+        </div>
+        <p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>thabo.mokoena@example.com</strong>, <strong>NSTC-26-0014</strong>, password <strong>nstc2026</strong>.</p>
+      </div>
+    </div>
+  );
 }
 
 function StudentSupport({ data, setData }: {
@@ -1670,11 +1780,43 @@ function StudentLearning({ data, onNavigate }: { data: AppData; onNavigate: (pat
         <div className="portal-card"><p className="eyebrow">Enrolled programme</p><h3 className="mt-2 font-display text-3xl text-slate-950">Electrical Engineering N1–N6</h3><p className="mt-2 text-sm text-slate-500">Trimester 2 · Hybrid · Tutor: Siyabonga Radebe</p><div className="mt-8 space-y-5">{["Engineering Science", "Mathematics N2", "Electrical Trade Theory"].map((subject, i) => <div key={subject}><div className="mb-2 flex justify-between text-sm"><span className="font-semibold text-slate-800">{subject}</span><span className="text-slate-400">{[82, 74, 61][i]}%</span></div><ProgressBar value={[82, 74, 61][i]} /></div>)}</div></div>
         <div className="portal-card"><p className="eyebrow">Learning resources</p><div className="mt-4 space-y-3">{data.resources.filter((resource) => resource.published).map((resource) => <button key={resource.id} className="resource-row" onClick={() => toast.success("Demo download started.")}><div className="file-icon"><FileText /></div><span>{resource.title} · {resource.fileType}</span><Download className="ml-auto h-4 w-4 text-slate-400" /></button>)}</div></div>
       </div>
-      <div className="mt-5 portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Upcoming timetable</p><h3 className="mt-2 font-display text-2xl text-slate-950">Classes and assessments</h3></div><Button variant="light" onClick={() => setCalendarOpen(true)}>Open calendar <CalendarDays className="h-4 w-4" /></Button></div><div className="mt-5 overflow-x-auto"><table className="data-table"><thead><tr><th>Activity</th><th>Type</th><th>Date</th><th>Time</th><th>Location</th></tr></thead><tbody>{data.schedules.map((r) => <tr key={r.id}><td className="font-semibold">{r.title}</td><td><Pill tone={r.kind === "Exam" ? "red" : "slate"}>{r.kind}</Pill></td><td>{r.date}</td><td>{r.time}</td><td>{r.location}</td></tr>)}</tbody></table></div></div>
+      <div className="mt-5 portal-card">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="eyebrow">Upcoming timetable</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Classes and assessments</h3>
+          </div>
+          <Button variant="light" onClick={() => setCalendarOpen(true)}>Open calendar <CalendarDays className="h-4 w-4" /></Button>
+        </div>
+        <div className="mt-5 overflow-x-auto">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Activity</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.schedules.map((r) =>
+                <tr key={r.id}>
+                  <td className="font-semibold">{r.title}</td>
+                  <td><Pill tone={r.kind === "Exam" ? "red" : "slate"}>{r.kind}</Pill></td>
+                  <td>{r.date}</td>
+                  <td>{r.time}</td>
+                  <td>{r.location}</td>
+                </tr>)}
+            </tbody>
+          </table>
+        </div>
+      </div>
       {calendarOpen && <CalendarDrawer schedules={data.schedules} assignments={data.assignments} onClose={() => setCalendarOpen(false)} />}
     </>
   );
 }
+
 function StudentAssignments({ data }: { data: AppData }) {
   const [submitOpen, setSubmitOpen] = useState(false);
   const [selected, setSelected] = useState<Assignment | null>(null);
@@ -1905,18 +2047,20 @@ function Registration({ onComplete }: {
     else run(() => { onComplete(form); setDone(true); });
   };
   if (done)
-    return (<div className="registration-card">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-        <Check className="h-8 w-8" />
+    return (
+      <div className="registration-card">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+          <Check className="h-8 w-8" />
+        </div>
+        <p className="mt-6 eyebrow">Application complete</p>
+        <h2 className="mt-2 font-display text-4xl text-slate-950">Welcome to NSTC.</h2>
+        <p className="mt-4 max-w-lg text-sm leading-6 text-slate-600">Your provisional student number is <strong className="text-slate-950">NSTC-26-0317</strong>. Admissions will verify your documents and confirm your orientation schedule.</p>
+        <div className="mt-7 flex flex-wrap gap-3">
+          <Button onClick={onComplete}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
+          <a className="btn btn-light" href="/">Back to website</a>
+        </div>
       </div>
-      <p className="mt-6 eyebrow">Application complete</p>
-      <h2 className="mt-2 font-display text-4xl text-slate-950">Welcome to NSTC.</h2>
-      <p className="mt-4 max-w-lg text-sm leading-6 text-slate-600">Your provisional student number is <strong className="text-slate-950">NSTC-26-0317</strong>. Admissions will verify your documents and confirm your orientation schedule.</p>
-      <div className="mt-7 flex flex-wrap gap-3">
-        <Button onClick={onComplete}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
-        <a className="btn btn-light" href="/">Back to website</a>
-      </div>
-    </div>);
+    );
 
   return (
     <div className="registration-card">
@@ -2035,7 +2179,8 @@ function Registration({ onComplete }: {
           }
         </Button>
       </div>
-    </div>);
+    </div>
+  );
 }
 
 function StudentPortal({ data, setData, path, navigate }: {
@@ -2128,7 +2273,6 @@ function StudentPortal({ data, setData, path, navigate }: {
   );
 }
 
-
 function LecturerAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [error, setError] = useState("");
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -2144,7 +2288,12 @@ function LecturerAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   return <div className="registration-page"><div className="registration-top"><Logo light /><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">Lecturer & tutor access</p><h1 className="mt-2 font-display text-4xl text-slate-950">Lead learning with clarity.</h1><p className="mt-3 text-sm leading-6 text-slate-500">Sign in to manage classes, resources, attendance, assessments and student progress.</p>{error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5"><label>Email address<input className="field" name="email" type="email" required placeholder="lecturer@nstc.example" /></label><label>Password<input className="field" name="password" type="password" required placeholder="Your password" /></label><Button type="submit" className="w-full justify-center">Sign in to lecturer portal <ArrowRight className="h-4 w-4" /></Button></form><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>lecturer@nstc.example</strong> with password <strong>lecturer2026</strong>.</p><div className="mt-5 text-center text-sm font-semibold text-slate-500"><a href="/portal">Student portal</a><span className="mx-2 text-slate-300">·</span><a href="/admin">Admin access</a></div></div></div>;
 }
 
-function LecturerShell({ children, active, onNavigate, onSignOut }: { children: ReactNode; active: string; onNavigate: (path: string) => void; onSignOut: () => void }) {
+function LecturerShell({ children, active, onNavigate, onSignOut }: {
+  children: ReactNode;
+  active: string;
+  onNavigate: (path: string) => void;
+  onSignOut: () => void
+}) {
   const [open, setOpen] = useState(false);
   const items = [
     { label: "Overview", icon: LayoutDashboard, path: "/lecturer" },
@@ -2156,7 +2305,60 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: { children: 
     { label: "Announcements", icon: MessageCircle, path: "/lecturer/announcements" },
     { label: "Schedules", icon: CalendarDays, path: "/lecturer/schedules" }
   ];
-  return <div className="portal-shell lecturer-shell"><aside className={`portal-sidebar ${open ? "open" : ""}`}><div className="p-6"><Logo /><div className="mt-10"><p className="eyebrow px-3">Teaching workspace</p><div className="mt-3 space-y-1">{items.map((item) => { const I = item.icon; return <button key={item.path} className={`side-link ${active === item.path ? "active" : ""}`} onClick={() => { onNavigate(item.path); setOpen(false); }}><I className="h-4 w-4" />{item.label}{active === item.path && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />}</button>; })}</div></div></div><div className="mt-auto border-t border-slate-200 p-6"><div className="flex items-center gap-3"><div className="avatar-small">SR</div><div><p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p><p className="text-xs text-slate-500">Lecturer account</p></div></div><button className="mt-5 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950" onClick={onSignOut}><X className="h-3.5 w-3.5" /> Sign out</button><a href="/" className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950"><ExternalLink className="h-3.5 w-3.5" /> Public website</a></div></aside><div className="portal-main"><header className="portal-header"><button className="icon-btn lg:hidden" onClick={() => setOpen(!open)}><Menu /></button><div><p className="eyebrow">Lecturer portal</p><p className="hidden text-sm font-semibold text-slate-950 sm:block">Make every class count.</p></div><div className="flex items-center gap-4"><div className="notification-badge"><MessageCircle className="h-4 w-4" /><span>3</span></div><div className="hidden text-right sm:block"><p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p><p className="text-xs text-slate-500">Engineering faculty</p></div><div className="avatar-small">SR</div></div></header><main className="p-5 md:p-8">{children}</main></div></div>;
+  return (
+    <div className="portal-shell lecturer-shell">
+      <aside className={`portal-sidebar ${open ? "open" : ""}`}>
+        <div className="p-6"><Logo />
+          <div className="mt-10">
+            <p className="eyebrow px-3">Teaching workspace</p>
+            <div className="mt-3 space-y-1">
+              {items.map((item) => {
+                const I = item.icon;
+                return <button key={item.path} className={`side-link ${active === item.path ? "active" : ""}`} onClick={() => { onNavigate(item.path); setOpen(false); }}>
+                  <I className="h-4 w-4" />{item.label}{active === item.path && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />}
+                </button>;
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="mt-auto border-t border-slate-200 p-6">
+          <div className="flex items-center gap-3">
+            <div className="avatar-small">SR</div>
+            <div>
+              <p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p>
+              <p className="text-xs text-slate-500">Lecturer account</p>
+            </div>
+          </div>
+          <button className="mt-5 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950" onClick={onSignOut}>
+            <X className="h-3.5 w-3.5" /> Sign out</button>
+          <a href="/" className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950">
+            <ExternalLink className="h-3.5 w-3.5" /> Public website
+          </a>
+        </div>
+      </aside>
+      <div className="portal-main">
+        <header className="portal-header">
+          <button className="icon-btn lg:hidden" onClick={() => setOpen(!open)}><Menu /></button>
+          <div>
+            <p className="eyebrow">Lecturer portal</p>
+            <p className="hidden text-sm font-semibold text-slate-950 sm:block">Make every class count.</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="notification-badge">
+              <MessageCircle className="h-4 w-4" />
+              <span>3</span>
+            </div>
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p>
+              <p className="text-xs text-slate-500">Engineering faculty</p>
+            </div>
+            <div className="avatar-small">SR</div>
+          </div>
+        </header>
+        <main className="p-5 md:p-8">{children}</main>
+      </div>
+    </div>
+  );
 }
 
 const lecturerSubjects = ["Engineering Science", "Mathematics N2", "Electrical Trade Theory", "Logic Systems"];
@@ -2169,9 +2371,102 @@ const lecturerStudentRows = [
   { id: "s5", name: "Bongani Maseko", email: "bongani.maseko@example.com", phone: "+27 73 119 5524", course: "Information Technology", subject: "Networking", status: "Suspended", kin: "Zanele Maseko · +27 73 110 0022" }
 ];
 
-function LecturerOverview({ data, onNavigate }: { data: AppData; onNavigate: (path: string) => void }) {
+function LecturerOverview({ data, onNavigate }: {
+  data: AppData; onNavigate: (path: string) => void
+}) {
   const unread = data.lecturerNotifications.filter((item) => !item.read);
-  return <><PageHeading eyebrow="Monday, 08 June 2026" title="Good morning, Siyabonga." body="Your teaching workspace for classes, learners and assessments." actions={<Button onClick={() => onNavigate("/lecturer/schedules")}>Edit timetable <CalendarDays className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Courses + subjects" value="2 + 4" detail="Across your teaching load" icon={BookOpen} /><MetricCard label="Assignments created" value={data.assignments.length + 4} detail="2 awaiting review" icon={FileText} /><MetricCard label="Total students" value="24" detail="5 require attention" icon={Users} tone="green" /></div><div className="mt-6 grid gap-5 xl:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">My teaching load</p><h3 className="mt-2 font-display text-2xl text-slate-950">Courses, subjects & class sizes</h3></div><Pill tone="green">Active term</Pill></div><div className="mt-5 grid gap-3 md:grid-cols-2">{[{ course: "Electrical Engineering N1–N6", subject: "Engineering Science", count: 14, time: "Mon · 09:00" }, { course: "Electrical Engineering N1–N6", subject: "Electrical Trade Theory", count: 12, time: "Wed · 13:00" }, { course: "Information Technology", subject: "Networking", count: 8, time: "Thu · 10:00" }, { course: "Information Technology", subject: "Database Fundamentals", count: 7, time: "Fri · 09:00" }].map((item) => <div className="rounded-xl border border-slate-200 p-4" key={`${item.course}-${item.subject}`}><p className="text-sm font-semibold text-slate-950">{item.subject}</p><p className="mt-1 text-xs text-slate-500">{item.course}</p><div className="mt-4 flex items-center justify-between text-xs"><span className="font-semibold text-slate-700">{item.count} students</span><span className="text-slate-400">{item.time}</span></div></div>)}</div></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Notifications</p><h3 className="mt-2 font-display text-2xl text-slate-950">Needs your attention</h3></div><Pill>{unread.length} unread</Pill></div><div className="mt-4 space-y-3">{unread.slice(0, 3).map((item) => <div className="rounded-xl bg-slate-50 p-3" key={item.id}><p className="text-sm font-semibold text-slate-950">{item.title}</p><p className="mt-1 text-xs leading-5 text-slate-500">{item.body}</p><p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">{item.date}</p></div>)}</div><button className="mt-5 text-sm font-bold text-slate-950" onClick={() => onNavigate("/lecturer/announcements")}>View all notifications <ArrowRight className="ml-1 inline h-4 w-4" /></button></div></div><div className="mt-5 grid gap-5 lg:grid-cols-3"><div className="dark-mini-card"><Users /><div><strong>5</strong><small>students to follow up</small></div></div><div className="dark-mini-card"><ClipboardCheck /><div><strong>94%</strong><small>aggregated attendance</small></div></div><div className="dark-mini-card"><Award /><div><strong>79%</strong><small>average class score</small></div></div></div></>;
+  return (
+    <>
+      <PageHeading eyebrow="Monday, 08 June 2026" title="Good morning, Siyabonga." body="Your teaching workspace for classes, learners and assessments."
+        actions={
+          <Button onClick={() => onNavigate("/lecturer/schedules")}>Edit timetable <CalendarDays className="h-4 w-4" /></Button>
+        }
+      />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <MetricCard label="Courses + subjects" value="2 + 4" detail="Across your teaching load" icon={BookOpen} />
+        <MetricCard label="Assignments created" value={data.assignments.length + 4} detail="2 awaiting review" icon={FileText} />
+        <MetricCard label="Total students" value="24" detail="5 require attention" icon={Users} tone="green" />
+      </div>
+      <div className="mt-6 grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">My teaching load</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">Courses, subjects & class sizes</h3>
+            </div>
+            <Pill tone="green">Active term</Pill>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {
+              [{
+                course: "Electrical Engineering N1–N6",
+                subject: "Engineering Science",
+                count: 14,
+                time: "Mon · 09:00"
+              },
+              {
+                course: "Electrical Engineering N1–N6",
+                subject: "Electrical Trade Theory",
+                count: 12,
+                time: "Wed · 13:00"
+              },
+              {
+                course: "Information Technology",
+                subject: "Networking",
+                count: 8,
+                time: "Thu · 10:00"
+              },
+              {
+                course: "Information Technology",
+                subject: "Database Fundamentals",
+                count: 7,
+                time: "Fri · 09:00"
+              }
+              ].map((item) =>
+                <div className="rounded-xl border border-slate-200 p-4" key={`${item.course}-${item.subject}`}>
+                  <p className="text-sm font-semibold text-slate-950">{item.subject}</p>
+                  <p className="mt-1 text-xs text-slate-500">{item.course}</p>
+                  <div className="mt-4 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700">{item.count} students</span>
+                    <span className="text-slate-400">{item.time}</span>
+                  </div>
+                </div>
+              )}
+          </div>
+        </div>
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">Notifications</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">Needs your attention</h3>
+            </div>
+            <Pill>{unread.length} unread</Pill>
+          </div>
+          <div className="mt-4 space-y-3">
+            {unread.slice(0, 3).map((item) =>
+              <div className="rounded-xl bg-slate-50 p-3" key={item.id}>
+                <p className="text-sm font-semibold text-slate-950">{item.title}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{item.body}</p>
+                <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">{item.date}</p>
+              </div>
+            )}
+          </div>
+          <button className="mt-5 text-sm font-bold text-slate-950" onClick={() => onNavigate("/lecturer/announcements")}>View all notifications <ArrowRight className="ml-1 inline h-4 w-4" /></button>
+        </div>
+      </div>
+      <div className="mt-5 grid gap-5 lg:grid-cols-3">
+        <div className="dark-mini-card">
+          <Users /><div><strong>5</strong><small>students to follow up</small></div>
+        </div>
+        <div className="dark-mini-card">
+          <ClipboardCheck /><div><strong>94%</strong><small>aggregated attendance</small>
+          </div>
+        </div>
+
+        <div className="dark-mini-card"><Award /><div><strong>79%</strong><small>average class score</small></div></div>
+      </div>
+    </>
+  );
 }
 
 function LecturerStudents() {
@@ -2181,13 +2476,158 @@ function LecturerStudents() {
   const [page, setPage] = useState(1);
   const filtered = lecturerStudentRows.filter((student) => (course === "All courses" || student.course === course) && (subject === "All subjects" || student.subject === subject) && `${student.name} ${student.email} ${student.course}`.toLowerCase().includes(search.toLowerCase()));
   const pageRows = filtered.slice((page - 1) * 10, page * 10);
-  return <><PageHeading eyebrow="Learner directory" title="Students" body="Filter your assigned learners by course and subject, then reach the right person quickly." /><div className="portal-card"><div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]"><select className="field mt-0" value={course} onChange={(event) => { setCourse(event.target.value); setPage(1); }}><option>All courses</option>{lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select><select className="field mt-0" value={subject} onChange={(event) => { setSubject(event.target.value); setPage(1); }}><option>All subjects</option>{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select><label className="relative"><Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" /><input className="field mt-0 pl-10" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search name, email or course" /></label></div><div className="mt-6 overflow-x-auto"><table className="data-table lecturer-table"><thead><tr><th>Full name & contacts</th><th>Course</th><th>Subject</th><th>Status</th><th>Next of kin</th></tr></thead><tbody>{pageRows.map((student) => <tr key={student.id}><td><div className="flex items-center gap-3"><div className="avatar-small">{initials(student.name)}</div><div><p className="font-semibold text-slate-950">{student.name}</p><p className="mt-1 text-xs text-slate-500">{student.email}<br />{student.phone}</p></div></div></td><td>{student.course}</td><td><button className="text-left font-semibold text-slate-700" onClick={() => toast.info(`${student.subject} selected for ${student.name}.`)}>{student.subject} <ChevronDown className="ml-1 inline h-3 w-3" /></button></td><td><Pill tone={student.status === "Suspended" ? "red" : "green"}>{student.status}</Pill></td><td>{student.kin}</td></tr>)}</tbody></table>{!pageRows.length && <div className="empty-state"><Users /><h3>No matching students</h3><p>Try a different course, subject or search term.</p></div>}</div><div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-500"><span>Showing {pageRows.length} of {filtered.length} records · 10 per page</span><div className="flex gap-2"><button className="filter-chip" disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Previous</button><button className="filter-chip" disabled={page * 10 >= filtered.length} onClick={() => setPage((value) => value + 1)}>Next</button></div></div></div></>;
+  return (
+    <>
+      <PageHeading eyebrow="Learner directory" title="Students" body="Filter your assigned learners by course and subject, then reach the right person quickly." />
+      <div className="portal-card">
+        <div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]">
+          <select className="field mt-0" value={course} onChange={(event) => { setCourse(event.target.value); setPage(1); }}>
+            <option>All courses</option>
+            {lecturerCourses.map((item) =>
+              <option key={item}>{item}</option>
+            )}
+          </select>
+          <select className="field mt-0" value={subject} onChange={(event) => { setSubject(event.target.value); setPage(1); }}>
+            <option>All subjects</option>
+            {lecturerSubjects.map((item) => <option key={item}>{item}</option>)}
+          </select>
+          <label className="relative">
+            <Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" />
+            <input className="field mt-0 pl-10" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search name, email or course" />
+          </label>
+        </div>
+        <div className="mt-6 overflow-x-auto">
+          <table className="data-table lecturer-table">
+            <thead>
+              <tr>
+                <th>Full name & contacts</th>
+                <th>Course</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Next of kin</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {pageRows.map((student) =>
+                <tr key={student.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar-small">{initials(student.name)}</div>
+                      <div>
+                        <p className="font-semibold text-slate-950">{student.name}</p>
+                        <p className="mt-1 text-xs text-slate-500">{student.email}<br />{student.phone}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{student.course}</td>
+                  <td>
+                    <button className="text-left font-semibold text-slate-700" onClick={() => toast.info(`${student.subject} selected for ${student.name}.`)}>{student.subject} <ChevronDown className="ml-1 inline h-3 w-3" /></button>
+                  </td>
+                  <td>
+                    <Pill tone={student.status === "Suspended" ? "red" : "green"}>{student.status}</Pill>
+                  </td>
+                  <td>{student.kin}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {!pageRows.length && <div className="empty-state"><Users /><h3>No matching students</h3><p>Try a different course, subject or search term.</p></div>}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-500">
+          <span>Showing {pageRows.length} of {filtered.length} records · 10 per page</span>
+          <div className="flex gap-2">
+            <button className="filter-chip" disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Previous</button>
+            <button className="filter-chip" disabled={page * 10 >= filtered.length} onClick={() => setPage((value) => value + 1)}>Next</button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 function LecturerResources({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
   const [message, setMessage] = useState("");
   const submitResource = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const form = new FormData(event.currentTarget); setData((old) => ({ ...old, resources: [{ id: crypto.randomUUID(), title: String(form.get("title") || "New learning resource"), course: String(form.get("course") || lecturerCourses[0]), subject: String(form.get("subject") || lecturerSubjects[0]), fileType: "PDF", published: form.get("publish") === "on", uploaded: "2026-06-08" }, ...old.resources] })); event.currentTarget.reset(); setMessage("Resource uploaded and saved to your teaching library."); };
-  return <><PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials, publish them to a class and track assignment progress." /><div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]"><div className="portal-card"><p className="eyebrow">Upload & publish resource</p><form onSubmit={submitResource} className="mt-5 space-y-4"><label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook" /></label><label>Course<select name="course" className="field"><option>{lecturerCourses[0]}</option><option>{lecturerCourses[1]}</option></select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>File<input className="field" type="file" required /></label><label className="check-option"><input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now</label><Button type="submit"><Upload className="h-4 w-4" /> Upload resource</Button>{message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}</form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published library</p><h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3></div><Pill>{data.resources.length} files</Pill></div><div className="mt-4 space-y-2">{data.resources.map((resource) => <div className="resource-row" key={resource.id}><div className="file-icon"><FileText /></div><div className="min-w-0"><p className="truncate text-sm font-semibold">{resource.title}</p><p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p></div><Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Assignment activity</p><h3 className="mt-2 font-display text-2xl text-slate-950">Post and track coursework</h3></div><Button onClick={() => toast.success("Assignment creation form is ready for your next brief.")}><Plus className="h-4 w-4" /> New assignment</Button></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[{ label: "Completed", value: "18", tone: "green" }, { label: "In progress", value: "7", tone: "gold" }, { label: "Not started", value: "4", tone: "slate" }].map((item) => <div className="rounded-xl bg-slate-50 p-4" key={item.label}><p className="text-xs text-slate-500">{item.label}</p><p className="mt-1 font-display text-3xl text-slate-950">{item.value}</p></div>)}</div></div></>;
+  return (
+    <>
+      <PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials, publish them to a class and track assignment progress." />
+      <div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
+        <div className="portal-card">
+          <p className="eyebrow">Upload & publish resource</p>
+          <form onSubmit={submitResource} className="mt-5 space-y-4">
+            <label>Resource title
+              <input name="title" className="field" required placeholder="e.g. Motor control workbook" />
+            </label>
+            <label>Course
+              <select name="course" className="field">
+                <option>{lecturerCourses[0]}</option>
+                <option>{lecturerCourses[1]}</option>
+              </select>
+            </label>
+            <label>Subject
+              <select name="subject" className="field">
+                {lecturerSubjects.map((item) =>
+                  <option key={item}>{item}</option>
+                )}
+              </select>
+            </label>
+            <label>File
+              <input className="field" type="file" required />
+            </label>
+            <label className="check-option">
+              <input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now
+            </label>
+            <Button type="submit">
+              <Upload className="h-4 w-4" /> Upload resource</Button>
+            {message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
+          </form>
+        </div>
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">Published library</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3>
+            </div>
+            <Pill>{data.resources.length} files</Pill>
+          </div>
+          <div className="mt-4 space-y-2">
+            {data.resources.map((resource) =>
+              <div className="resource-row" key={resource.id}>
+                <div className="file-icon"><FileText /></div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{resource.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p>
+                </div>
+                <Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="mt-5 portal-card">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="eyebrow">Assignment activity</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Post and track coursework</h3>
+          </div>
+          <Button onClick={() => toast.success("Assignment creation form is ready for your next brief.")}><Plus className="h-4 w-4" /> New assignment</Button>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">{
+          [{ label: "Completed", value: "18", tone: "green" },
+          { label: "In progress", value: "7", tone: "gold" },
+          { label: "Not started", value: "4", tone: "slate" }
+          ].map((item) =>
+            <div className="rounded-xl bg-slate-50 p-4" key={item.label}>
+              <p className="text-xs text-slate-500">{item.label}</p>
+              <p className="mt-1 font-display text-3xl text-slate-950">{item.value}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
 
 function LecturerAttendance() {
@@ -2195,7 +2635,58 @@ function LecturerAttendance() {
   const [present, setPresent] = useState<Record<string, boolean>>({ s1: true, s2: true, s3: true, s4: false, s5: true });
   const students = lecturerStudentRows.filter((student) => student.subject === subject || subject === lecturerSubjects[0]);
   const markSaved = () => toast.success(`Attendance saved for ${subject}.`);
-  return <><PageHeading eyebrow="Class register" title="Attendance" body="Mark each subject at its scheduled time and keep the aggregate visible." actions={<Button onClick={markSaved}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Today’s class" value="09:00" detail="Engineering Science · Workshop 2" icon={Clock3} /><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail="Current register" icon={ClipboardCheck} tone="green" /><MetricCard label="Aggregate attendance" value="94%" detail="Across the last two weeks" icon={TrendingUp} /></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · Engineering Science</h3></div><select className="field mt-0 max-w-[220px]" value={subject} onChange={(event) => setSubject(event.target.value)}>{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></div><div className="mt-5">{students.map((student) => <label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(event) => setPresent((old) => ({ ...old, [student.id]: event.target.checked }))} /></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">Last two weeks</h3><div className="mt-6 flex h-48 items-end gap-2">{[92, 96, 88, 100, 94, 90, 97, 100, 92, 96, 100, 94, 98, 94].map((value, index) => <div className="flex flex-1 flex-col items-center gap-2" key={index}><div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(20, value * 1.3)}px`, opacity: value < 90 ? .5 : 1 }} /><span className="text-[9px] text-slate-400">{index + 1}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Aggregated by scheduled subject and attendance session.</p></div></div></>;
+  return (
+    <>
+      <PageHeading eyebrow="Class register" title="Attendance" body="Mark each subject at its scheduled time and keep the aggregate visible."
+        actions={
+          <Button onClick={markSaved}>Save attendance <Check className="h-4 w-4" /></Button>
+        }
+      />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <MetricCard label="Today’s class" value="09:00" detail="Engineering Science · Workshop 2" icon={Clock3} />
+        <MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail="Current register" icon={ClipboardCheck} tone="green" />
+        <MetricCard label="Aggregate attendance" value="94%" detail="Across the last two weeks" icon={TrendingUp} />
+      </div>
+      <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]">
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">Mark attendance</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · Engineering Science</h3>
+            </div>
+            <select className="field mt-0 max-w-[220px]" value={subject} onChange={(event) => setSubject(event.target.value)}>
+              {lecturerSubjects.map((item) =>
+                <option key={item}>{item}</option>
+              )}
+            </select>
+          </div>
+          <div className="mt-5">
+            {students.map((student) =>
+              <label className="attendance-row" key={student.id}>
+                <span className="flex items-center gap-3">
+                  <span className="avatar-small">{initials(student.name)}</span>
+                  <span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span>
+                </span>
+                <input type="checkbox" checked={Boolean(present[student.id])} onChange={(event) => setPresent((old) => ({ ...old, [student.id]: event.target.checked }))} /></label>
+            )}
+          </div>
+        </div>
+        <div className="portal-card">
+          <p className="eyebrow">Attendance trend</p>
+          <h3 className="mt-2 font-display text-2xl text-slate-950">Last two weeks</h3>
+          <div className="mt-6 flex h-48 items-end gap-2">
+            {[92, 96, 88, 100, 94, 90, 97, 100, 92, 96, 100, 94, 98, 94].map((value, index) =>
+              <div className="flex flex-1 flex-col items-center gap-2" key={index}>
+                <div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(20, value * 1.3)}px`, opacity: value < 90 ? .5 : 1 }} />
+                <span className="text-[9px] text-slate-400">{index + 1}</span>
+              </div>
+            )}
+          </div>
+          <p className="mt-4 text-xs text-slate-500">Aggregated by scheduled subject and attendance session.</p>
+        </div>
+      </div>
+    </>
+  );
 }
 
 function LecturerResults() {
@@ -2205,34 +2696,300 @@ function LecturerResults() {
   const [profile, setProfile] = useState<typeof lecturerStudentRows[number] | null>(null);
   const [transcript, setTranscript] = useState<typeof lecturerStudentRows[number] | null>(null);
   const rows = lecturerStudentRows.filter((student) => (course === "All courses" || student.course === course) && (subject === "All subjects" || student.subject === subject) && student.name.toLowerCase().includes(search.toLowerCase()));
-  return <><PageHeading eyebrow="Assessment book" title="Student results" body="Review scores, progress and attendance rates before publishing the next academic update." /><div className="portal-card"><div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]"><select className="field mt-0" value={course} onChange={(event) => setCourse(event.target.value)}><option>All courses</option>{lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select><select className="field mt-0" value={subject} onChange={(event) => setSubject(event.target.value)}><option>All subjects</option>{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select><label className="relative"><Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" /><input className="field mt-0 pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search student" /></label></div><div className="mt-6 overflow-x-auto"><table className="data-table lecturer-table"><thead><tr><th>Student</th><th>Course</th><th>Assignments written</th><th>Aggregated score</th><th>Total marks</th><th>Attendance · 2 weeks</th><th>Profile</th></tr></thead><tbody>{rows.map((student, index) => <tr key={student.id}><td className="font-semibold text-slate-950">{student.name}</td><td>{student.course}</td><td>{[3, 4, 4, 4, 2][lecturerStudentRows.findIndex((row) => row.id === student.id)]} / 4</td><td className="font-semibold text-slate-950">{[86, 78, 82, 74, 53][lecturerStudentRows.findIndex((row) => row.id === student.id)] || 76}%</td><td>100</td><td><Pill tone={student.status === "Suspended" ? "red" : "green"}>{[94, 88, 91, 96, 71][lecturerStudentRows.findIndex((row) => row.id === student.id)] || 84}%</Pill></td><td><button className="text-xs font-bold text-slate-700 underline" onClick={() => setProfile(student)}>View profile</button><button className="ml-3 text-xs font-bold text-[#916e0a] underline" onClick={() => setTranscript(student)}>Transcript</button></td></tr>)}</tbody></table></div></div>{profile && <Modal title={`${profile.name} · Academic profile`} onClose={() => setProfile(null)}><div className="mt-5 grid gap-4 sm:grid-cols-2"><div><p className="text-xs text-slate-400">Course</p><p className="mt-1 font-semibold">{profile.course}</p></div><div><p className="text-xs text-slate-400">Status</p><Pill tone={profile.status === "Suspended" ? "red" : "green"}>{profile.status}</Pill></div><div><p className="text-xs text-slate-400">Subject</p><p className="mt-1 font-semibold">{profile.subject}</p></div><div><p className="text-xs text-slate-400">Progress</p><p className="mt-1 font-semibold">On track · 68%</p></div></div><div className="mt-6 rounded-xl bg-slate-50 p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-400">Lecturer remark</p><p className="mt-2 text-sm leading-6 text-slate-600">Strong practical participation. Continue with weekly revision and submit outstanding work before the next assessment.</p></div></Modal>}{transcript && <Modal title={`Generate transcript · ${transcript.name}`} onClose={() => setTranscript(null)}><p className="mt-5 text-sm leading-6 text-slate-600">Add a lecturer remark that will appear on the student’s transcript and academic profile.</p><textarea className="field mt-4 min-h-[130px]" defaultValue="Demonstrates consistent commitment and practical understanding across the current term." /><div className="mt-6 flex justify-end"><Button onClick={() => { toast.success(`Transcript generated for ${transcript.name}.`); setTranscript(null); }}><FileText className="h-4 w-4" /> Generate transcript</Button></div></Modal>}</>;
+  return (
+    <>
+      <PageHeading eyebrow="Assessment book" title="Student results" body="Review scores, progress and attendance rates before publishing the next academic update." />
+      <div className="portal-card">
+        <div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]">
+          <select className="field mt-0" value={course} onChange={(event) => setCourse(event.target.value)}>
+            <option>All courses</option>
+            {lecturerCourses.map((item) => <option key={item}>{item}</option>)}
+          </select>
+          <select className="field mt-0" value={subject} onChange={(event) => setSubject(event.target.value)}>
+            <option>All subjects</option>
+            {lecturerSubjects.map((item) => <option key={item}>{item}</option>)}
+          </select>
+          <label className="relative">
+            <Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" />
+            <input className="field mt-0 pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search student" />
+          </label>
+        </div>
+        <div className="mt-6 overflow-x-auto">
+          <table className="data-table lecturer-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Assignments written</th>
+                <th>Aggregated score</th>
+                <th>Total marks</th>
+                <th>Attendance · 2 weeks</th>
+                <th>Profile</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((student, index) =>
+                <tr key={student.id}>
+                  <td className="font-semibold text-slate-950">{student.name}</td>
+                  <td>{student.course}</td>
+                  <td>{[3, 4, 4, 4, 2][lecturerStudentRows.findIndex((row) => row.id === student.id)]} / 4</td>
+                  <td className="font-semibold text-slate-950">{[86, 78, 82, 74, 53][lecturerStudentRows.findIndex((row) => row.id === student.id)] || 76}%</td>
+                  <td>100</td>
+                  <td>
+                    <Pill tone={student.status === "Suspended" ? "red" : "green"}>{[94, 88, 91, 96, 71][lecturerStudentRows.findIndex((row) => row.id === student.id)] || 84}%</Pill></td>
+                  <td>
+                    <button className="text-xs font-bold text-slate-700 underline" onClick={() => setProfile(student)}>View profile</button><button className="ml-3 text-xs font-bold text-[#916e0a] underline" onClick={() => setTranscript(student)}>Transcript</button></td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {profile &&
+        <Modal title={`${profile.name} · Academic profile`} onClose={() => setProfile(null)}>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="text-xs text-slate-400">Course</p>
+              <p className="mt-1 font-semibold">{profile.course}</p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-400">Status</p>
+              <Pill tone={profile.status === "Suspended" ? "red" : "green"}>
+                {profile.status}
+              </Pill>
+            </div>
+            <div>
+              <p className="text-xs text-slate-400">Subject</p>
+              <p className="mt-1 font-semibold">{profile.subject}</p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-400">Progress</p>
+              <p className="mt-1 font-semibold">On track · 68%</p>
+            </div>
+          </div>
+          <div className="mt-6 rounded-xl bg-slate-50 p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Lecturer remark</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Strong practical participation. Continue with weekly revision and submit outstanding work before the next assessment.</p>
+          </div>
+        </Modal>
+      }
+
+      {transcript &&
+        <Modal title={`Generate transcript · ${transcript.name}`} onClose={() => setTranscript(null)}>
+          <p className="mt-5 text-sm leading-6 text-slate-600">Add a lecturer remark that will appear on the student’s transcript and academic profile.</p>
+          <textarea className="field mt-4 min-h-[130px]" defaultValue="Demonstrates consistent commitment and practical understanding across the current term." />
+          <div className="mt-6 flex justify-end">
+            <Button onClick={() => { toast.success(`Transcript generated for ${transcript.name}.`); setTranscript(null); }}>
+              <FileText className="h-4 w-4" /> Generate transcript</Button>
+          </div>
+        </Modal>
+      }
+    </>
+  );
 }
 
 function LecturerSubmissions() {
   const [scores, setScores] = useState<Record<string, string>>({ s1: "86", s2: "78", s3: "82", s4: "74" });
-  return <><PageHeading eyebrow="Marking queue" title="Submissions & marks" body="Preview submitted files, download evidence and update marks for each assignment." /><div className="portal-card"><div className="mb-5 flex items-center justify-between"><div><p className="eyebrow">Electrical installation rules</p><h3 className="mt-2 font-display text-2xl text-slate-950">Submitted assignment files</h3></div><Pill tone="green">4 submitted</Pill></div><div className="overflow-x-auto"><table className="data-table"><thead><tr><th>Student</th><th>Submitted</th><th>File</th><th>Preview</th><th>Marks / 100</th><th></th></tr></thead><tbody>{lecturerStudentRows.slice(0, 4).map((student) => <tr key={student.id}><td className="font-semibold text-slate-950">{student.name}</td><td>08 Jun 2026 · 08:20</td><td><button className="text-xs font-semibold text-slate-700 underline" onClick={() => toast.success("Demo file download started.")}><Download className="mr-1 inline h-3.5 w-3.5" />submission.pdf</button></td><td><button className="text-xs font-semibold text-[#916e0a] underline" onClick={() => toast.info("Preview opened in the marking workspace.")}>Preview</button></td><td><input className="field mt-0 w-24" value={scores[student.id] || ""} onChange={(event) => setScores((old) => ({ ...old, [student.id]: event.target.value }))} /></td><td><Button onClick={() => toast.success(`Score updated for ${student.name}.`)}>Update</Button></td></tr>)}</tbody></table></div></div></>;
+  return (
+    <>
+      <PageHeading eyebrow="Marking queue" title="Submissions & marks" body="Preview submitted files, download evidence and update marks for each assignment." />
+      <div className="portal-card">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <p className="eyebrow">Electrical installation rules</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Submitted assignment files</h3>
+          </div>
+          <Pill tone="green">4 submitted</Pill>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Submitted</th>
+                <th>File</th>
+                <th>Preview</th>
+                <th>Marks / 100</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {lecturerStudentRows.slice(0, 4).map((student) =>
+                <tr key={student.id}>
+                  <td className="font-semibold text-slate-950">{student.name}</td>
+                  <td>08 Jun 2026 · 08:20</td>
+                  <td>
+                    <button className="text-xs font-semibold text-slate-700 underline" onClick={() => toast.success("Demo file download started.")}><Download className="mr-1 inline h-3.5 w-3.5" />submission.pdf</button>
+                  </td>
+                  <td>
+                    <button className="text-xs font-semibold text-[#916e0a] underline" onClick={() => toast.info("Preview opened in the marking workspace.")}>Preview</button>
+                  </td>
+                  <td><input className="field mt-0 w-24" value={scores[student.id] || ""} onChange={(event) => setScores((old) => ({ ...old, [student.id]: event.target.value }))} /></td>
+                  <td><Button onClick={() => toast.success(`Score updated for ${student.name}.`)}>Update</Button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
 }
 
-function LecturerAnnouncements({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
+function LecturerAnnouncements({ data, setData }: {
+  data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>
+}) {
   const [date, setDate] = useState("All dates");
   const dates = Array.from(new Set(data.lecturerNotifications.map((item) => item.date)));
   const visible = data.lecturerNotifications.filter((item) => date === "All dates" || item.date === date);
   const markRead = (id: string) => setData((old) => ({ ...old, lecturerNotifications: old.lecturerNotifications.map((item) => item.id === id ? { ...item, read: true } : item) }));
-  return <><PageHeading eyebrow="Communication centre" title="Announcements & notifications" body="Review every teaching update and mark items as read once actioned." actions={<Button onClick={() => toast.success("Announcement composer opened.")}><Plus className="h-4 w-4" /> New announcement</Button>} /><div className="portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Full notification view</p><h3 className="mt-2 font-display text-2xl text-slate-950">Teaching updates</h3></div><select className="field mt-0 max-w-[220px]" value={date} onChange={(event) => setDate(event.target.value)}><option>All dates</option>{dates.map((item) => <option key={item}>{item}</option>)}</select></div><div className="mt-5 divide-y divide-slate-100">{visible.map((item) => <div className="flex flex-col gap-4 py-5 first:pt-0 md:flex-row md:items-start md:justify-between" key={item.id}><div><div className="flex items-center gap-2"><p className="text-sm font-semibold text-slate-950">{item.title}</p>{!item.read && <Pill>Unread</Pill>}</div><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{item.body}</p><p className="mt-2 text-xs text-slate-400">{item.date}</p></div>{!item.read && <Button variant="light" onClick={() => markRead(item.id)}>Mark as read <Check className="h-4 w-4" /></Button>}</div>)}</div></div></>;
+  return (
+    <>
+      <PageHeading eyebrow="Communication centre" title="Announcements & notifications" body="Review every teaching update and mark items as read once actioned."
+        actions={
+          <Button onClick={() => toast.success("Announcement composer opened.")}>
+            <Plus className="h-4 w-4" /> New announcement</Button>
+        }
+      />
+      <div className="portal-card">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><p className="eyebrow">Full notification view</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Teaching updates</h3>
+          </div>
+          <select className="field mt-0 max-w-[220px]" value={date} onChange={(event) => setDate(event.target.value)}><option>All dates</option>
+            {dates.map((item) => <option key={item}>{item}</option>)}
+          </select>
+        </div>
+        <div className="mt-5 divide-y divide-slate-100">
+          {visible.map((item) =>
+            <div className="flex flex-col gap-4 py-5 first:pt-0 md:flex-row md:items-start md:justify-between" key={item.id}>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-slate-950">{item.title}</p>
+                  {!item.read && <Pill>Unread</Pill>}
+                </div>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{item.body}</p>
+                <p className="mt-2 text-xs text-slate-400">{item.date}</p>
+              </div>
+              {!item.read && <Button variant="light" onClick={() => markRead(item.id)}>Mark as read <Check className="h-4 w-4" /></Button>}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
 
-function LecturerSchedules({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
+function LecturerSchedules({ data, setData }: {
+  data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>
+}) {
   const [editing, setEditing] = useState<Schedule | null>(null);
-  const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const form = new FormData(event.currentTarget); const next: Schedule = { id: editing?.id || crypto.randomUUID(), title: String(form.get("title") || "New class"), kind: String(form.get("kind") || "Class"), date: String(form.get("date") || "2026-06-10"), time: String(form.get("time") || "09:00 – 11:00"), location: String(form.get("location") || "Workshop 2") }; setData((old) => ({ ...old, schedules: editing ? old.schedules.map((item) => item.id === editing.id ? next : item) : [...old.schedules, next] })); setEditing(null); toast.success("Schedule saved and published to the class calendar."); };
-  return <><PageHeading eyebrow="Timetable builder" title="Schedules" body="Create and edit class, assignment and examination schedules with time and location." /><div className="grid gap-5 lg:grid-cols-[.85fr_1.15fr]"><div className="portal-card"><p className="eyebrow">{editing ? "Edit schedule" : "Create schedule"}</p><form onSubmit={submit} className="mt-5 space-y-4"><label>Title<input name="title" className="field" required defaultValue={editing?.title || ""} placeholder="Engineering Science" /></label><label>Type<select name="kind" className="field" defaultValue={editing?.kind || "Class"}><option>Class</option><option>Assignment</option><option>Exam</option></select></label><label>Date<input name="date" className="field" type="date" required defaultValue={editing?.date || "2026-06-10"} /></label><label>Time<input name="time" className="field" required defaultValue={editing?.time || "09:00 – 11:00"} /></label><label>Location<input name="location" className="field" required defaultValue={editing?.location || "Workshop 2 · Wynberg"} /></label><div className="flex gap-3"><Button type="submit">{editing ? "Save changes" : "Publish schedule"} <Check className="h-4 w-4" /></Button>{editing && <Button variant="light" onClick={() => setEditing(null)}>Cancel</Button>}</div></form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published timetable</p><h3 className="mt-2 font-display text-2xl text-slate-950">Upcoming events</h3></div><CalendarDays className="text-[#a27e10]" /></div><div className="mt-4 space-y-2">{data.schedules.map((item) => <div className="schedule-row rounded-xl border border-slate-200 p-3" key={item.id}><div className="date-tile"><strong>{new Date(item.date).getDate()}</strong><span>{new Date(item.date).toLocaleDateString("en", { month: "short" })}</span></div><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-slate-950">{item.title}</p><p className="mt-1 text-xs text-slate-500">{item.kind} · {item.time} · {item.location}</p></div><button className="icon-btn" onClick={() => setEditing(item)}><MoreHorizontal /></button></div>)}</div></div></div></>;
+
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next: Schedule = {
+      id: editing?.id || crypto.randomUUID(),
+      title: String(form.get("title") || "New class"),
+      kind: String(form.get("kind") || "Class"),
+      date: String(form.get("date") || "2026-06-10"),
+      time: String(form.get("time") || "09:00 – 11:00"),
+      location: String(form.get("location") || "Workshop 2")
+    };
+    setData((old) => ({
+      ...old,
+      schedules: editing ? old.schedules.map((item) => item.id === editing.id ? next : item) : [...old.schedules, next]
+    }));
+    setEditing(null);
+    toast.success("Schedule saved and published to the class calendar.");
+  };
+
+  return (
+    <>
+      <PageHeading eyebrow="Timetable builder" title="Schedules" body="Create and edit class, assignment and examination schedules with time and location." />
+      <div className="grid gap-5 lg:grid-cols-[.85fr_1.15fr]">
+        <div className="portal-card">
+          <p className="eyebrow">{editing ? "Edit schedule" : "Create schedule"}</p>
+          <form onSubmit={submit} className="mt-5 space-y-4">
+            <label>Title<input name="title" className="field" required defaultValue={editing?.title || ""} placeholder="Engineering Science" /></label>
+            <label>Type<select name="kind" className="field" defaultValue={editing?.kind || "Class"}>
+              <option>Class</option>
+              <option>Assignment</option>
+              <option>Exam</option>
+            </select>
+            </label>
+            <label>Date<input name="date" className="field" type="date" required defaultValue={editing?.date || "2026-06-10"} /></label>
+            <label>Time<input name="time" className="field" required defaultValue={editing?.time || "09:00 – 11:00"} /></label>
+            <label>Location<input name="location" className="field" required defaultValue={editing?.location || "Workshop 2 · Wynberg"} /></label>
+            <div className="flex gap-3">
+              <Button type="submit">{editing ? "Save changes" : "Publish schedule"} <Check className="h-4 w-4" /></Button>
+              {editing && <Button variant="light" onClick={() => setEditing(null)}>Cancel</Button>}
+            </div>
+          </form>
+        </div>
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">Published timetable</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">Upcoming events</h3>
+            </div>
+            <CalendarDays className="text-[#a27e10]" />
+          </div>
+          <div className="mt-4 space-y-2">
+            {data.schedules.map((item) =>
+              <div className="schedule-row rounded-xl border border-slate-200 p-3" key={item.id}>
+                <div className="date-tile">
+                  <strong>{new Date(item.date).getDate()}</strong>
+                  <span>{new Date(item.date).toLocaleDateString("en", { month: "short" })}</span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-slate-950">{item.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">{item.kind} · {item.time} · {item.location}</p>
+                </div>
+                <button className="icon-btn" onClick={() => setEditing(item)}><MoreHorizontal /></button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
-function LecturerPortal({ data, setData, path, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; path: string; navigate: (path: string) => void }) {
+function LecturerPortal({ data, setData, path, navigate }: {
+  data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>;
+  path: string;
+  navigate: (path: string) => void
+}) {
+
   const [loggedIn, setLoggedIn] = useState(() => localStorage.getItem("nstc-lecturer-session") === "active");
+
   if (!loggedIn) return <LecturerAuth onAuthenticated={() => setLoggedIn(true)} />;
-  const active = path === "/lecturer" ? "/lecturer" : ["students", "resources", "attendance", "results", "submissions", "announcements", "schedules"].map((item) => `/lecturer/${item}`).find((item) => path.startsWith(item)) || "/lecturer";
-  const content = active === "/lecturer" ? <LecturerOverview data={data} onNavigate={navigate} /> : active === "/lecturer/students" ? <LecturerStudents /> : active === "/lecturer/resources" ? <LecturerResources data={data} setData={setData} /> : active === "/lecturer/attendance" ? <LecturerAttendance /> : active === "/lecturer/results" ? <LecturerResults /> : active === "/lecturer/submissions" ? <LecturerSubmissions /> : active === "/lecturer/announcements" ? <LecturerAnnouncements data={data} setData={setData} /> : <LecturerSchedules data={data} setData={setData} />;
-  return <LecturerShell active={active} onNavigate={navigate} onSignOut={() => { localStorage.removeItem("nstc-lecturer-session"); setLoggedIn(false); }}>{content}</LecturerShell>;
+
+  const active = path === "/lecturer"
+    ? "/lecturer"
+    : ["students", "resources", "attendance", "results", "submissions", "announcements", "schedules"].map((item) => `/lecturer/${item}`).find((item) => path.startsWith(item)) || "/lecturer";
+
+  const content = active === "/lecturer"
+    ? <LecturerOverview data={data} onNavigate={navigate} />
+    : active === "/lecturer/students"
+      ? <LecturerStudents />
+      : active === "/lecturer/resources"
+        ? <LecturerResources data={data} setData={setData} />
+        : active === "/lecturer/attendance"
+          ? <LecturerAttendance />
+          : active === "/lecturer/results"
+            ? <LecturerResults />
+            : active === "/lecturer/submissions"
+              ? <LecturerSubmissions />
+              : active === "/lecturer/announcements"
+                ? <LecturerAnnouncements data={data} setData={setData} />
+                : <LecturerSchedules data={data} setData={setData} />;
+
+  return (<LecturerShell active={active} onNavigate={navigate} onSignOut={() => { localStorage.removeItem("nstc-lecturer-session"); setLoggedIn(false); }}>{content}</LecturerShell>);
 }
 
 function AdminDashboard({ data, setData, navigate }: {
