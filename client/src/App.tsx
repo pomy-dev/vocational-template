@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import {
   ArrowRight, ArrowUpRight, Award, BarChart3, BookOpen, BriefcaseBusiness, Building2, CalendarDays,
   Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, ClipboardCheck, Clock3,
-  Download, ExternalLink, FileText, GraduationCap, Hammer, HeartHandshake, Laptop,
+  Download, ExternalLink, FileText, GraduationCap, Hammer, HeartHandshake, Laptop, BookOpenIcon,
   LayoutDashboard, Loader2, Mail, MapPin, Menu, MessageCircle, MoreHorizontal,
   Phone, Play, Plus, Search, ShieldCheck, Sparkles, Star, Trash2, TrendingUp,
   Upload, UserRound, Users, WalletCards, X, Zap
@@ -154,17 +154,35 @@ const shortCourses = [
 
 const machineCourses = [
   ["Dump Truck (ADT)", 4800],
+  ["Dump Truck (777D)", 5800],
   ["Mobile Crane (50 Tones)", 5800],
+  ["Mobile Crane (150 Tones)", 6800],
+  ["Mobile Crane (250 Tones)", 7800],
   ["Drill Rig", 7800],
+  ["Basic Rigging", 4800],
   ["Advanced Rigging", 10000],
   ["Excavator", 5800],
+  ["TLB", 5800],
+  ["Grader", 5800],
   ["Forklift F1", 2500],
+  ["Forklift F2", 2200],
+  ["Forklift F3", 2900],
   ["Front End Loader", 2800],
   ["Bulldozer", 5800],
+  ["Tower Crane Remote", 6800],
+  ["Crawler Crane", 6800],
+  ["Overhead Crane", 6800],
+  ["Truck Mounted Crane", 6800],
+  ["Roller", 5800],
+  ["Welding", 14500],
   ["Reach Stacker", 7500],
+  ["Reach Truck", 4800],
+  ["Bobcat", 4500],
   ["Plant Operator", 32500],
+  ["Lamps Man", 12750],
   ["Blasting", 32000],
-  ["Competency A", 16550]
+  ["Competency A", 16550],
+  ["Competency B", 16550]
 ] as const;
 
 const artisanFields = [
@@ -178,6 +196,13 @@ const artisanFields = [
   ["Instrumentation", 20000],
   ["Brick Laying", 20500],
   ["Carpentry", 20500]
+] as const;
+
+const weldingFields = [
+  ["Arc Welding", 25000],
+  ["C02", 25000],
+  ["Gas Metal Arc Welding", 25000],
+  ["Tungsten Gas Welding", 25250]
 ] as const;
 
 const academicFields = [
@@ -802,6 +827,8 @@ function Fees() {
       <div className="container">
         <SectionTitle light eyebrow="Straightforward investment" title="A clear price for a stronger future." body="Start with a R500 registration fee and choose the learning pathway that matches your goals. All figures shown are demo brochure pricing for planning purposes." />
         <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+
+          {/* 2 months course price outline */}
           <div className="overflow-hidden rounded-2xl border border-white/10">
             <div className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/10 bg-white/[.05] px-5 py-4 text-[10px] font-bold uppercase tracking-wider text-white/45">
               <span>Short course</span>
@@ -818,25 +845,41 @@ function Fees() {
               </div>
             )}
           </div>
+
+          {/* Box Courses */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {/* Engineering Studies */}
             <div className="dark-info-card">
               <Hammer className="text-[#D4AF37]" />
               <div>
-                <h4>Artisan preparation</h4>
+                <h4>Engineering Studies N2-N6 Fees</h4>
                 <p>Four-week Diesel Mechanics, Boilermaker, Electrical, Plumber and more from <strong>R20,000</strong>.</p>
               </div>
             </div>
+
+            {/* Management & Business Studies */}
             <div className="dark-info-card">
               <BriefcaseBusiness className="text-[#D4AF37]" />
               <div>
-                <h4>Machine & license training</h4>
+                <h4>Management & Business Studies N4-N6 Fees</h4>
                 <p>Forklift, crane, excavator, ADT, rigging and plant operator routes from <strong>R2,200</strong>.</p>
               </div>
             </div>
+
+            {/* Occupational Qualifications */}
             <div className="dark-info-card">
-              <CircleDollarSign className="text-[#D4AF37]" />
+              <Sparkles className="text-[#D4AF37]" />
               <div>
-                <h4>Administrative fees</h4>
+                <h4>Occupational Qualification Fees</h4>
+                <p>Registration fee <strong>R500</strong> plus practical fee <strong>R500</strong> where applicable.</p>
+              </div>
+            </div>
+
+            {/* Matric Upgrade & Rewrite */}
+            <div className="dark-info-card">
+              <BookOpenIcon className="text-[#D4AF37]" />
+              <div>
+                <h4>Matric Upgrade & Rewrite Fees</h4>
                 <p>Registration fee <strong>R500</strong> plus practical fee <strong>R500</strong> where applicable.</p>
               </div>
             </div>
@@ -844,7 +887,7 @@ function Fees() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-5 border-t border-white/10 pt-8 md:grid-cols-2">
+      <div className="mt-8 grid gap-5 border-t border-white/10 pt-8 pl-2 pr-2 md:grid-cols-2">
         <div>
           <p className="eyebrow text-[#D4AF37]">Machine & licence training</p>
           <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
@@ -852,19 +895,33 @@ function Fees() {
               <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
                 <span className="text-white/60">{name}</span>
                 <strong className="text-[#D4AF37]">{fee(price)}</strong>
-              </div>)}
-          </div>
-        </div>
-        <div>
-          <p className="eyebrow text-[#D4AF37]">Semi-skilled & artisan fields · 4 weeks</p>
-          <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
-            {artisanFields.map(([name, price]) =>
-              <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
-                <span className="text-white/60">{name}</span>
-                <strong className="text-[#D4AF37]">{fee(price)}</strong>
               </div>
             )}
           </div>
+        </div>
+        <div>
+          <>
+            <p className="eyebrow text-[#D4AF37]">Semi-skilled & artisan fields · 4 weeks</p>
+            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
+              {artisanFields.map(([name, price]) =>
+                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
+                  <span className="text-white/60">{name}</span>
+                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
+                </div>
+              )}
+            </div>
+          </>
+          <>
+            <p className="eyebrow text-[#D4AF37] mt-12">Semi-skilled & artisan fields · 4 weeks</p>
+            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
+              {weldingFields.map(([name, price]) =>
+                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
+                  <span className="text-white/60">{name}</span>
+                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
+                </div>
+              )}
+            </div>
+          </>
         </div>
       </div>
     </section>
