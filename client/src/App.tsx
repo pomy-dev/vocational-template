@@ -205,6 +205,35 @@ const weldingFields = [
   ["Tungsten Gas Welding", 25250]
 ] as const;
 
+const engineeringFeeLevels = ["Sub-5", "Sub-4", "Sub-3", "Sub-2", "Sub-1"] as const;
+
+const feeRows = {
+  "engineering": [
+    ["Deposit and Admin", "R2,000", "R2,000", "R1,800", "R1,600", "R1,400"],
+    ["Monthly Installments", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
+    ["Total", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
+    ["Cash savings", "Save R610 · Now R5,490", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
+  ],
+  "business": [
+    ["Deposit and Admin", "R2,000", "R1,800", "R1,600", "R1,400"],
+    ["Monthly Installments", "R1,300 × 5 = R6,500", "R1,100 × 5 = R5,500", "R900 × 5 = R1,800", "R600 × 2 = R1,200"],
+    ["Total", "R9,000", "R8,000", "R5,800", "R5,850", "R4,900"],
+    ["Cash savings", "Save R900 · Now R8,100", "Save R800 · Now R7,200", "Save R680 · Now R6,120", "Save R585 · Now R5,265", "Save R490 · Now R4,410"]
+  ],
+  "occupational": [
+    ["Deposit and Admin", "R2,000", "R2,000", "R1,500", "R1,500", "R1,500"],
+    ["Monthly Installments", "R2,000 × 2 = R4,000", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800"],
+    ["Total", "R6,000", "R5,600", "R4,500", "R3,900", "R3,300"],
+    ["Cash savings", "Save R1,000 · Now R5,000", "Save R800 · Now R4,800", "Save R500 · Now R4,000", "Save R300 · Now R3,600", "Save R200 · Now R3,200"]
+  ],
+  "matric": [
+    ["Deposit and Admin", "R1,000", "R1,000", "R1,000", "R1,000", "R1,000"],
+    ["Monthly Installments", "R1,000 × 2 = R2,000", "R800 × 2 = R1,600", "R600 × 2 = R1,200", "R400 × 2 = R800", "R200 × 2 = R400"],
+    ["Total", "R3,000", "R2,600", "R2,200", "R1,800", "R1,400"],
+    ["Cash savings", "Save R500 · Now R2,500", "Save R400 · Now R2,200", "Save R300 · Now R1,900", "Save R200 · Now R1,600", "Save R100 · Now R1,300"]
+  ]
+};
+
 const academicFields = [
   "Engineering Studies",
   "Business / Management / Teaching",
@@ -864,24 +893,56 @@ function Fees() {
             )}
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            <div className="dark-info-card">
-              <Hammer className="text-[#D4AF37]" />
-              <div>
-                <h4>Artisan preparation</h4>
-                <p>Four-week Diesel Mechanics, Boilermaker, Electrical, Plumber and more from <strong>R20,000</strong>.</p>
+
+            {/* Engineering Card */}
+            <div className="dark-info-card flex-col gap-4 overflow-hidden">
+              <div className="flex items-start gap-3">
+                <Hammer className="mt-0.5 shrink-0 text-[#D4AF37]" />
+                <div className="min-w-0 flex-1">
+                  <h4>Engineering Studies N2-N6 Fees</h4>
+                  <p className="mt-1">Registration - R500.00 (No Refund). Deposit - R2,000.00 (No Refund). <strong>Complete admission = Reg + Deposit</strong>.</p>
+                </div>
+              </div>
+
+              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-black/10">
+                <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 bg-white/[0.03] p-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/45">
+                  <div className="px-2 py-1.5">Subjects</div>
+                  {engineeringFeeLevels.map((level) => (
+                    <div key={level} className="px-1 py-1.5 text-center">{level}</div>
+                  ))}
+                </div>
+
+                {feeRows.engineering.map((row) => (
+                  <div key={row[0]} className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 border-t border-white/5 p-1.5 text-[10px]">
+                    <div className="flex items-center px-2 py-1.5 text-left text-white/75">{row[0]}</div>
+                    {row.slice(1).map((cell, index) => (
+                      <div key={`${row[0]}-${index}`} className="break-words rounded-md bg-white/[0.025] px-1 py-1.5 text-center leading-tight text-white/80">
+                        {cell}
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
+
             <div className="dark-info-card">
               <BriefcaseBusiness className="text-[#D4AF37]" />
               <div>
-                <h4>Machine & license training</h4>
+                <h4>Management & Business Studies N4-N6 Fees</h4>
                 <p>Forklift, crane, excavator, ADT, rigging and plant operator routes from <strong>R2,200</strong>.</p>
               </div>
             </div>
             <div className="dark-info-card">
-              <CircleDollarSign className="text-[#D4AF37]" />
+              <Sparkles className="text-[#D4AF37]" />
               <div>
-                <h4>Administrative fees</h4>
+                <h4>Occupational Qualifications Fees</h4>
+                <p>Forklift, crane, excavator, ADT, rigging and plant operator routes from <strong>R2,200</strong>.</p>
+              </div>
+            </div>
+            <div className="dark-info-card">
+              <BookOpenIcon className="text-[#D4AF37]" />
+              <div>
+                <h4>Matric Upgrade & Rewrite Fees</h4>
                 <p>Registration fee <strong>R500</strong> plus practical fee <strong>R500</strong> where applicable.</p>
               </div>
             </div>
@@ -889,7 +950,7 @@ function Fees() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-5 border-t border-white/10 pt-8 md:grid-cols-2">
+      <div className="mt-8 grid gap-5 border-t border-white/10 pt-8 pl-2 pr-2 md:grid-cols-2">
         <div>
           <p className="eyebrow text-[#D4AF37]">Machine & licence training</p>
           <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
@@ -901,27 +962,121 @@ function Fees() {
           </div>
         </div>
         <div>
-          <p className="eyebrow text-[#D4AF37]">Semi-skilled & artisan fields · 4 weeks</p>
-          <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
-            {artisanFields.map(([name, price]) =>
-              <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
-                <span className="text-white/60">{name}</span>
-                <strong className="text-[#D4AF37]">{fee(price)}</strong>
-              </div>
-            )}
-          </div>
+          <>
+            <p className="eyebrow text-[#D4AF37]">Semi-skilled & artisan fields · 4 weeks</p>
+            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
+              {artisanFields.map(([name, price]) =>
+                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
+                  <span className="text-white/60">{name}</span>
+                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
+                </div>
+              )}
+            </div>
+          </>
+          <>
+            <p className="eyebrow text-[#D4AF37] mt-12">Semi-skilled Welding Courses · 4 weeks</p>
+            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
+              {weldingFields.map(([name, price]) =>
+                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
+                  <span className="text-white/60">{name}</span>
+                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
+                </div>
+              )}
+            </div>
+          </>
         </div>
       </div>
     </section>
   );
 }
 
+// function Fees() {
+//   const feeRows = [
+//     ["Deposit and Admin", "Exam", "R2,000", "R2,000", "R1,000", "R1,600", "R1,400"],
+//     ["Monthly Installments", "", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
+//     ["Total", "", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
+//     ["(Save) 10% Discount Cash Payment", "", "Save R900 · Now R8,100", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
+//   ];
+//   return (
+//     <section id="fees" className="section-pad bg-[#111] text-white">
+//       <div className="container">
+//         <SectionTitle light eyebrow="Straightforward investment" title="A clear price for a stronger future." body="Start with a R500 registration fee and choose the learning pathway that matches your goals. All figures shown are demo brochure pricing for planning purposes." />
+//         <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+//           <div className="overflow-hidden rounded-2xl border border-white/10">
+//             <div className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/10 bg-white/[.05] px-5 py-4 text-[10px] font-bold uppercase tracking-wider text-white/45">
+//               <span>Short course</span><span>Duration</span><span>Reg.</span><span>Total</span>
+//             </div>
+//             {shortCourses.map(([name, duration, reg, monthly, total]) =>
+//               <div key={name} className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/5 px-5 py-4 text-sm last:border-0">
+//                 <span className="text-white/80">{name}</span><span className="text-white/45">{duration}</span><span className="text-white/55">{reg ? fee(reg) : "—"}</span><span className="font-semibold text-[#D4AF37]">{fee(total)}</span>
+//               </div>
+//             )}
+//           </div>
+//           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+//             <div className="dark-info-card fee-card">
+//               <CircleDollarSign className="shrink-0 text-[#D4AF37]" />
+//               <div className="min-w-0 flex-1"><h4>Fees details · Engineering</h4>
+//                 <div className="mt-3 overflow-x-auto"><table className="mini-fee-table"><thead><tr><th>Subjects</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead><tbody>{feeRows.map((row) => <tr key={row[0]}><td>{row[0]}</td>{row.slice(2).map((cell) => <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div>
+//               </div>
+//             </div>
+//             <div className="dark-info-card fee-card"><Hammer className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Artisan preparation · 4 weeks</h4><div className="fee-list mt-3">{artisanFields.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
+//             <div className="dark-info-card fee-card"><Zap className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Welding & trade testing</h4><div className="fee-list mt-3">{weldingFields.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
+//             <div className="dark-info-card fee-card"><BriefcaseBusiness className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Machine & licence training</h4><div className="fee-list mt-3">{machineCourses.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
 function OccupationalCertificates() {
-  return <section id="occupational" className="section-pad bg-[#f8f6f1]"><div className="container"><SectionTitle eyebrow="Occupational certificates" title="Practical routes into the world of work." body="Explore the colleges and SETA-aligned certificates that build opportunity in communities across South Africa." /><div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{occupationalColleges.map(([college, accreditor, programmes]) => <article className="catalog-card" key={college}><div className="flex items-start justify-between gap-4"><div><p className="eyebrow text-[#a27e10]">{accreditor}</p><h3 className="mt-2 font-display text-2xl text-slate-950">{college}</h3></div><span className="catalog-mark">{accreditor.slice(0, 2)}</span></div><ul className="mt-5 space-y-2 text-sm text-slate-600">{programmes.map((item) => <li className="flex gap-2" key={item}><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#a27e10]" />{item}</li>)}</ul></article>)}</div></div></section>;
+  return (
+    <section id="occupational" className="section-pad bg-[#f8f6f1]">
+      <div className="container">
+        <SectionTitle eyebrow="Occupational certificates" title="Practical routes into the world of work." body="Explore the colleges and SETA-aligned certificates that build opportunity in communities across South Africa." />
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {occupationalColleges.map(([college, accreditor, programmes]) =>
+            <article className="catalog-card" key={college}>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="eyebrow text-[#a27e10]">{accreditor}</p>
+                  <h3 className="mt-2 font-display text-2xl text-slate-950">{college}</h3>
+                </div>
+                <span className="catalog-mark">{accreditor.slice(0, 2)}</span>
+              </div>
+              <ul className="mt-5 space-y-2 text-sm text-slate-600">
+                {programmes.map((item) =>
+                  <li className="flex gap-2" key={item}><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#a27e10]" />{item}</li>)}</ul>
+            </article>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function DepartmentsStudy() {
-  return <section id="departments" className="section-pad bg-white"><div className="container"><SectionTitle eyebrow="Departments of study" title="Courses, subjects and clear next steps." body="Browse the departments that shape our academic, occupational and matric pathways." /><div className="mt-10 space-y-5">{departmentCatalog.map(([department, coursesList]) => <details className="department-panel" key={department}><summary>{department}<ChevronDown className="h-5 w-5" /></summary><div className="grid gap-5 p-6 md:grid-cols-2 xl:grid-cols-4">{coursesList.map(([course, subjects]) => <div key={course}><h3 className="font-semibold text-slate-950">{course}</h3><ul className="mt-3 space-y-2 text-sm text-slate-500">{subjects.map((subject) => <li key={subject}>• {subject}</li>)}</ul></div>)}</div></details>)}</div></div></section>;
+  return (
+    <section id="departments" className="section-pad bg-white">
+      <div className="container">
+        <SectionTitle eyebrow="Departments of study" title="Courses, subjects and clear next steps." body="Browse the departments that shape our academic, occupational and matric pathways." />
+        <div className="mt-10 space-y-5">{
+          departmentCatalog.map(([department, coursesList]) =>
+            <details className="department-panel" key={department}>
+              <summary>{department}<ChevronDown className="h-5 w-5" /></summary>
+              <div className="grid gap-5 p-6 md:grid-cols-2 xl:grid-cols-4">
+                {coursesList.map(([course, subjects]) =>
+                  <div key={course}>
+                    <h3 className="font-semibold text-slate-950">{course}</h3>
+                    <ul className="mt-3 space-y-2 text-sm text-slate-500">{subjects.map((subject) => <li key={subject}>• {subject}</li>)}</ul>
+                  </div>)}
+              </div>
+            </details>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function Gallery() {
