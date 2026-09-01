@@ -391,3 +391,36 @@ create table if not exists announcement_reads (
 create index if not exists support_attachment_request_idx on support_request_attachments(support_request_id);
 create index if not exists transcript_student_idx on transcript_requests(student_id);
 create index if not exists announcement_reads_user_idx on announcement_reads(user_id);
+-- Public catalogue, sales orders and application payment evidence.
+create table if not exists occupational_programmes (
+  id uuid primary key default gen_random_uuid(),
+  college_name text not null,
+  accrediting_body text not null,
+  programme_name text not null,
+  programme_type text not null,
+  is_published boolean not null default true
+);
+create table if not exists accreditation_bodies (
+  code text primary key,
+  name text not null,
+  logo_url text
+);
+create table if not exists application_payment_receipts (
+  id uuid primary key default gen_random_uuid(),
+  application_id uuid references apprenticeship_applications(id) on delete set null,
+  file_url text not null,
+  file_name text not null,
+  mime_type text,
+  created_at timestamptz not null default now()
+);
+create table if not exists sales_orders (
+  id uuid primary key default gen_random_uuid(),
+  customer_name text not null,
+  customer_phone text not null,
+  item text not null,
+  quantity integer not null default 1,
+  status text not null default 'new',
+  created_at timestamptz not null default now()
+);
+create index if not exists occupational_college_idx on occupational_programmes(college_name);
+create index if not exists payment_receipt_application_idx on application_payment_receipts(application_id);
