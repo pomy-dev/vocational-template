@@ -7,7 +7,7 @@ import {
   Download, ExternalLink, FileText, GraduationCap, Hammer, HeartHandshake, Laptop, BookOpenIcon,
   LayoutDashboard, Loader2, Mail, MapPin, Menu, MessageCircle, MoreHorizontal,
   Phone, Play, Plus, Search, ShieldCheck, Sparkles, Star, Trash2, TrendingUp,
-  Upload, UserRound, Users, WalletCards, X, Zap
+  Upload, UserRound, Users, WalletCards, X, Zap, ShoppingBag
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
@@ -218,6 +218,40 @@ const academicFields = [
   "QCTO Skills Programs"
 ];
 
+const accreditationBodies = [
+  ["DHET", "Department of Higher Education"], ["QCTO", "Quality Council for Trades & Occupations"],
+  ["HWSETA", "Health & Welfare SETA"], ["AGRISETA", "Agriculture SETA"], ["CETA", "Construction SETA"],
+  ["ETDP SETA", "Education, Training & Development"], ["SERVICES SETA", "Services SETA"], ["LG SETA", "Local Government SETA"],
+  ["TETA SETA", "Transport Education & Training"], ["WRSETA", "Wholesale & Retail SETA"], ["FASSETA", "Finance & Accounting SETA"], ["INSETA", "Insurance SETA"], ["FP&M SETA", "Fibre, Paper & Manufacturing"]
+] as const;
+
+const occupationalColleges = [
+  ["College of Construction", "CETA", ["Occupational Certificate: Bricklayer", "Plumbing, Hot- and Cold-Water Systems Installer", "Domestic Water and Drainage Pipe Repairer"]],
+  ["College of Health Science", "HWSETA", ["Occupational Certificate: Health Promotion Officer", "Occupational Certificate: Safety Officer", "Occupational Skills Program: First Aid"]],
+  ["College of Agriculture", "AGRISETA", ["Occupational Certificate: Poultry Farmer", "Occupational Certificate: Livestock", "Occupational Certificate: Pest Management Officer", "Occupational Certificate: Landscape Gardener"]],
+  ["College of Education and Teaching", "ETDP SETA", ["Occupational Certificate: Early Childhood Development", "Occupational Certificate: School Principal", "Occupational Skills Program: Assessment Practitioner"]],
+  ["College of Local Government", "LG SETA", ["Occupational Certificate: Municipal Property Valuer", "Occupational Certificate: Municipal Environmental Science", "Occupational Certificate: Public Administrator", "Occupational Skills Program: Community Counsellor", "Occupational Skills Program: Community Development Facilitator", "Occupational Skills Program: Auxiliary Community Development"]],
+  ["College of Wholesale and Retail", "WRSETA", ["Occupational Certificate: Retail Supervisor", "Occupational Certificate: Retail Store Manager", "Occupational Certificate: Check-Out Operator", "Occupational Certificate: Planner"]],
+  ["College of Fashion & Manufacturing", "FP & M SETA", ["Occupational Skills Program: Sewer"]],
+  ["College of Services", "SERVICES SETA", ["Occupational Certificate: Office Administration", "Occupational Certificate: Project Manager", "Occupational Certificate: Real Estate Agent", "Occupational Skills Program: Hairstylist", "Occupational Skills Program: New Venture"]],
+  ["College of Logistics and Transport", "TETA SETA", ["Occupational Certificate: Supply Chain Practitioner", "Occupational Certificate: Supply Chain Manager", "Occupational Certificate: Procurement Officer", "Occupational Certificate: Truck Driver"]],
+  ["College of Accounting and Finance", "FASSETA", ["Occupational Certificate: Management Accountant"]],
+  ["College of Insurance & Wealth Management", "INSETA", ["Occupational Certificate: Financial Advisor", "Occupational Certificate: Investment Advisor"]]
+] as const;
+
+const departmentCatalog = [
+  ["Engineering Studies (N2–N6)", [["Electrical Engineering", ["Mathematics", "Supervisory Management / Installation Rules", "Engineering Science / Physics", "Logic Systems", "Control Systems", "Industrial Electronics", "Electrical Trade Theory / Instrument Trade Theory", "Electro Technology"]], ["Mechanical Engineering", ["Mathematics", "Diesel Trade Theory", "Engineering Science / Physics", "Engineering Drawing / Steel Drawing", "Fitting and Machining", "Plating and Structural Steel Drawing", "Fluid Mechanics / Strength of Materials", "Mechanical Draughting", "Mechanotechnics", "Power Machines"]], ["Chemical Engineering", ["Mathematics", "Chemistry", "Water Treatment", "Engineering Science", "Chemical Plant Operation", "Waste Water Treatment Practice", "Plant Operation Theory", "Chemical Technology", "Power Machines"]], ["Civil Engineering", ["Mathematics", "Quantity Surveying", "Building Drawing", "Building & Civil Technology", "Building Administration", "Building & Structural Surveying", "Supervisory Management", "Plumbing Theory", "Building Science"]]]],
+  ["Management & Business Studies (N4–N6)", [["Marketing Management", ["Entrepreneurship & Business Management", "Management Communication", "Marketing Research", "Marketing Communication", "Sales Management", "Computer Practice", "Market Research"]], ["Business Management", ["Entrepreneurship & Business Management", "Management Communication", "Economics", "Cost & Management Accounting", "Financial Accounting", "Sales Management", "Computer Practice"]], ["Public Management", ["Computer Practice", "Management Communication", "Municipal Administration", "Public Administration", "Public Law", "Public Finance"]], ["Financial Management", ["Computer Practice", "Management Communication", "Entrepreneurship & Business Management", "Financial Accounting", "Cost and Management Accounting"]], ["Human Resource Management", ["Computer Practice", "Management Communication", "Entrepreneurship & Business Management", "Personnel Management", "Labor Relations", "Personnel Training"]], ["Other Courses", ["Tourism / Hospitality & Catering", "Legal Secretary / Medical Secretary", "Municipal Finance Management", "Entrepreneur Development", "Security / Agriculture"]]]],
+  ["Matric Re-Write & Extra Classes", [["Subject support", ["Physical Science", "Life Science", "Agriculture Science", "Accounting", "Economics", "Business Studies", "Geography", "Mathematics", "Math’s Literacy", "English", "Afrikaans and Languages"]]]]
+] as const;
+
+const salesItems = [
+  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R6,999"],
+  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R280"],
+  ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R650"],
+  ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R120"]
+] as const;
+
 const qcto = [
   "Bricklayer",
   "Plumbing",
@@ -420,7 +454,9 @@ function PublicNav({ onApply }: { onApply: () => void }) {
           <a href="#programmes">Programmes</a>
           <a href="#skills">Skills & trades</a>
           <a href="/apprenticeships">Apprenticeships</a>
+          <a href="#occupational">Occupational</a>
           <a href="#fees">Fees</a>
+          <a href="#sales">Sales</a>
           <a href="#contact">Contact</a>
         </nav>
         <div className="hidden items-center gap-3 sm:flex">
@@ -441,6 +477,23 @@ function PublicNav({ onApply }: { onApply: () => void }) {
       }
     </header>
   );
+}
+
+function SponsorPanel() {
+  const messages = [
+    ["Compliance & financial benefits", "Tax exemptions · B-BBEE scorecard integration · WSP / ATR alignment · SDL grants · CSI compliance"],
+    ["Direct sponsorship opportunities", "Sponsor a student or an AI laptop and connect your contribution to practical community skills."],
+    ["Community upliftment ethos", "We rise by lifting others · Sivuka ngokuphakamisa abanye · Ons styg deur ander op te hef"]
+  ];
+  const [active, setActive] = useState(0);
+  useEffect(() => { const timer = window.setInterval(() => setActive((old) => (old + 1) % messages.length), 4200); return () => window.clearInterval(timer); }, []);
+  return <div className="hero-card-wrap"><div className="hero-card sponsor-card">
+    <div className="flex items-start justify-between"><span className="eyebrow text-white/45">Corporate partners</span><span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">Sponsor pathways</span></div>
+    <div className="sponsor-copy mt-12" key={active}><p className="text-sm text-[#D4AF37]">National Skills & Technical College</p><h3 className="mt-3 max-w-md font-display text-3xl leading-tight text-white">{messages[active][0]}</h3><p className="mt-4 text-sm leading-6 text-white/60">{messages[active][1]}</p></div>
+    <div className="mt-9 flex gap-2">{messages.map((_, i) => <span key={i} className={`h-1.5 flex-1 rounded-full ${i === active ? "bg-[#D4AF37]" : "bg-white/15"}`} />)}</div>
+    <a href="#contact" className="mt-7 flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15">Talk to partnerships <ArrowUpRight className="h-4 w-4" /></a>
+    <div className="mt-7 border-t border-white/10 pt-5"><p className="eyebrow text-white/40">Accredited pathways</p><div className="accreditation-chain mt-4">{accreditationBodies.map(([code, name]) => <span className="accreditation-badge" title={name} key={code}><b>{code}</b></span>)}</div></div>
+  </div><div className="hero-stamp"><Award className="h-5 w-5" /><span>DHET<br /><b>Registered</b></span></div></div>;
 }
 
 function Hero({ onApply }: { onApply: () => void }) {
@@ -498,40 +551,7 @@ function Hero({ onApply }: { onApply: () => void }) {
             </div>
           </div>
         </div>
-        {/* Hero card */}
-        <div className="hero-card-wrap">
-          <div className="hero-card">
-            <div className="flex items-start justify-between">
-              <span className="eyebrow text-white/45">Authentic Assurance</span>
-              <span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">Sponsors</span>
-            </div>
-
-            {/* ============ content to be changed & modified start here ============= */}
-            <div className="mt-16">
-              <p className="text-sm text-white/50">National Certificate</p>
-              <h3 className="mt-2 font-display text-4xl text-white">Electrical<br />
-                Engineering <span className="gold-text">N1–N6</span>
-              </h3>
-            </div>
-            <div className="mt-14 grid grid-cols-2 gap-3 border-t border-white/10 pt-5 text-sm">
-              <div>
-                <span className="block text-white/40">Duration</span>
-                <strong className="text-white">3 years</strong>
-              </div>
-              <div>
-                <span className="block text-white/40">Mode</span>
-                <strong className="text-white">Hybrid</strong>
-              </div>
-            </div>
-            <a href="/portal" className="mt-7 flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15">View pathway <ArrowUpRight className="h-4 w-4" /></a>
-            {/* ============ content to be changed & modified Ends here ============= */}
-          </div>
-
-          <div className="hero-stamp">
-            <Award className="h-5 w-5" />
-            <span>DHET<br /><b>Registered</b></span>
-          </div>
-        </div>
+        <SponsorPanel />
       </div>
     </section>
   );
@@ -822,110 +842,21 @@ function Skills({ data, setData }: {
 }
 
 function Fees() {
-  return (
-    <section id="fees" className="section-pad bg-[#111] text-white">
-      <div className="container">
-        <SectionTitle light eyebrow="Straightforward investment" title="A clear price for a stronger future." body="Start with a R500 registration fee and choose the learning pathway that matches your goals. All figures shown are demo brochure pricing for planning purposes." />
-        <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+  const rows = [
+    ["Deposit and Admin", "R2,000", "R2,000", "R1,000", "R1,600", "R1,400"],
+    ["Monthly Installments", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
+    ["Total", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
+    ["(Save) 10% Discount Cash Payment", "Save R900 · Now R8,100", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
+  ];
+  return <section id="fees" className="section-pad bg-[#111] text-white"><div className="container"><SectionTitle light eyebrow="Fees details" title="A clear price for a stronger future." body="Registration is R500.00 plus a R2,000.00 deposit. The engineering subject table below is a brochure-style guide; contact admissions for a confirmed quote." /><div className="mt-10 overflow-x-auto rounded-2xl border border-white/10"><table className="fees-table"><thead><tr><th>Fees Details</th><th>5 Subjects</th><th>4 Subjects</th><th>3 Subjects</th><th>2 Subjects</th><th>1 Subject</th></tr></thead><tbody>{rows.map((row) => <tr key={row[0]}>{row.map((cell, i) => <td className={i === 0 ? "font-semibold text-white" : "text-white/70"} key={cell}>{cell}</td>)}</tr>)}</tbody></table></div><div className="mt-10 grid gap-4 md:grid-cols-3"><div className="dark-info-card"><Hammer className="text-[#D4AF37]" /><div><h4>Occupational pathways</h4><p>Bricklaying, health, agriculture, education, finance, retail and logistics certificates.</p></div></div><div className="dark-info-card"><Laptop className="text-[#D4AF37]" /><div><h4>Payment planning</h4><p>Ask admissions about monthly installments, cash discounts and sponsor-supported devices.</p></div></div><div className="dark-info-card"><CircleDollarSign className="text-[#D4AF37]" /><div><h4>Non-refundable deposit</h4><p>Bank transfer registration is R500.00 plus R2,000.00 deposit, both non-refundable.</p></div></div></div></div></section>;
+}
 
-          {/* 2 months course price outline */}
-          <div className="overflow-hidden rounded-2xl border border-white/10">
-            <div className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/10 bg-white/[.05] px-5 py-4 text-[10px] font-bold uppercase tracking-wider text-white/45">
-              <span>Short course</span>
-              <span>Duration</span>
-              <span>Reg.</span>
-              <span>Total</span>
-            </div>
-            {shortCourses.map(([name, duration, reg, monthly, total]) =>
-              <div key={name} className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/5 px-5 py-4 text-sm last:border-0">
-                <span className="text-white/80">{name}</span>
-                <span className="text-white/45">{duration}</span>
-                <span className="text-white/55">{reg ? fee(reg) : "—"}</span>
-                <span className="font-semibold text-[#D4AF37]">{fee(total)}</span>
-              </div>
-            )}
-          </div>
+function OccupationalCertificates() {
+  return <section id="occupational" className="section-pad bg-[#f8f6f1]"><div className="container"><SectionTitle eyebrow="Occupational certificates" title="Practical routes into the world of work." body="Explore the colleges and SETA-aligned certificates that build opportunity in communities across South Africa." /><div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{occupationalColleges.map(([college, accreditor, programmes]) => <article className="catalog-card" key={college}><div className="flex items-start justify-between gap-4"><div><p className="eyebrow text-[#a27e10]">{accreditor}</p><h3 className="mt-2 font-display text-2xl text-slate-950">{college}</h3></div><span className="catalog-mark">{accreditor.slice(0, 2)}</span></div><ul className="mt-5 space-y-2 text-sm text-slate-600">{programmes.map((item) => <li className="flex gap-2" key={item}><Check className="mt-0.5 h-4 w-4 shrink-0 text-[#a27e10]" />{item}</li>)}</ul></article>)}</div></div></section>;
+}
 
-          {/* Box Courses */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            {/* Engineering Studies */}
-            <div className="dark-info-card">
-              <Hammer className="text-[#D4AF37]" />
-              <div>
-                <h4>Engineering Studies N2-N6 Fees</h4>
-                <p>Four-week Diesel Mechanics, Boilermaker, Electrical, Plumber and more from <strong>R20,000</strong>.</p>
-              </div>
-            </div>
-
-            {/* Management & Business Studies */}
-            <div className="dark-info-card">
-              <BriefcaseBusiness className="text-[#D4AF37]" />
-              <div>
-                <h4>Management & Business Studies N4-N6 Fees</h4>
-                <p>Forklift, crane, excavator, ADT, rigging and plant operator routes from <strong>R2,200</strong>.</p>
-              </div>
-            </div>
-
-            {/* Occupational Qualifications */}
-            <div className="dark-info-card">
-              <Sparkles className="text-[#D4AF37]" />
-              <div>
-                <h4>Occupational Qualification Fees</h4>
-                <p>Registration fee <strong>R500</strong> plus practical fee <strong>R500</strong> where applicable.</p>
-              </div>
-            </div>
-
-            {/* Matric Upgrade & Rewrite */}
-            <div className="dark-info-card">
-              <BookOpenIcon className="text-[#D4AF37]" />
-              <div>
-                <h4>Matric Upgrade & Rewrite Fees</h4>
-                <p>Registration fee <strong>R500</strong> plus practical fee <strong>R500</strong> where applicable.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-5 border-t border-white/10 pt-8 pl-2 pr-2 md:grid-cols-2">
-        <div>
-          <p className="eyebrow text-[#D4AF37]">Machine & licence training</p>
-          <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
-            {machineCourses.map(([name, price]) =>
-              <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
-                <span className="text-white/60">{name}</span>
-                <strong className="text-[#D4AF37]">{fee(price)}</strong>
-              </div>
-            )}
-          </div>
-        </div>
-        <div>
-          <>
-            <p className="eyebrow text-[#D4AF37]">Semi-skilled & artisan fields · 4 weeks</p>
-            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
-              {artisanFields.map(([name, price]) =>
-                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
-                  <span className="text-white/60">{name}</span>
-                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
-                </div>
-              )}
-            </div>
-          </>
-          <>
-            <p className="eyebrow text-[#D4AF37] mt-12">Semi-skilled & artisan fields · 4 weeks</p>
-            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
-              {weldingFields.map(([name, price]) =>
-                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
-                  <span className="text-white/60">{name}</span>
-                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
-                </div>
-              )}
-            </div>
-          </>
-        </div>
-      </div>
-    </section>
-  );
+function DepartmentsStudy() {
+  return <section id="departments" className="section-pad bg-white"><div className="container"><SectionTitle eyebrow="Departments of study" title="Courses, subjects and clear next steps." body="Browse the departments that shape our academic, occupational and matric pathways." /><div className="mt-10 space-y-5">{departmentCatalog.map(([department, coursesList]) => <details className="department-panel" key={department}><summary>{department}<ChevronDown className="h-5 w-5" /></summary><div className="grid gap-5 p-6 md:grid-cols-2 xl:grid-cols-4">{coursesList.map(([course, subjects]) => <div key={course}><h3 className="font-semibold text-slate-950">{course}</h3><ul className="mt-3 space-y-2 text-sm text-slate-500">{subjects.map((subject) => <li key={subject}>• {subject}</li>)}</ul></div>)}</div></details>)}</div></div></section>;
 }
 
 function Gallery() {
@@ -1259,28 +1190,13 @@ function ApprenticeshipPortal({ data, setData, onApply }: {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="bg-[#090909] py-12 text-white">
-      <div className="container flex flex-col justify-between gap-8 md:flex-row md:items-end">
-        <div>
-          <Logo light />
-          <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">We Teach Skills to Change Lives. Your Future, Is Our Concern.</p>
-        </div>
-        <div className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm text-white/50">
-          <a href="#about" className="hover:text-white">About NSTC</a>
-          <a href="/portal" className="hover:text-white">Student portal</a>
-          <a href="#programmes" className="hover:text-white">Programmes</a>
-          <a href="/apprenticeships" className="hover:text-white">Apprenticeships</a>
-          <a href="#suggestions" className="hover:text-white">Suggestion box</a>
-          <a href="/admin" className="hover:text-white">Staff workspace</a>
-        </div>
-      </div>
-      <div className="container mt-10 border-t border-white/10 pt-6 text-xs text-white/30">© 2026 National Skills & Technical College · Accredited learning pathways across South Africa</div>
-    </footer>
-  );
+function SalesPortal() {
+  return <section id="sales" className="section-pad bg-[#f8f6f1]"><div className="container"><div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><SectionTitle eyebrow="NSTC sales portal" title="Tools for the next chapter." body="Order laptops, textbooks, drawing boards and study guides from the college supply desk." /><div className="flex flex-wrap gap-3"><a className="btn btn-dark" href="tel:0712036198"><Phone className="h-4 w-4" /> 071 203 6198</a><a className="btn btn-gold" href="https://wa.me/27825196140"><MessageCircle className="h-4 w-4" /> WhatsApp order</a></div></div><div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">{salesItems.map(([name, body, price]) => <article className="sale-card" key={name}><div className="sale-icon"><ShoppingBag className="h-5 w-5" /></div><h3 className="mt-6 font-display text-2xl text-slate-950">{name}</h3><p className="mt-2 text-sm leading-6 text-slate-500">{body}</p><p className="mt-5 text-sm font-bold text-[#a27e10]">{price}</p><a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950" href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a></article>)}</div></div></section>;
 }
 
+function Footer() {
+  return <footer className="bg-[#090909] py-12 text-white"><div className="container grid gap-10 lg:grid-cols-[1fr_1fr_1fr]"><div><Logo light /><p className="mt-5 max-w-sm text-sm leading-6 text-white/45">We Teach Skills to Change Lives. Your Future, Is Our Concern.</p></div><div><p className="eyebrow text-[#D4AF37]">Bank details</p><div className="mt-4 space-y-2 text-sm text-white/60"><p>First National Bank · Business Account</p><p>Account number: <strong className="text-white">62447593436</strong></p><p>Branch code: <strong className="text-white">250655</strong></p><p>Reference: Initials & Surname</p></div></div><div><p className="eyebrow text-[#D4AF37]">Admission requirements</p><ul className="mt-4 space-y-2 text-sm text-white/60"><li>Copies of relevant qualification</li><li>Copy of ID, passport or asylum permit</li><li>Completed registration form</li><li>Payment of deposit</li></ul></div></div><div className="container mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/30 md:flex-row"><span>© 2026 National Skills & Technical College · Accredited learning pathways across South Africa</span><span>Bank transfer: R500.00 registration + R2,000.00 non-refundable deposit</span></div></footer>;
+}
 function ScrollImageBand({ image, eyebrow, title }: {
   image: string;
   eyebrow: string;
@@ -1312,6 +1228,8 @@ function Landing({ data, setData, onApply }: {
       <Apprenticeships data={data} setData={setData} />
       <ScrollImageBand image={GradOfTwo} eyebrow="Workplace experience" title="Confidence built in the workshop, carried into the workplace." />
       <Fees />
+      <OccupationalCertificates />
+      <DepartmentsStudy />
       <Gallery />
       <Team />
       <section className="quote-band">
@@ -1332,6 +1250,7 @@ function Landing({ data, setData, onApply }: {
       </section>
       <ScrollImageBand image={TertiaryExperience} eyebrow="Your voice matters" title="A better learning experience starts with a conversation." />
       <SuggestionBox data={data} setData={setData} />
+      <SalesPortal />
       <Contact />
       <Footer />
     </div>
@@ -2067,11 +1986,11 @@ type ApplicationDraft = {
   field: string;
   level: string;
   period: string;
-  refundable: string;
   kinName: string;
   kinRelationship: string;
   kinEmail: string;
-  kinPhone: string
+  kinPhone: string;
+  receiptName?: string
 };
 
 function Registration({ onComplete }: {
@@ -2079,6 +1998,7 @@ function Registration({ onComplete }: {
 }) {
   const [step, setStep] = useState(1);
   const [done, setDone] = useState(false);
+  const [receiptName, setReceiptName] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -2088,7 +2008,6 @@ function Registration({ onComplete }: {
     field: "Engineering Studies",
     level: "N1",
     period: "Trimester 2",
-    refundable: "Refundable",
     kinName: "",
     kinRelationship: "",
     kinEmail: "",
@@ -2101,7 +2020,7 @@ function Registration({ onComplete }: {
   }));
   const next = () => {
     if (step < 3) setStep(step + 1);
-    else run(() => { onComplete(form); setDone(true); });
+    else run(() => { onComplete({ ...form, receiptName }); setDone(true); });
   };
   if (done)
     return (
@@ -2206,18 +2125,14 @@ function Registration({ onComplete }: {
               </div>
               <CircleDollarSign className="text-[#a27e10]" />
             </div>
-            <p className="mt-3 text-sm leading-6 text-slate-600">Choose whether your demo registration fee should be marked as refundable or non-refundable.</p>
+            <p className="mt-3 text-sm leading-6 text-slate-600">Registration is R500.00 plus a R2,000.00 deposit. Both amounts are non-refundable once the application is submitted.</p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <button className={`choice-card ${form.refundable === "Refundable" ? "selected" : ""}`} onClick={() => update("refundable", "Refundable")}><Check className="h-4 w-4" /> Refundable</button>
-            <button className={`choice-card ${form.refundable === "Non-refundable" ? "selected" : ""}`} onClick={() => update("refundable", "Non-refundable")}><Check className="h-4 w-4" /> Non-refundable</button>
-          </div>
-          <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
-            <strong className="text-slate-950">
-              Bank transfer demo</strong><br />
-            FNB Business Account · 62611136632 · Branch 250655<br />
-            Use your ID/passport number as reference.
-          </div>
+          <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600"><strong className="text-slate-950">Bank transfer registration</strong><br />First National Bank · Business Account · 62447593436 · Branch 250655<br />Reference: Initials & Surname</div>
+          <label className="block">Payment receipt image or document
+            <input className="field" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" onChange={(e) => setReceiptName(e.target.files?.[0]?.name || "")} />
+            <span className="mt-2 block text-xs font-normal text-slate-400">Upload a receipt as evidence of payment. A preview will appear before completion.</span>
+          </label>
+          {receiptName && <div className="receipt-preview"><FileText className="h-5 w-5 text-[#a27e10]" /><span>{receiptName}</span><span className="ml-auto text-xs font-semibold text-emerald-700">Ready to attach</span></div>}
         </div>
       }
       <div className="mt-10 flex justify-between gap-3">
@@ -3602,6 +3517,7 @@ function App() {
 
   if (location === "/" || location === "") page = <Landing data={data} setData={setData} onApply={() => { setApply(true); navigate("/portal/apply"); }} />;
   else if (location === "/apprenticeships") page = <ApprenticeshipPortal data={data} setData={setData} onApply={() => go("/portal/apply")} />;
+  else if (location === "/sales") page = <><div className="bg-[#090909] pb-14"><PublicNav onApply={() => go("/portal/apply")} /><div className="container pt-20"><SectionTitle light eyebrow="NSTC sales portal" title="Study tools, ready when you are." body="Order learning devices and course materials from the National Skills & Technical College supply desk." /></div></div><SalesPortal /><Footer /></>;
   else if (location.startsWith("/portal")) page = <StudentPortal data={data} setData={setData} path={location} navigate={go} />;
   else if (location === "/parent") page = <ParentPortal data={data} navigate={go} />;
   else if (location.startsWith("/lecturer")) page = <LecturerPortal data={data} setData={setData} path={location} navigate={go} />;

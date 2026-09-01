@@ -158,3 +158,29 @@ textarea.field { resize: vertical; }
 .legend-dot.exam { background: #d65f54; }
 @media (max-width: 767px) { .image-band { min-height: 270px; background-attachment: scroll; }.image-band-content { min-height: 270px; }.calendar-drawer { padding: 22px 17px; }.calendar-day { min-height: 61px; padding: 5px; }.calendar-event { font-size: 7px; } }
 @media (prefers-reduced-motion: reduce) { .calendar-drawer { animation: none; } .image-band { background-attachment: scroll; } }
+
+
+/* Prescribed public catalogue, sponsorship, sales and payment UI. */
+.sponsor-card { min-height: 620px; }
+.sponsor-copy { animation: sponsor-copy-in .55s cubic-bezier(.23,1,.32,1); }
+@keyframes sponsor-copy-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.accreditation-chain { display: flex; flex-wrap: wrap; gap: 8px; }
+.accreditation-badge { display: inline-flex; min-height: 34px; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.15); border-radius: 999px; background: rgba(255,255,255,.07); padding: 0 10px; color: #fff; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .05em; animation: badge-chain 8s ease-in-out infinite alternate; }
+.accreditation-badge:nth-child(2n) { animation-delay: .25s; transform: translateY(4px); }
+@keyframes badge-chain { from { transform: translateY(0); } to { transform: translateY(7px); } }
+.fees-table { min-width: 980px; width: 100%; border-collapse: collapse; font-size: 12px; }
+.fees-table th, .fees-table td { border-bottom: 1px solid rgba(255,255,255,.1); padding: 15px 16px; text-align: left; vertical-align: top; }
+.fees-table th { background: rgba(255,255,255,.07); color: rgba(255,255,255,.55); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.fees-table tr:last-child td { border-bottom: 0; color: #d4af37; }
+.catalog-card, .sale-card { border: 1px solid #e4e6e8; border-radius: 16px; background: #fff; padding: 24px; box-shadow: 0 16px 40px rgba(15,23,42,.05); }
+.catalog-card { transition: transform .2s ease, box-shadow .2s ease; }
+.catalog-card:hover, .sale-card:hover { box-shadow: 0 22px 50px rgba(15,23,42,.1); transform: translateY(-3px); }
+.catalog-mark, .sale-icon { display: inline-flex; height: 40px; min-width: 40px; align-items: center; justify-content: center; border-radius: 11px; background: #fbf4d9; color: #916e0a; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 800; }
+.department-panel { overflow: hidden; border: 1px solid #e4e6e8; border-radius: 16px; background: #fff; }
+.department-panel summary { display: flex; cursor: pointer; list-style: none; align-items: center; justify-content: space-between; padding: 22px 24px; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.department-panel summary::-webkit-details-marker { display: none; }
+.department-panel[open] summary { border-bottom: 1px solid #e4e6e8; background: #fbf4d9; color: #795d08; }
+.sale-card { min-height: 270px; }
+.receipt-preview { display: flex; align-items: center; gap: 10px; border: 1px solid #b8dec8; border-radius: 10px; background: #effaf3; padding: 12px 14px; font-size: 13px; color: #315d45; }
+@media (max-width: 767px) { .sponsor-card { min-height: 0; }.fees-table { font-size: 11px; }.department-panel summary { padding: 18px; font-size: 10px; } }
+@media (prefers-reduced-motion: reduce) { .sponsor-copy, .accreditation-badge { animation: none; } }
