@@ -842,13 +842,42 @@ function Skills({ data, setData }: {
 }
 
 function Fees() {
-  const rows = [
-    ["Deposit and Admin", "R2,000", "R2,000", "R1,000", "R1,600", "R1,400"],
-    ["Monthly Installments", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
-    ["Total", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
-    ["(Save) 10% Discount Cash Payment", "Save R900 · Now R8,100", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
+  const feeRows = [
+    ["Deposit and Admin", "Exam", "R2,000", "R2,000", "R1,000", "R1,600", "R1,400"],
+    ["Monthly Installments", "", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
+    ["Total", "", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
+    ["(Save) 10% Discount Cash Payment", "", "Save R900 · Now R8,100", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
   ];
-  return <section id="fees" className="section-pad bg-[#111] text-white"><div className="container"><SectionTitle light eyebrow="Fees details" title="A clear price for a stronger future." body="Registration is R500.00 plus a R2,000.00 deposit. The engineering subject table below is a brochure-style guide; contact admissions for a confirmed quote." /><div className="mt-10 overflow-x-auto rounded-2xl border border-white/10"><table className="fees-table"><thead><tr><th>Fees Details</th><th>5 Subjects</th><th>4 Subjects</th><th>3 Subjects</th><th>2 Subjects</th><th>1 Subject</th></tr></thead><tbody>{rows.map((row) => <tr key={row[0]}>{row.map((cell, i) => <td className={i === 0 ? "font-semibold text-white" : "text-white/70"} key={cell}>{cell}</td>)}</tr>)}</tbody></table></div><div className="mt-10 grid gap-4 md:grid-cols-3"><div className="dark-info-card"><Hammer className="text-[#D4AF37]" /><div><h4>Occupational pathways</h4><p>Bricklaying, health, agriculture, education, finance, retail and logistics certificates.</p></div></div><div className="dark-info-card"><Laptop className="text-[#D4AF37]" /><div><h4>Payment planning</h4><p>Ask admissions about monthly installments, cash discounts and sponsor-supported devices.</p></div></div><div className="dark-info-card"><CircleDollarSign className="text-[#D4AF37]" /><div><h4>Non-refundable deposit</h4><p>Bank transfer registration is R500.00 plus R2,000.00 deposit, both non-refundable.</p></div></div></div></div></section>;
+  return (
+    <section id="fees" className="section-pad bg-[#111] text-white">
+      <div className="container">
+        <SectionTitle light eyebrow="Straightforward investment" title="A clear price for a stronger future." body="Start with a R500 registration fee and choose the learning pathway that matches your goals. All figures shown are demo brochure pricing for planning purposes." />
+        <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+          <div className="overflow-hidden rounded-2xl border border-white/10">
+            <div className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/10 bg-white/[.05] px-5 py-4 text-[10px] font-bold uppercase tracking-wider text-white/45">
+              <span>Short course</span><span>Duration</span><span>Reg.</span><span>Total</span>
+            </div>
+            {shortCourses.map(([name, duration, reg, monthly, total]) =>
+              <div key={name} className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/5 px-5 py-4 text-sm last:border-0">
+                <span className="text-white/80">{name}</span><span className="text-white/45">{duration}</span><span className="text-white/55">{reg ? fee(reg) : "—"}</span><span className="font-semibold text-[#D4AF37]">{fee(total)}</span>
+              </div>
+            )}
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="dark-info-card fee-card">
+              <CircleDollarSign className="shrink-0 text-[#D4AF37]" />
+              <div className="min-w-0 flex-1"><h4>Fees details · Engineering</h4>
+                <div className="mt-3 overflow-x-auto"><table className="mini-fee-table"><thead><tr><th>Subjects</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead><tbody>{feeRows.map((row) => <tr key={row[0]}><td>{row[0]}</td>{row.slice(2).map((cell) => <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div>
+              </div>
+            </div>
+            <div className="dark-info-card fee-card"><Hammer className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Artisan preparation · 4 weeks</h4><div className="fee-list mt-3">{artisanFields.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
+            <div className="dark-info-card fee-card"><Zap className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Welding & trade testing</h4><div className="fee-list mt-3">{weldingFields.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
+            <div className="dark-info-card fee-card"><BriefcaseBusiness className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Machine & licence training</h4><div className="fee-list mt-3">{machineCourses.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function OccupationalCertificates() {

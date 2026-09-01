@@ -184,3 +184,13 @@ textarea.field { resize: vertical; }
 .receipt-preview { display: flex; align-items: center; gap: 10px; border: 1px solid #b8dec8; border-radius: 10px; background: #effaf3; padding: 12px 14px; font-size: 13px; color: #315d45; }
 @media (max-width: 767px) { .sponsor-card { min-height: 0; }.fees-table { font-size: 11px; }.department-panel summary { padding: 18px; font-size: 10px; } }
 @media (prefers-reduced-motion: reduce) { .sponsor-copy, .accreditation-badge { animation: none; } }
+.fee-card { align-items: flex-start; }
+.fee-list { display: grid; gap: 7px; }
+.fee-list > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.08); padding-bottom: 6px; color: rgba(255,255,255,.58); font-size: 11px; }
+.fee-list > div:last-child { border-bottom: 0; }
+.fee-list strong { flex: 0 0 auto; color: #d4af37; font-size: 11px; }
+.mini-fee-table { min-width: 500px; width: 100%; border-collapse: collapse; font-size: 10px; }
+.mini-fee-table th, .mini-fee-table td { border-bottom: 1px solid rgba(255,255,255,.08); padding: 6px 5px; text-align: left; vertical-align: top; }
+.mini-fee-table th { color: rgba(255,255,255,.45); font-size: 9px; text-transform: uppercase; }
+.mini-fee-table td { color: rgba(255,255,255,.62); }
+.mini-fee-table td:first-child { color: rgba(255,255,255,.8); font-weight: 600; }
