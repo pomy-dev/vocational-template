@@ -205,32 +205,34 @@ const weldingFields = [
   ["Tungsten Gas Welding", 25250]
 ] as const;
 
-const engineeringFeeLevels = ["Sub-5", "Sub-4", "Sub-3", "Sub-2", "Sub-1"] as const;
+const subNum = ["Sub-5", "Sub-4", "Sub-3", "Sub-2", "Sub-1"] as const;
+const monNum = ["12-Months", "18-Months", "24-Months"] as const;
 
 const feeRows = {
   "engineering": [
-    ["Deposit and Admin", "R2,000", "R2,000", "R1,800", "R1,600", "R1,400"],
-    ["Monthly Installments", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
+    ["Deposit & Admin", "R2,000", "R2,000", "R1,800", "R1,600", "R1,400"],
+    ["Monthly Installments", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
     ["Total", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
     ["Cash savings", "Save R610 · Now R5,490", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
   ],
   "business": [
-    ["Deposit and Admin", "R2,000", "R1,800", "R1,600", "R1,400"],
-    ["Monthly Installments", "R1,300 × 5 = R6,500", "R1,100 × 5 = R5,500", "R900 × 5 = R1,800", "R600 × 2 = R1,200"],
+    ["Deposit & Admin", "R2,000", "R2,000", "R1,800", "R1,600", "R1,400"],
+    ["Monthly Installments", "R1,300 × 5 = R6,500", "R1,100 × 5 = R5,500", "R900 × 5 = R1,800", "R750 × 5 =R3,750", "R600 × 2 = R1,200"],
     ["Total", "R9,000", "R8,000", "R5,800", "R5,850", "R4,900"],
     ["Cash savings", "Save R900 · Now R8,100", "Save R800 · Now R7,200", "Save R680 · Now R6,120", "Save R585 · Now R5,265", "Save R490 · Now R4,410"]
   ],
   "occupational": [
-    ["Deposit and Admin", "R2,000", "R2,000", "R1,500", "R1,500", "R1,500"],
-    ["Monthly Installments", "R2,000 × 2 = R4,000", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800"],
-    ["Total", "R6,000", "R5,600", "R4,500", "R3,900", "R3,300"],
-    ["Cash savings", "Save R1,000 · Now R5,000", "Save R800 · Now R4,800", "Save R500 · Now R4,000", "Save R300 · Now R3,600", "Save R200 · Now R3,200"]
+    ["Registration Fees", "R500", "R500", "R500"],
+    ["Deposit & Admin", "R2,000", "R2,000", "R2,000"],
+    ["Monthly Installments", "R1,800 × 11 = R19,800", "R18,000 × 17 = R30,600", "R1,800 × 23 = R41,400"],
+    ["Total", "R22,300", "R33,100", "R43,900"],
+    ["Cash savings", "Save R2,230 · Now R20,070", "Save R3,310 · Now R29,790", "Save R4,390 · Now R39,510"]
   ],
   "matric": [
-    ["Deposit and Admin", "R1,000", "R1,000", "R1,000", "R1,000", "R1,000"],
-    ["Monthly Installments", "R1,000 × 2 = R2,000", "R800 × 2 = R1,600", "R600 × 2 = R1,200", "R400 × 2 = R800", "R200 × 2 = R400"],
-    ["Total", "R3,000", "R2,600", "R2,200", "R1,800", "R1,400"],
-    ["Cash savings", "Save R500 · Now R2,500", "Save R400 · Now R2,200", "Save R300 · Now R1,900", "Save R200 · Now R1,600", "Save R100 · Now R1,300"]
+    ["Deposit & Admin", "R1,300", "R1,300", "R1,300", "R1,300", "R1,300", "R1,300"],
+    ["Monthly Installments", `"R1,000 × 6 = R6,000" "R1,000 × 10 = R10,000"`, `"R800 × 6 = R4,800" "R800 × 10 = R R8,000"`, `"R700 × 6 = R4,200" "R700 × 10 = R7,000"`, `"R650 × 6 = R3,900" "R650 × 10 = R6,500"`, `"R550 × 6 = R3,300" "R550 × 10 = R5,500"`, `"R500 × 6 = R3,000" "R500 × 10 = R5,000"`],
+    ["Total", `"R7,800 - 6 Mon" "R11,800 - 10 Mon"`, `"R6,600 - 6 Mon" "R88,000 - 10 Mon"`, `"R5,700 - 6 Mon" "R8,300 - 10 Mon"`, `"R5,100 - 6 Mon" "R7,300 - 10 Mon"`, `"R4,800 - 6 Mon" "R6,800 - 10 Mon"`],
+    ["Cash savings", `"Save R7800-6M · Now R7,020-6M" "Save R1,180-10M · Now R10,620-10M"`, `"Save R660-6M · Now R5,940" "Save R980-10M · Now R8,820"`, `"Save R600-6M · Now R5,400-6M" "Save R880-10M · Now R7,920-10M"`, `"Save R570-6M · Now R5,130-6M" "Save R830-10M · Now R7,470-10M"`, `"Save R510-6M · Now R4,590-6M" "Save R630-10M · Now R4,570-10M"`, `"Save R480-6M · Now R4,320-6M" "Save R680-10M · Now R6,120-10M"`]
   ]
 };
 
@@ -248,10 +250,19 @@ const academicFields = [
 ];
 
 const accreditationBodies = [
-  ["DHET", "Department of Higher Education"], ["QCTO", "Quality Council for Trades & Occupations"],
-  ["HWSETA", "Health & Welfare SETA"], ["AGRISETA", "Agriculture SETA"], ["CETA", "Construction SETA"],
-  ["ETDP SETA", "Education, Training & Development"], ["SERVICES SETA", "Services SETA"], ["LG SETA", "Local Government SETA"],
-  ["TETA SETA", "Transport Education & Training"], ["WRSETA", "Wholesale & Retail SETA"], ["FASSETA", "Finance & Accounting SETA"], ["INSETA", "Insurance SETA"], ["FP&M SETA", "Fibre, Paper & Manufacturing"]
+  { code: "DHET", name: "Department of Higher Education", logo: "/assets/dhet.png", description: "Nationally recognised higher education standards and oversight for public skills pathways." },
+  { code: "QCTO", name: "Quality Council for Trades & Occupations", logo: "/assets/QCTO.jpg", description: "Occupational programmes aligned to practical, work-ready competence and trade standards." },
+  { code: "HWSETA", name: "Health & Welfare SETA", logo: "/assets/hwseta.png", description: "Health, safety and welfare programmes built for care, compliance and workplace readiness." },
+  { code: "AGRISETA", name: "Agriculture SETA", logo: "/assets/agriseta.png", description: "Agri-focused training and rural enterprise pathways that support productivity and growth." },
+  { code: "CETA", name: "Construction SETA", logo: "/assets/ceta.png", description: "Construction and built-environment training connected to site-based labour demand." },
+  { code: "ETDP SETA", name: "Education, Training & Development", logo: "/assets/etdpseta.png", description: "Training aligned to teaching, learning support and developmental practice." },
+  { code: "SERVICES SETA", name: "Services SETA", logo: "/assets/serviceseta.jpg", description: "Service-sector programmes that strengthen customer care, operations and entrepreneurship." },
+  { code: "LG SETA", name: "Local Government SETA", logo: "/assets/lgseta.png", description: "Public service and local government capacity-building for community impact." },
+  { code: "TETA SETA", name: "Transport Education & Training", logo: "/assets/tetaseta.jpg", description: "Logistics and transport pathways designed for real mobility and operational efficiency." },
+  { code: "WRSETA", name: "Wholesale & Retail SETA", logo: "/assets/wrseta.png", description: "Retail and trade readiness aligned to customer-facing, fast-moving operations." },
+  { code: "FASSETA", name: "Finance & Accounting SETA", logo: "/assets/fasseta.jpg", description: "Financial literacy, office systems and business support training for workplace confidence." },
+  { code: "INSETA", name: "Insurance SETA", logo: "/assets/inseta.png", description: "Insurance, risk and service skills for a modern, regulated financial environment." },
+  { code: "FP&M SETA", name: "Fibre, Paper & Manufacturing", logo: "/assets/fp&mseta.jpg", description: "Manufacturing and value-chain skills connected to industrial relevance and productivity." }
 ] as const;
 
 const occupationalColleges = [
@@ -489,7 +500,7 @@ function PublicNav({ onApply }: { onApply: () => void }) {
           <a href="#contact">Contact</a>
         </nav>
         <div className="hidden items-center gap-3 sm:flex">
-          <a className="nav-portal" href="/portal">Portal login <ArrowRight className="h-4 w-4" /></a>
+          <a className="nav-portal" href="#">Portal login <ArrowRight className="h-4 w-4" /></a>
           <Button onClick={onApply}>Apply now <ArrowRight className="h-4 w-4" /></Button>
         </div>
         <button className="text-white lg:hidden" onClick={() => setOpen(!open)}><Menu /></button>
@@ -509,20 +520,78 @@ function PublicNav({ onApply }: { onApply: () => void }) {
 }
 
 function SponsorPanel() {
+
   const messages = [
-    ["Compliance & financial benefits", "Tax exemptions · B-BBEE scorecard integration · WSP / ATR alignment · SDL grants · CSI compliance"],
-    ["Direct sponsorship opportunities", "Sponsor a student or an AI laptop and connect your contribution to practical community skills."],
-    ["Community upliftment ethos", "We rise by lifting others · Sivuka ngokuphakamisa abanye · Ons styg deur ander op te hef"]
+    { title: "Compliance & financial benefits", body: "Tax exemptions · B-BBEE scorecard integration · WSP / ATR alignment · SDL grants · CSI compliance", background: "/assets/love.jpg", variant: "slide-left" },
+    { title: "Direct sponsorship opportunities", body: "Sponsor a student or an AI laptop and connect your contribution to practical community skills.", background: "/assets/support.jpg", variant: "spin-front" },
+    { title: "Community upliftment ethos", body: "We rise by lifting others · Sivuka ngokuphakamisa abanye · Ons styg deur ander op te hef", background: "/assets/education.jpg", variant: "slide-right" }
   ];
+
   const [active, setActive] = useState(0);
-  useEffect(() => { const timer = window.setInterval(() => setActive((old) => (old + 1) % messages.length), 4200); return () => window.clearInterval(timer); }, []);
-  return <div className="hero-card-wrap"><div className="hero-card sponsor-card">
-    <div className="flex items-start justify-between"><span className="eyebrow text-white/45">Corporate partners</span><span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">Sponsor pathways</span></div>
-    <div className="sponsor-copy mt-12" key={active}><p className="text-sm text-[#D4AF37]">National Skills & Technical College</p><h3 className="mt-3 max-w-md font-display text-3xl leading-tight text-white">{messages[active][0]}</h3><p className="mt-4 text-sm leading-6 text-white/60">{messages[active][1]}</p></div>
-    <div className="mt-9 flex gap-2">{messages.map((_, i) => <span key={i} className={`h-1.5 flex-1 rounded-full ${i === active ? "bg-[#D4AF37]" : "bg-white/15"}`} />)}</div>
-    <a href="#contact" className="mt-7 flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15">Talk to partnerships <ArrowUpRight className="h-4 w-4" /></a>
-    <div className="mt-7 border-t border-white/10 pt-5"><p className="eyebrow text-white/40">Accredited pathways</p><div className="accreditation-chain mt-4">{accreditationBodies.map(([code, name]) => <span className="accreditation-badge" title={name} key={code}><b>{code}</b></span>)}</div></div>
-  </div><div className="hero-stamp"><Award className="h-5 w-5" /><span>DHET<br /><b>Registered</b></span></div></div>;
+  const principles = [
+    { label: "Love", icon: HeartHandshake },
+    { label: "Support", icon: Users },
+    { label: "Education", icon: BookOpen }
+  ];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setActive((old) => (old + 1) % messages.length), 5200);
+    return () => window.clearInterval(timer);
+  }, [messages.length]);
+
+  return (
+    <div className="hero-card-wrap">
+      <div className="hero-card sponsor-card">
+        <div className="flex items-start justify-between">
+          <span className="eyebrow text-white/45">Corporate partners</span>
+          <span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">Sponsor pathways</span>
+        </div>
+        <div className="sponsor-message-stack" aria-live="polite">
+          {messages.map((message, index) => {
+            const isActive = index === active;
+            return (
+              <div
+                key={`${message.title}-${index}-${isActive ? "active" : "idle"}`}
+                className={`sponsor-message sponsor-message--${message.variant} ${isActive ? "is-active" : "is-hidden"}`}
+                style={{
+                  backgroundImage: `linear-gradient(180deg, rgba(16, 24, 40, 0.15), rgba(9, 11, 18, 0.72)), url(${message.background})`
+                }}
+              >
+                <p className="text-sm text-[#f7d77e]">National Skills & Technical College</p>
+                <h3 className="mt-3 max-w-md font-display text-3xl leading-tight text-white">{message.title}</h3>
+                <p className="mt-4 text-sm leading-6 text-white/70">{message.body}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-9 flex gap-2">
+          {messages.map((_, i) =>
+            <span key={i} className={`h-1.5 flex-1 rounded-full ${i === active ? "bg-[#D4AF37]" : "bg-white/15"}`} />
+          )}
+        </div>
+
+        <div className="mt-7 border-t border-white/10 pt-5">
+          <a href="#contact" className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15">Talk to partnerships <ArrowUpRight className="h-4 w-4" /></a>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <div className="sponsor-principles">
+            {principles.map(({ label, icon: Icon }) => (
+              <div key={label} className="sponsor-principle">
+                <span className="sponsor-principle-icon"><Icon className="h-4 w-4" /></span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+          <p className="sponsor-verse">Philippians 4:13 — I Can Do All Things Through Christ</p>
+        </div>
+      </div>
+      <div className="hero-stamp">
+        <Award className="h-5 w-5" />
+        <span>DHET<br /><b>Registered</b></span>
+      </div>
+    </div>
+  );
 }
 
 function Hero({ onApply }: { onApply: () => void }) {
@@ -638,6 +707,45 @@ function Stats() {
   );
 }
 
+function AccreditationBodies() {
+  const marqueeBodies = [...accreditationBodies, ...accreditationBodies];
+
+  return (
+    <section className="accreditation-section section-pad">
+      <div className="container">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <SectionTitle
+            eyebrow="Accredited by leading bodies"
+            title="Quality standards that open real doors."
+            body="Our learning pathways are shaped by the quality frameworks that matter most to employers, learners and communities across South Africa."
+          />
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#d7bf6f] bg-[#f9f1d2] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#795e0e]">
+            <ShieldCheck className="h-4 w-4" />
+            Trusted network
+          </div>
+        </div>
+
+        <div className="accreditation-marquee mt-10">
+          <div className="accreditation-track">
+            {marqueeBodies.map(({ code, name, logo, description }, index) => (
+              <article className="accreditation-card" key={`${code}-${index}`}>
+                <div className="accreditation-logo-wrap">
+                  <img src={logo} alt={`${name} logo`} className="accreditation-logo" />
+                </div>
+                <div className="accreditation-card-body">
+                  <p className="eyebrow text-[#a27e10]">{code}</p>
+                  <h3 className="mt-2 font-display text-xl text-slate-950">{name}</h3>
+                  <p className="mt-2 text-xs leading-5 text-slate-600">{description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function About() {
   return (
     <section id="about" className="section-pad bg-[#f8f6f1]">
@@ -705,7 +813,7 @@ function FlipCard({ course }: { course: Course }) {
               <li key={subject}><Check className="mr-2 inline h-4 w-4 text-[#a27e10]" />{subject}</li>
             )}
           </ul>
-          <a href="/portal" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950">View course <ArrowRight className="h-4 w-4" /></a>
+          <a href="/#fees" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950">View course <ArrowRight className="h-4 w-4" /></a>
         </div>
       </div>
     </div>
@@ -717,7 +825,7 @@ function Programmes({ onApply }: { onApply: () => void }) {
     <section id="programmes" className="section-pad bg-white">
       <div className="container">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <SectionTitle eyebrow="Learn with direction" title="Pathways for every kind of builder." body="From National Certificates to occupational qualifications and short practical programmes, choose the route that fits your ambitions." />
+          <SectionTitle eyebrow="Learn with direction" title="Pathways for every kind." body="From National Certificates to occupational qualifications and short practical programmes, choose the route that fits your ambitions." />
           <Button variant="dark" onClick={onApply}>Find your programme <ArrowRight className="h-4 w-4" /></Button>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course) => <FlipCard key={course.id} course={course} />)}</div>
@@ -892,8 +1000,8 @@ function Fees() {
               </div>
             )}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
 
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
             {/* Engineering Card */}
             <div className="dark-info-card flex-col gap-4 overflow-hidden">
               <div className="flex items-start gap-3">
@@ -907,7 +1015,7 @@ function Fees() {
               <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-black/10">
                 <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 bg-white/[0.03] p-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/45">
                   <div className="px-2 py-1.5">Subjects</div>
-                  {engineeringFeeLevels.map((level) => (
+                  {subNum.map((level) => (
                     <div key={level} className="px-1 py-1.5 text-center">{level}</div>
                   ))}
                 </div>
@@ -925,27 +1033,96 @@ function Fees() {
               </div>
             </div>
 
-            <div className="dark-info-card">
-              <BriefcaseBusiness className="text-[#D4AF37]" />
-              <div>
-                <h4>Management & Business Studies N4-N6 Fees</h4>
-                <p>Forklift, crane, excavator, ADT, rigging and plant operator routes from <strong>R2,200</strong>.</p>
+            {/* Management Card */}
+            <div className="dark-info-card flex-col gap-4 overflow-hidden">
+              <div className="flex items-start gap-3">
+                <BriefcaseBusiness className="text-[#D4AF37]" />
+                <div className="min-w-0 flex-1">
+                  <h4>Management & Business Studies N4-N6 Fees</h4>
+                  <p className="mt-1">Registration - R500.00 (No Refund). Deposit - R2,000.00 (No Refund). <strong>Complete admission = Reg + Deposit</strong>.</p>
+                </div>
+              </div>
+
+              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-black/10">
+                <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 bg-white/[0.03] p-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/45">
+                  <div className="px-2 py-1.5">Subjects</div>
+                  {subNum.map((level) => (
+                    <div key={level} className="px-1 py-1.5 text-center">{level}</div>
+                  ))}
+                </div>
+                {feeRows.business.map((row) => (
+                  <div key={row[0]} className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 border-t border-white/5 p-1.5 text-[10px]">
+                    <div className="flex items-center px-2 py-1.5 text-left text-white/75">{row[0]}</div>
+                    {row.slice(1).map((cell, index) => (
+                      <div key={`${row[0]}-${index}`} className="break-words rounded-md bg-white/[0.025] px-1 py-1.5 text-center leading-tight text-white/80">
+                        {cell}
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="dark-info-card">
-              <Sparkles className="text-[#D4AF37]" />
-              <div>
-                <h4>Occupational Qualifications Fees</h4>
-                <p>Forklift, crane, excavator, ADT, rigging and plant operator routes from <strong>R2,200</strong>.</p>
+
+            {/* Occupational Card */}
+            <div className="dark-info-card flex-col gap-4 overflow-hidden">
+              <div className="flex items-start gap-3">
+                <Sparkles className="text-[#D4AF37]" />
+                <div className="min-w-0 flex-1">
+                  <h4>Occupational Qualifications Fees</h4>
+                  <p className="mt-1">Registration - R500.00 (No Refund). Deposit - R2,000.00 (No Refund). <strong>Complete admission = Reg + Deposit</strong>.</p>
+                </div>
+              </div>
+
+              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-black/10">
+                <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 bg-white/[0.03] p-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/45">
+                  <div className="px-2 py-1.5">Period</div>
+                  {monNum.map((level) => (
+                    <div key={level} className="px-1 py-1.5 text-center">{level}</div>
+                  ))}
+                </div>
+                {feeRows.occupational.map((row) => (
+                  <div key={row[0]} className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 border-t border-white/5 p-1.5 text-[10px]">
+                    <div className="flex items-center px-2 py-1.5 text-left text-white/75">{row[0]}</div>
+                    {row.slice(1).map((cell, index) => (
+                      <div key={`${row[0]}-${index}`} className="break-words rounded-md bg-white/[0.025] px-1 py-1.5 text-center leading-tight text-white/80">
+                        {cell}
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="dark-info-card">
-              <BookOpenIcon className="text-[#D4AF37]" />
-              <div>
-                <h4>Matric Upgrade & Rewrite Fees</h4>
-                <p>Registration fee <strong>R500</strong> plus practical fee <strong>R500</strong> where applicable.</p>
+
+            {/* Matric Card */}
+            {/* <div className="dark-info-card flex-col gap-4 overflow-hidden">
+              <div className="flex items-start gap-3">
+                <BookOpenIcon className="text-[#D4AF37]" />
+                <div>
+                  <h4>Matric Upgrade & Rewrite Fees</h4>
+                  <p className="mt-1">Registration - R500.00 (No Refund). Deposit - R2,000.00 (No Refund). <strong>Complete admission = Reg + Deposit</strong>.</p>
+                </div>
               </div>
-            </div>
+
+              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-black/10">
+                <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 bg-white/[0.03] p-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/45">
+                  <div className="px-2 py-1.5">Subjects</div>
+                  <div className="px-1 py-1.5 text-center">Sub-7&6</div>
+                  {subNum.map((level) => (
+                    <div key={level} className="px-1 py-1.5 text-center">{level}</div>
+                  ))}
+                </div>
+                {feeRows.matric.map((row) => (
+                  <div key={row[0]} className="grid grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.7fr))] gap-1 border-t border-white/5 p-1.5 text-[10px]">
+                    <div className="flex items-center px-2 py-1.5 text-left text-white/75">{row[0]}</div>
+                    {row.slice(1).map((cell, index) => (
+                      <div key={`${row[0]}-${index}`} className="break-words rounded-md bg-white/[0.025] px-1 py-1.5 text-center leading-tight text-white/80">
+                        {cell}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -989,45 +1166,6 @@ function Fees() {
     </section>
   );
 }
-
-// function Fees() {
-//   const feeRows = [
-//     ["Deposit and Admin", "Exam", "R2,000", "R2,000", "R1,000", "R1,600", "R1,400"],
-//     ["Monthly Installments", "", "R1,800 × 2 = R3,600", "R1,500 × 2 = R3,000", "R1,200 × 2 = R2,400", "R900 × 2 = R1,800", "R600 × 2 = R1,200"],
-//     ["Total", "", "R6,100", "R5,500", "R4,700", "R3,900", "R3,100"],
-//     ["(Save) 10% Discount Cash Payment", "", "Save R900 · Now R8,100", "Save R550 · Now R4,950", "Save R470 · Now R4,230", "Save R390 · Now R3,510", "Save R310 · Now R2,790"]
-//   ];
-//   return (
-//     <section id="fees" className="section-pad bg-[#111] text-white">
-//       <div className="container">
-//         <SectionTitle light eyebrow="Straightforward investment" title="A clear price for a stronger future." body="Start with a R500 registration fee and choose the learning pathway that matches your goals. All figures shown are demo brochure pricing for planning purposes." />
-//         <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
-//           <div className="overflow-hidden rounded-2xl border border-white/10">
-//             <div className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/10 bg-white/[.05] px-5 py-4 text-[10px] font-bold uppercase tracking-wider text-white/45">
-//               <span>Short course</span><span>Duration</span><span>Reg.</span><span>Total</span>
-//             </div>
-//             {shortCourses.map(([name, duration, reg, monthly, total]) =>
-//               <div key={name} className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/5 px-5 py-4 text-sm last:border-0">
-//                 <span className="text-white/80">{name}</span><span className="text-white/45">{duration}</span><span className="text-white/55">{reg ? fee(reg) : "—"}</span><span className="font-semibold text-[#D4AF37]">{fee(total)}</span>
-//               </div>
-//             )}
-//           </div>
-//           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-//             <div className="dark-info-card fee-card">
-//               <CircleDollarSign className="shrink-0 text-[#D4AF37]" />
-//               <div className="min-w-0 flex-1"><h4>Fees details · Engineering</h4>
-//                 <div className="mt-3 overflow-x-auto"><table className="mini-fee-table"><thead><tr><th>Subjects</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead><tbody>{feeRows.map((row) => <tr key={row[0]}><td>{row[0]}</td>{row.slice(2).map((cell) => <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div>
-//               </div>
-//             </div>
-//             <div className="dark-info-card fee-card"><Hammer className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Artisan preparation · 4 weeks</h4><div className="fee-list mt-3">{artisanFields.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
-//             <div className="dark-info-card fee-card"><Zap className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Welding & trade testing</h4><div className="fee-list mt-3">{weldingFields.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
-//             <div className="dark-info-card fee-card"><BriefcaseBusiness className="shrink-0 text-[#D4AF37]" /><div className="min-w-0 flex-1"><h4>Machine & licence training</h4><div className="fee-list mt-3">{machineCourses.map(([name, price]) => <div key={name}><span>{name}</span><strong>{fee(price)}</strong></div>)}</div></div></div>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
 
 function OccupationalCertificates() {
   return (
@@ -1203,7 +1341,7 @@ function Contact() {
                   </select>
                 </label>
                 <label>Your message<textarea className="field min-h-[120px] py-3" required /></label>
-                <Button type="submit" disabled={loading} className="w-full justify-center">
+                <Button type="submit" disabled={loading} className="w-full justify-center mt-12">
                   {loading
                     ? (<Spinner label="Sending message" />)
                     : (<>Send enquiry <ArrowRight className="h-4 w-4" /></>)
@@ -1214,10 +1352,6 @@ function Contact() {
         </div>
       </div>
       <div className="container mt-12 grid gap-5 border-t border-slate-200 pt-10 md:grid-cols-3">
-        <div>
-          <p className="eyebrow">Banking details</p>
-          <p className="mt-3 text-sm leading-6 text-slate-600">First National Bank · Business Account<br />Account: <strong className="text-slate-950">62611136632</strong> · Branch: 250655<br />Reference: ID or Passport number</p>
-        </div>
         <div>
           <p className="eyebrow">Registration checklist</p>
           <p className="mt-3 text-sm leading-6 text-slate-600">Completed form, ID / passport / asylum permit, relevant qualifications and proof of deposit.</p>
@@ -1411,12 +1545,66 @@ function ApprenticeshipPortal({ data, setData, onApply }: {
 }
 
 function SalesPortal() {
-  return <section id="sales" className="section-pad bg-[#f8f6f1]"><div className="container"><div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><SectionTitle eyebrow="NSTC sales portal" title="Tools for the next chapter." body="Order laptops, textbooks, drawing boards and study guides from the college supply desk." /><div className="flex flex-wrap gap-3"><a className="btn btn-dark" href="tel:0712036198"><Phone className="h-4 w-4" /> 071 203 6198</a><a className="btn btn-gold" href="https://wa.me/27825196140"><MessageCircle className="h-4 w-4" /> WhatsApp order</a></div></div><div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">{salesItems.map(([name, body, price]) => <article className="sale-card" key={name}><div className="sale-icon"><ShoppingBag className="h-5 w-5" /></div><h3 className="mt-6 font-display text-2xl text-slate-950">{name}</h3><p className="mt-2 text-sm leading-6 text-slate-500">{body}</p><p className="mt-5 text-sm font-bold text-[#a27e10]">{price}</p><a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950" href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a></article>)}</div></div></section>;
+  return (
+    <section id="sales" className="section-pad bg-[#f8f6f1]">
+      <div className="container">
+        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <SectionTitle eyebrow="NSTC sales portal" title="Tools for the next chapter." body="Order laptops, textbooks, drawing boards and study guides from the college supply desk." />
+          <div className="flex flex-wrap gap-3">
+            <a className="btn btn-dark" href="tel:0712036198"><Phone className="h-4 w-4" /> 071 203 6198</a>
+            <a className="btn btn-gold" href="https://wa.me/27825196140"><MessageCircle className="h-4 w-4" /> WhatsApp order</a>
+          </div>
+        </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {salesItems.map(([name, body, price]) =>
+            <article className="sale-card" key={name}>
+              <div className="sale-icon"><ShoppingBag className="h-5 w-5" /></div>
+              <h3 className="mt-6 font-display text-2xl text-slate-950">{name}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-500">{body}</p>
+              <p className="mt-5 text-sm font-bold text-[#a27e10]">{price}</p>
+              <a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950" href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a></article>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function Footer() {
-  return <footer className="bg-[#090909] py-12 text-white"><div className="container grid gap-10 lg:grid-cols-[1fr_1fr_1fr]"><div><Logo light /><p className="mt-5 max-w-sm text-sm leading-6 text-white/45">We Teach Skills to Change Lives. Your Future, Is Our Concern.</p></div><div><p className="eyebrow text-[#D4AF37]">Bank details</p><div className="mt-4 space-y-2 text-sm text-white/60"><p>First National Bank · Business Account</p><p>Account number: <strong className="text-white">62447593436</strong></p><p>Branch code: <strong className="text-white">250655</strong></p><p>Reference: Initials & Surname</p></div></div><div><p className="eyebrow text-[#D4AF37]">Admission requirements</p><ul className="mt-4 space-y-2 text-sm text-white/60"><li>Copies of relevant qualification</li><li>Copy of ID, passport or asylum permit</li><li>Completed registration form</li><li>Payment of deposit</li></ul></div></div><div className="container mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/30 md:flex-row"><span>© 2026 National Skills & Technical College · Accredited learning pathways across South Africa</span><span>Bank transfer: R500.00 registration + R2,000.00 non-refundable deposit</span></div></footer>;
+  return (
+    <footer className="bg-[#090909] py-12 text-white">
+      <div className="container grid gap-10 lg:grid-cols-[1fr_1fr_1fr]">
+        <div>
+          <Logo light />
+          <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">We Teach Skills to Change Lives. Your Future, Is Our Concern.</p>
+        </div>
+        <div>
+          <p className="eyebrow text-[#D4AF37]">Bank details</p>
+          <div className="mt-4 space-y-2 text-sm text-white/60">
+            <p>First National Bank · Business Account</p>
+            <p>Account number: <strong className="text-white">62447593436</strong></p>
+            <p>Branch code: <strong className="text-white">250655</strong></p>
+            <p>Reference: Initials & Surname</p>
+          </div>
+        </div>
+        <div>
+          <p className="eyebrow text-[#D4AF37]">Admission requirements</p>
+          <ul className="mt-4 space-y-2 text-sm text-white/60">
+            <li>Copies of relevant qualification</li>
+            <li>Copy of ID, passport or asylum permit</li>
+            <li>Completed registration form</li>
+            <li>Payment of deposit</li>
+          </ul>
+        </div>
+      </div>
+      <div className="container mt-10 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/30 md:flex-row">
+        <span>© 2026 National Skills & Technical College · Accredited learning pathways across South Africa</span>
+        <span>Bank transfer: R500.00 registration + R2,000.00 non-refundable deposit</span>
+      </div>
+    </footer>
+  );
 }
+
 function ScrollImageBand({ image, eyebrow, title }: {
   image: string;
   eyebrow: string;
@@ -1441,6 +1629,7 @@ function Landing({ data, setData, onApply }: {
     <div className="public-page">
       <Hero onApply={onApply} />
       <Stats />
+      <AccreditationBodies />
       <About />
       <Programmes onApply={onApply} />
       <ScrollImageBand image={StudentGrad} eyebrow="Talent on demand" title="Learning that moves with the world of work." />
@@ -3715,7 +3904,104 @@ function ParentPortal({ data, navigate }: {
     </div>
   );
 
-  return <div className="portal-shell"><div className="portal-main"><header className="portal-header"><div><Logo /></div><div className="flex items-center gap-3"><span className="hidden text-sm text-slate-500 sm:block">Read-only family access</span><Button variant="light" onClick={() => setLogged(false)}>Sign out</Button></div></header><main className="mx-auto max-w-6xl p-5 md:p-8"><PageHeading eyebrow="Parent access · Read only" title={`${student.name}'s progress`} body="Your learner’s current academic and campus snapshot." actions={<Button onClick={() => toast.success("Statement of results downloaded.")}><Download className="h-4 w-4" /> Statement of results</Button>} /><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><MetricCard label="Current status" value={student.status} detail={student.course} icon={GraduationCap} tone="green" /><MetricCard label="Attendance" value={`${student.attendance}%`} detail="Across current term" icon={ClipboardCheck} /><MetricCard label="Average score" value={`${student.termAverage}%`} detail="Assignments + exams" icon={Award} /><MetricCard label="Course duration" value="3 years" detail={`Started ${student.startDate}`} icon={Clock3} /></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.1fr_.9fr]"><div className="portal-card"><p className="eyebrow">Learner demographics</p><div className="mt-5 grid gap-5 sm:grid-cols-2"><div><p className="text-xs text-slate-400">Email</p><p className="mt-1 text-sm font-semibold">{student.email}</p></div><div><p className="text-xs text-slate-400">Mobile</p><p className="mt-1 text-sm font-semibold">{student.phone}</p></div><div><p className="text-xs text-slate-400">Campus</p><p className="mt-1 text-sm font-semibold">{student.campus}</p></div><div><p className="text-xs text-slate-400">Assigned tutor</p><p className="mt-1 text-sm font-semibold">Siyabonga Radebe</p></div></div><div className="mt-7 rounded-xl bg-slate-50 p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-400">Lecturer remark</p><p className="mt-2 text-sm leading-6 text-slate-600">“{student.remarks}”</p></div></div><div className="portal-card"><p className="eyebrow">Academic snapshot</p><h3 className="mt-2 font-display text-2xl">Results this term</h3><div className="mt-5 space-y-5">{[["Engineering Science", 86], ["Mathematics N2", 78], ["Electrical Trade Theory", 82]].map(([name, value]) => <div key={String(name)}><div className="mb-2 flex justify-between text-sm"><span className="font-semibold">{name}</span><span>{value}%</span></div><ProgressBar value={Number(value)} /></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Activities & assignments</p><h3 className="mt-2 font-display text-2xl">Recent learning activity</h3></div><button onClick={() => navigate("/portal/results")} className="text-sm font-bold text-slate-500">View details <ArrowRight className="ml-1 inline h-4 w-4" /></button></div><div className="mt-5 overflow-x-auto"><table className="data-table"><thead><tr><th>Activity</th><th>Course</th><th>Status</th><th>Score</th></tr></thead><tbody>{data.assignments.map((a) => <tr key={a.id}><td className="font-semibold">{a.title}</td><td>{a.course}</td><td><Pill tone={a.status === "Submitted" ? "green" : "gold"}>{a.status}</Pill></td><td>{a.score ? `${a.score}%` : "Pending"}</td></tr>)}</tbody></table></div></div></main></div></div>;
+  return (
+    <div className="portal-shell">
+      <div className="portal-main">
+        <header className="portal-header">
+          <div><Logo /></div>
+          <div className="flex items-center gap-3">
+            <span className="hidden text-sm text-slate-500 sm:block">Read-only family access</span>
+            <Button variant="light" onClick={() => setLogged(false)}>Sign out</Button>
+          </div>
+        </header>
+        <main className="mx-auto max-w-6xl p-5 md:p-8">
+          <PageHeading eyebrow="Parent access · Read only" title={`${student.name}'s progress`} body="Your learner’s current academic and campus snapshot." actions={
+            <Button onClick={() => toast.success("Statement of results downloaded.")}>
+              <Download className="h-4 w-4" /> Statement of results
+            </Button>
+          } />
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <MetricCard label="Current status" value={student.status} detail={student.course} icon={GraduationCap} tone="green" />
+            <MetricCard label="Attendance" value={`${student.attendance}%`} detail="Across current term" icon={ClipboardCheck} />
+            <MetricCard label="Average score" value={`${student.termAverage}%`} detail="Assignments + exams" icon={Award} />
+            <MetricCard label="Course duration" value="3 years" detail={`Started ${student.startDate}`} icon={Clock3} />
+          </div>
+          <div className="mt-6 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+            <div className="portal-card"><p className="eyebrow">Learner demographics</p>
+              <div className="mt-5 grid gap-5 sm:grid-cols-2"><div>
+                <p className="text-xs text-slate-400">Email</p>
+                <p className="mt-1 text-sm font-semibold">{student.email}</p>
+              </div>
+                <div>
+                  <p className="text-xs text-slate-400">Mobile</p>
+                  <p className="mt-1 text-sm font-semibold">{student.phone}</p>
+                </div><div><p className="text-xs text-slate-400">Campus</p>
+                  <p className="mt-1 text-sm font-semibold">{student.campus}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400">Assigned tutor</p>
+                  <p className="mt-1 text-sm font-semibold">Siyabonga Radebe</p>
+                </div>
+              </div>
+              <div className="mt-7 rounded-xl bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Lecturer remark</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">“{student.remarks}”</p>
+              </div>
+            </div>
+            <div className="portal-card">
+              <p className="eyebrow">Academic snapshot</p>
+              <h3 className="mt-2 font-display text-2xl">Results this term</h3>
+              <div className="mt-5 space-y-5">
+                {[["Engineering Science", 86], ["Mathematics N2", 78], ["Electrical Trade Theory", 82]].map(([name, value]) =>
+                  <div key={String(name)}>
+                    <div className="mb-2 flex justify-between text-sm">
+                      <span className="font-semibold">{name}</span>
+                      <span>{value}%</span>
+                    </div>
+                    <ProgressBar value={Number(value)} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 portal-card">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="eyebrow">Activities & assignments</p>
+                <h3 className="mt-2 font-display text-2xl">Recent learning activity</h3>
+              </div>
+              <button onClick={() => navigate("/portal/results")} className="text-sm font-bold text-slate-500">View details <ArrowRight className="ml-1 inline h-4 w-4" /></button>
+            </div>
+            <div className="mt-5 overflow-x-auto">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Activity</th>
+                    <th>Course</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.assignments.map((a) =>
+                    <tr key={a.id}>
+                      <td className="font-semibold">{a.title}</td>
+                      <td>{a.course}</td>
+                      <td>
+                        <Pill tone={a.status === "Submitted" ? "green" : "gold"}>{a.status}</Pill>
+                      </td>
+                      <td>{a.score ? `${a.score}%` : "Pending"}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 }
 
 function App() {
@@ -3735,7 +4021,10 @@ function App() {
 
   let page: ReactNode;
 
-  if (location === "/" || location === "") page = <Landing data={data} setData={setData} onApply={() => { setApply(true); navigate("/portal/apply"); }} />;
+  if (location === "/" || location === "") page = <Landing data={data} setData={setData} onApply={() => {
+    setApply(true);
+    // navigate("/portal/apply"); 
+  }} />;
   else if (location === "/apprenticeships") page = <ApprenticeshipPortal data={data} setData={setData} onApply={() => go("/portal/apply")} />;
   else if (location === "/sales") page = <><div className="bg-[#090909] pb-14"><PublicNav onApply={() => go("/portal/apply")} /><div className="container pt-20"><SectionTitle light eyebrow="NSTC sales portal" title="Study tools, ready when you are." body="Order learning devices and course materials from the National Skills & Technical College supply desk." /></div></div><SalesPortal /><Footer /></>;
   else if (location.startsWith("/portal")) page = <StudentPortal data={data} setData={setData} path={location} navigate={go} />;
@@ -3746,7 +4035,9 @@ function App() {
   else if (location === "/admin/attendance") page = <AdminAttendance data={data} navigate={go} />;
   else if (location === "/admin/finance") page = <AdminFinance data={data} navigate={go} />;
   else if (location === "/admin") page = <AdminDashboard data={data} setData={setData} navigate={go} />;
-  else page = <Landing data={data} setData={setData} onApply={() => go("/portal/apply")} />;
+  else page = <Landing data={data} setData={setData} onApply={() => {
+    //go("/portal/apply")
+  }} />;
 
   return (<><Toaster position="bottom-right" richColors />{page}{apply && null}</>);
 }

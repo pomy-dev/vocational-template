@@ -1412,19 +1412,266 @@ textarea.field {
   min-height: 620px;
 }
 
-.sponsor-copy {
-  animation: sponsor-copy-in .55s cubic-bezier(.23, 1, .32, 1);
+.sponsor-message-stack {
+  position: relative;
+  min-height: 270px;
+  margin-top: 2rem;
+  perspective: 1400px;
 }
 
-@keyframes sponsor-copy-in {
-  from {
+.sponsor-message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 26px;
+  padding: 1.5rem 1.4rem 1.3rem;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 28px 60px rgba(15, 15, 26, .35);
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.sponsor-message::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(17, 18, 25, .08), rgba(7, 9, 15, .66));
+}
+
+.sponsor-message>* {
+  position: relative;
+  z-index: 1;
+}
+
+.sponsor-message.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sponsor-message.is-active {
+  opacity: 1;
+}
+
+.sponsor-principles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+}
+
+.sponsor-principle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .04);
+  padding: .6rem .5rem;
+  color: rgba(255, 255, 255, .82);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.sponsor-principle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, .14);
+  color: #f3d77d;
+}
+
+.sponsor-verse {
+  padding-top: .4rem;
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(255, 255, 255, .6);
+}
+
+.sponsor-message--slide-left {
+  animation: sponsor-message-slide-left 5.2s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+.sponsor-message--slide-right {
+  animation: sponsor-message-slide-right 5.2s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+.sponsor-message--spin-front {
+  animation: sponsor-message-spin-front 5.2s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+@keyframes sponsor-message-slide-left {
+  0% {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translate3d(-150px, 38px, -220px) scale(.66) rotateY(26deg);
+  }
+
+  16% {
+    opacity: 1;
+    transform: translate3d(-28px, 12px, -80px) scale(.84) rotateY(16deg);
+  }
+
+  46% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  }
+
+  68% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  }
+
+  82% {
+    opacity: 1;
+    transform: translate3d(130px, -10px, -150px) scale(.76) rotateY(-18deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(200px, -28px, -220px) scale(.62) rotateY(-26deg);
+  }
+}
+
+@keyframes sponsor-message-slide-right {
+  0% {
+    opacity: 0;
+    transform: translate3d(150px, 36px, -230px) scale(.66) rotateY(-28deg);
+  }
+
+  16% {
+    opacity: 1;
+    transform: translate3d(28px, 12px, -80px) scale(.84) rotateY(-16deg);
+  }
+
+  46% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  }
+
+  68% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  }
+
+  82% {
+    opacity: 1;
+    transform: translate3d(-120px, -10px, -150px) scale(.76) rotateY(18deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-200px, -28px, -220px) scale(.62) rotateY(26deg);
+  }
+}
+
+@keyframes sponsor-message-spin-front {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 24px, -260px) scale(.54) rotateX(82deg) rotateZ(-18deg);
+  }
+
+  16% {
+    opacity: 1;
+    transform: translate3d(0, 10px, -120px) scale(.76) rotateX(42deg) rotateZ(-10deg);
+  }
+
+  46% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateX(0deg) rotateZ(0deg);
+  }
+
+  68% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateX(0deg) rotateZ(0deg);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate3d(0, 8px, -120px) scale(.8) rotateX(-44deg) rotateZ(10deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 26px, -260px) scale(.56) rotateX(-82deg) rotateZ(18deg);
+  }
+}
+
+.accreditation-section {
+  background: #f5f0e5;
+}
+
+.accreditation-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+.accreditation-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: accreditation-scroll 28s linear infinite;
+}
+
+.accreditation-card {
+  display: flex;
+  flex: 0 0 auto;
+  width: min(18rem, 28vw);
+  min-height: 220px;
+  flex-direction: column;
+  border: 1px solid rgba(21, 19, 12, .08);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .72);
+  padding: 1rem;
+  box-shadow: 0 18px 36px rgba(17, 24, 39, .05);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.accreditation-card:hover {
+  border-color: rgba(168, 124, 12, .4);
+  transform: translateY(-4px);
+  box-shadow: 0 26px 44px rgba(17, 24, 39, .08);
+}
+
+.accreditation-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  border: 1px solid rgba(177, 139, 35, .18);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(247, 234, 188, .78));
+  padding: .8rem;
+}
+
+.accreditation-logo {
+  max-height: 58px;
+  max-width: 116px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(44, 44, 44, .08));
+}
+
+.accreditation-card-body {
+  margin-top: .85rem;
+}
+
+@keyframes accreditation-scroll {
+  from {
+    transform: translateX(0);
   }
 
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%);
   }
 }
 
@@ -1549,6 +1796,14 @@ textarea.field {
 @media (max-width: 767px) {
   .sponsor-card {
     min-height: 0;
+  }
+
+  .sponsor-principles {
+    grid-template-columns: 1fr;
+  }
+
+  .sponsor-verse {
+    letter-spacing: .08em;
   }
 
   .department-panel summary {
