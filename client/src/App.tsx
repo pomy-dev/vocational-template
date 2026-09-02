@@ -634,21 +634,6 @@ function Hero({ onApply }: { onApply: () => void }) {
             <Button onClick={onApply}>Start your application <ArrowRight className="h-4 w-4" /></Button>
             <a className="hero-link" href="#programmes"><Play className="h-4 w-4 fill-current" /> Explore programmes</a>
           </div>
-          {/* preliminary stats */}
-          <div className="mt-12 flex flex-wrap gap-8 text-white/60">
-            <div>
-              <strong className="block font-display text-3xl text-white">25,500<span className="gold-text">+</span></strong>
-              <span className="text-xs uppercase tracking-wider">graduates in the field</span>
-            </div>
-            <div>
-              <strong className="block font-display text-3xl text-white">1,000<span className="gold-text">+</span></strong>
-              <span className="text-xs uppercase tracking-wider">active learners</span>
-            </div>
-            <div>
-              <strong className="block font-display text-3xl text-white">10</strong>
-              <span className="text-xs uppercase tracking-wider">academic fields</span>
-            </div>
-          </div>
         </div>
         <SponsorPanel />
       </div>
@@ -747,17 +732,20 @@ function AccreditationBodies() {
   );
 }
 
+function PartnersShowcase() {
+  return <section id="partners" className="section-pad bg-white"><div className="container"><SectionTitle eyebrow="Our partners & accreditors" title="Pathways built with trusted institutions." body="Our learning ecosystem is connected to the South African organisations that shape quality, skills development and workplace opportunity." /><div className="partner-grid mt-10">{accreditationBodies.map(({ code, name, logo }) => <article className="partner-card" key={code}><div className="partner-logo"><img src={logo} alt={`${name} logo`} /></div><div><p className="eyebrow text-[#a27e10]">{code}</p><h3>{name}</h3><p>Accredited pathway partner</p></div></article>)}</div></div></section>;
+}
+
 function About() {
   return (
     <section id="about" className="section-pad bg-[#f8f6f1]">
       <div className="container grid gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
         <div className="about-art">
-          <div className="about-art-inner">
+          <div className="about-art-inner about-image-art" style={{ backgroundImage: `linear-gradient(145deg, rgba(10,10,10,.25), rgba(10,10,10,.72)), url(${StudentGrad})` }}>
             <span className="eyebrow text-[#D4AF37]">Since day one</span>
-            <span className="big-letter">N</span>
             <div className="flex items-end justify-between">
               <span className="font-display text-2xl text-white">We teach skills<br />to change lives.</span>
-              <span className="text-right text-xs uppercase tracking-widest text-white/45">Wynberg<br />Johannesburg</span>
+              <span className="text-right text-xs uppercase tracking-widest text-white/65">Wynberg<br />Johannesburg</span>
             </div>
           </div>
         </div>
@@ -785,11 +773,11 @@ function About() {
   );
 }
 
-function FlipCard({ course }: { course: Course }) {
+function FlipCard({ course, image }: { course: Course; image: string }) {
   return (
     <div className="flip-card group">
       <div className="flip-inner">
-        <div className="flip-front">
+        <div className="flip-front" style={{ backgroundImage: `linear-gradient(155deg, rgba(18,18,18,.38), rgba(5,5,6,.88)), url(${image})` }}>
           <div className="flex items-start justify-between">
             <div className="course-icon">
               <GraduationCap className="h-5 w-5" />
@@ -829,8 +817,8 @@ function Programmes({ onApply }: { onApply: () => void }) {
           <SectionTitle eyebrow="Learn with direction" title="Pathways for every kind." body="From National Certificates to occupational qualifications and short practical programmes, choose the route that fits your ambitions." />
           <Button variant="dark" onClick={onApply}>Find your programme <ArrowRight className="h-4 w-4" /></Button>
         </div>
-        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course) => <FlipCard key={course.id} course={course} />)}</div>
-        <div className="mt-16 rounded-2xl bg-[#111] p-7 text-white md:p-10">
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course, index) => <FlipCard key={course.id} course={course} image={[StudentGrad, TertiaryExperience, GradOfTwo][index % 3]} />)}</div>
+        <div className="mt-16 rounded-2xl catalogue-panel p-7 text-white md:p-10" style={{ backgroundImage: `linear-gradient(110deg, rgba(10,10,10,.94), rgba(10,10,10,.68)), url(${TertiaryExperience})` }}>
           <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
             <div>
               <p className="eyebrow text-[#D4AF37]">Academic catalogue</p>
@@ -1330,18 +1318,24 @@ function Contact() {
               </div>
             </div>
           </div>
-          <div className="mt-8 h-72 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-            <MapView
-              className="h-full w-full"
-              initialCenter={{ lat: -25.94, lng: 28.74 }}
-              initialZoom={7}
-              markers={[
-                { id: "midrand", lat: -25.9897, lng: 28.1284, label: "Midrand Campus", sublabel: "675 Old Pretoria Road" },
-                { id: "middelburg", lat: -25.7731, lng: 29.4689, label: "Middelburg Campus", sublabel: "22 OR Tambo Street" },
-                { id: "sandton", lat: -26.1076, lng: 28.0567, label: "Sandton Campus", sublabel: "Wynberg Johannesburg area" },
-                { id: "burgersfort", lat: -24.6667, lng: 30.3333, label: "Burgersfort Campus", sublabel: "OR Tambo Street" },
-              ]}
-            />
+          <div className="contact-map-email mt-8">
+            <div className="h-72 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <MapView
+                className="h-full w-full"
+                initialCenter={{ lat: -25.94, lng: 28.74 }}
+                initialZoom={7}
+                markers={[
+                  { id: "midrand", lat: -25.9897, lng: 28.1284, label: "Midrand Campus", sublabel: "675 Old Pretoria Road" },
+                  { id: "middelburg", lat: -25.7731, lng: 29.4689, label: "Middelburg Campus", sublabel: "22 OR Tambo Street" },
+                  { id: "sandton", lat: -26.1076, lng: 28.0567, label: "Sandton Campus", sublabel: "Wynberg Johannesburg area" },
+                  { id: "burgersfort", lat: -24.6667, lng: 30.3333, label: "Burgersfort Campus", sublabel: "OR Tambo Street" },
+                ]}
+              />
+            </div>
+            <div className="email-panel rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="eyebrow">Email the right desk</p>
+              <div className="mt-4 space-y-3">{[["Manager", "manager@nationalskills.com"], ["General information", "info@nationalskills.com"], ["Examinations", "exams@nationalskills.com"], ["Finance", "finance@nationaskills.com"], ["Certificates", "certificate@nationalskills.com"], ["CEO office", "ceo@nationalskills.com"]].map(([label, address]) => <a className="email-row" href={`mailto:${address}`} key={address}><Mail className="h-4 w-4 shrink-0 text-[#a27e10]" /><span><strong>{label}</strong><small>{address}</small></span></a>)}</div>
+            </div>
           </div>
         </div>
 
@@ -1660,6 +1654,7 @@ function Landing({ data, setData, onApply }: {
       <Hero onApply={onApply} />
       <Stats />
       <AccreditationBodies />
+      <PartnersShowcase />
       <About />
       <Programmes onApply={onApply} />
       <ScrollImageBand image={StudentGrad} eyebrow="Talent on demand" title="Learning that moves with the world of work." />
