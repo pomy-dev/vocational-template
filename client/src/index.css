@@ -1637,6 +1637,22 @@ textarea.field {
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
 
+@media (max-width: 640px) {
+  .accreditation-marquee {
+    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+
+  .accreditation-track {
+    gap: .75rem;
+  }
+
+  .accreditation-card {
+    width: calc(100vw - 2.5rem);
+    min-width: calc(100vw - 2.5rem);
+    min-height: 220px;
+  }
+}
+
 .accreditation-card:hover {
   border-color: rgba(168, 124, 12, .4);
   transform: translateY(-4px);

@@ -890,7 +890,9 @@ function Skills({ data, setData }: {
       place: "Gauteng"
     }
   ];
+
   const visible = category === "All skills" ? graduates : graduates.filter((g) => g.category === category);
+
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -908,6 +910,7 @@ function Skills({ data, setData }: {
     }));
     setDone(true);
   };
+
   return (
     <section id="skills" className="section-pad bg-[#f8f6f1]">
       <div className="container">
@@ -1312,7 +1315,7 @@ function Contact() {
             </div>
           </div>
           <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-            <iframe title="NSTC campus map" className="h-56 w-full grayscale" src="https://www.google.com/maps?q=Prosperitus+Building+Old+Pretoria+Road+Wynberg+Johannesburg&output=embed" loading="lazy" />
+            <iframe title="N.S.T.C" className="h-56 w-full grayscale" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d16379.008526204545!2d29.456414571827008!3d-25.765064299808206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sza!4v1788331677339!5m2!1sen!2sza" allowFullScreen={true} loading="lazy" referrerPolicy="strict-origin-when-cross-origin"></iframe>
           </div>
         </div>
         <div className="rounded-2xl bg-white p-7 shadow-[0_20px_60px_rgba(15,23,42,.07)] md:p-10">
