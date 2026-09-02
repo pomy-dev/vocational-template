@@ -7,6 +7,7 @@ import {
   useMapEvents,
   useMap,
 } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { cn } from "../lib/utils";
 
@@ -178,7 +179,7 @@ export function MapView({
   const showMulti = multiMarkers !== null && multiMarkers.length > 0;
 
   return (
-    <div className={cn("w-full h-[500px]", className)}>
+    <div className={cn("h-[500px] w-full", className)}>
       <MapContainer
         center={[initialCenter.lat, initialCenter.lng]}
         zoom={initialZoom}

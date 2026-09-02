@@ -10,6 +10,7 @@ import {
   Upload, UserRound, Users, WalletCards, X, Zap, ShoppingBag
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
+import { MapView } from "./components/Map";
 
 // ============================ Static Images =============================== //
 import StudentGrad from "/assets/students-in-grad.jpg";
@@ -286,8 +287,8 @@ const departmentCatalog = [
 ] as const;
 
 const salesItems = [
-  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R6,999"],
-  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R280"],
+  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R4,800"],
+  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R120"],
   ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R650"],
   ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R120"]
 ] as const;
@@ -1290,19 +1291,34 @@ function Contact() {
   return (
     <section id="contact" className="section-pad bg-[#f8f6f1]">
       <div className="container grid gap-12 lg:grid-cols-[.9fr_1.1fr]">
+        {/* locations and map */}
         <div>
           <SectionTitle eyebrow="Start a conversation" title="Come build your next chapter with us." body="Visit one of our campuses, call the admissions team, or send a question and we will point you in the right direction." />
           <div className="mt-8 space-y-4">
             <div className="contact-line">
               <MapPin />
-              <div><strong>Wynberg Johannesburg</strong>
-                <span>Prosperitus Building, Old Pretoria Road</span>
+              <div><strong>Midrand Campus</strong>
+                <span>675 Old Pretoria Road</span>
               </div>
             </div>
             <div className="contact-line">
               <MapPin />
               <div>
                 <strong>Middelburg Campus</strong>
+                <span>22 OR Tambo Street Middleburg, Same Building Police Detective</span>
+              </div>
+            </div>
+            <div className="contact-line">
+              <MapPin />
+              <div>
+                <strong>Sandton Campus</strong>
+                <span>Wynberg Johannesburg 729 Prosperitus Building Next to Home Affairs</span>
+              </div>
+            </div>
+            <div className="contact-line">
+              <MapPin />
+              <div>
+                <strong>Burgersfort Campus</strong>
                 <span>OR Tambo Street, next to Police Detectives</span>
               </div>
             </div>
@@ -1314,10 +1330,21 @@ function Contact() {
               </div>
             </div>
           </div>
-          <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-            <iframe title="N.S.T.C" className="h-56 w-full grayscale" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d16379.008526204545!2d29.456414571827008!3d-25.765064299808206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sza!4v1788331677339!5m2!1sen!2sza" allowFullScreen={true} loading="lazy" referrerPolicy="strict-origin-when-cross-origin"></iframe>
+          <div className="mt-8 h-72 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <MapView
+              className="h-full w-full"
+              initialCenter={{ lat: -25.94, lng: 28.74 }}
+              initialZoom={7}
+              markers={[
+                { id: "midrand", lat: -25.9897, lng: 28.1284, label: "Midrand Campus", sublabel: "675 Old Pretoria Road" },
+                { id: "middelburg", lat: -25.7731, lng: 29.4689, label: "Middelburg Campus", sublabel: "22 OR Tambo Street" },
+                { id: "sandton", lat: -26.1076, lng: 28.0567, label: "Sandton Campus", sublabel: "Wynberg Johannesburg area" },
+                { id: "burgersfort", lat: -24.6667, lng: 30.3333, label: "Burgersfort Campus", sublabel: "OR Tambo Street" },
+              ]}
+            />
           </div>
         </div>
+
         <div className="rounded-2xl bg-white p-7 shadow-[0_20px_60px_rgba(15,23,42,.07)] md:p-10">
           <p className="eyebrow">Admissions enquiry</p>
           {sent ? (
