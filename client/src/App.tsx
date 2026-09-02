@@ -16,7 +16,7 @@ import { MapView } from "./components/Map";
 import StudentGrad from "/assets/students-in-grad.jpg";
 import TertiaryExperience from "/assets/tertiary-experience.jpg";
 import GradOfTwo from "/assets/grad.jpg";
-import NSTCLogo from "/assets/NSTC.png";
+import NSTCLogo from "/assets/logo.jpeg";
 
 type Icon = typeof ArrowRight;
 type Status = "Active" | "Suspended" | "Completed" | "Alumni";
@@ -117,8 +117,8 @@ const fee = (value: number) => `R${value.toLocaleString("en-ZA")}`;
 const initials = (name: string) => name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 
 const courses: Course[] = [
-  { id: "eng-electrical", name: "Electrical Engineering N1–N6", category: "Engineering Studies", level: "N1–N6", duration: "3 years", fee: 18500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Mathematics", "Engineering Science", "Logic Systems", "Industrial Electronics", "Electrical Trade Theory"] },
-  { id: "business-management", name: "Business Management N4–N6", category: "Business & Management", level: "N4–N6", duration: "18 months", fee: 16500, regFee: 500, popular: true, mode: "On campus", subjects: ["Economics", "Financial Accounting", "Management Communication", "Sales Management", "Computer Practice"] },
+  { id: "eng-electrical", name: "Electrical Engineering N1–N6", category: "Engineering Studies", level: "N1–N6", duration: "3 months", fee: 18500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Mathematics", "Engineering Science", "Logic Systems", "Industrial Electronics", "Electrical Trade Theory"] },
+  { id: "business-management", name: "Business Management N4–N6", category: "Business & Management", level: "N4–N6", duration: "6 months", fee: 16500, regFee: 500, popular: true, mode: "On campus", subjects: ["Economics", "Financial Accounting", "Management Communication", "Sales Management", "Computer Practice"] },
   { id: "it", name: "Information Technology", category: "Information Technology", level: "Certificate", duration: "12 months", fee: 14500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Computer Hardware", "Networking", "Programming", "Database Fundamentals", "Technical Support"] },
   { id: "health-safety", name: "Health & Safety Officer", category: "Health & Safety", level: "Occupational", duration: "12 months", fee: 22000, regFee: 500, mode: "On campus", subjects: ["Occupational Health", "Risk Assessment", "First Aid", "Incident Investigation", "Safety Legislation"] },
   { id: "bricklayer", name: "Occupational Certificate: Bricklayer", category: "QCTO Skills", level: "Occupational", duration: "18 months", fee: 32000, regFee: 500, mode: "On campus", subjects: ["Construction Theory", "Practical Skills", "Workplace Experience", "Site Safety"] },
@@ -287,10 +287,10 @@ const departmentCatalog = [
 ] as const;
 
 const salesItems = [
-  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R4,800"],
-  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R120"],
-  ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R650"],
-  ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R120"]
+  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R6,000"],
+  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R150"],
+  ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R1,800"],
+  ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R150"]
 ] as const;
 
 const qcto = [
@@ -453,8 +453,8 @@ function Logo({ light = false }: { light?: boolean }) {
     <a href="/" className={`flex items-center gap-3 ${light ? "text-white" : "text-slate-950"}`}>
       <img src={NSTCLogo} alt="NSTC Logo" className="logo-mark" />
       <span>
-        <span className="block font-display text-lg leading-none">National Skills</span>
-        <span className={`block text-[9px] font-bold uppercase tracking-[.22em] ${light ? "text-white/55" : "text-slate-500"}`}>Technical College</span>
+        <span className="block font-display text-2xl leading-none">National Skills</span>
+        <span className={`block text-[12px] font-bold uppercase tracking-[.22em] ${light ? "text-white/55" : "text-slate-500"}`}>Technical College</span>
       </span>
     </a>
   );
@@ -493,11 +493,11 @@ function PublicNav({ onApply }: { onApply: () => void }) {
         <nav className="hidden items-center gap-7 lg:flex">
           <a href="#about">About</a>
           <a href="#programmes">Programmes</a>
-          <a href="#skills">Skills & trades</a>
-          <a href="/apprenticeships">Apprenticeships</a>
+          <a href="#skills">Graduate CVs</a>
+          <a href="#apprenticeships">Job Market</a>
           <a href="#occupational">Occupational</a>
           <a href="#fees">Fees</a>
-          <a href="#sales">Sales</a>
+          <a href="#sales">Market Place</a>
           <a href="#contact">Contact</a>
         </nav>
         <div className="hidden items-center gap-3 sm:flex">
@@ -629,11 +629,13 @@ function Hero({ onApply }: { onApply: () => void }) {
               </div>
             )}
           </div>
+
           {/* Application handles */}
           <div className="mt-9 flex flex-wrap gap-3">
             <Button onClick={onApply}>Start your application <ArrowRight className="h-4 w-4" /></Button>
             <a className="hero-link" href="#programmes"><Play className="h-4 w-4 fill-current" /> Explore programmes</a>
           </div>
+
           {/* preliminary stats */}
           <div className="mt-12 flex flex-wrap gap-8 text-white/60">
             <div>
@@ -656,11 +658,12 @@ function Hero({ onApply }: { onApply: () => void }) {
   );
 }
 
+
 function Stats() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [started, setStarted] = useState(false);
   const [values, setValues] = useState([0, 0, 0, 0]);
-  const targets = [25500, 100, 10, 30];
+  const targets = [25500, 100, 30, 4];
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -689,7 +692,7 @@ function Stats() {
     return () => cancelAnimationFrame(frame);
   }, [started]);
 
-  const suffixes = ["+", "%", "", "+"];
+  const suffixes = ["+", "%", "+", ""];
   const labels = [
     "NSTC learners in jobs, mines & municipalities",
     "Employment & mentorship guarantee",
@@ -717,7 +720,7 @@ function AccreditationBodies() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionTitle
             eyebrow="Accredited by leading bodies"
-            title="Quality standards that open real doors."
+            title="Accredited with Department of Higher Education & Training."
             body="Our learning pathways are shaped by the quality frameworks that matter most to employers, learners and communities across South Africa."
           />
           <div className="inline-flex items-center gap-2 rounded-full border border-[#d7bf6f] bg-[#f9f1d2] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#795e0e]">
@@ -751,6 +754,7 @@ function About() {
   return (
     <section id="about" className="section-pad bg-[#f8f6f1]">
       <div className="container grid gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+        {/* histor card */}
         <div className="about-art">
           <div className="about-art-inner">
             <span className="eyebrow text-[#D4AF37]">Since day one</span>
@@ -761,6 +765,7 @@ function About() {
             </div>
           </div>
         </div>
+
         <div>
           <SectionTitle eyebrow="The NSTC difference" title="Education that meets the real world." body="National Skills & Technical College brings together academic knowledge, workshop confidence and the kind of mentorship that helps learners take the next step. Our classrooms are designed around opportunity: for school leavers, working adults, companies and communities." />
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
@@ -832,11 +837,15 @@ function Programmes({ onApply }: { onApply: () => void }) {
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course) => <FlipCard key={course.id} course={course} />)}</div>
         <div className="mt-16 rounded-2xl bg-[#111] p-7 text-white md:p-10">
           <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+            {/* catelogue part */}
             <div>
+              {/* Add background image */}
               <p className="eyebrow text-[#D4AF37]">Academic catalogue</p>
-              <h3 className="mt-3 font-display text-3xl">Ten fields. One clear next step.</h3>
+              <h3 className="mt-3 font-display text-3xl">N Certificates & Diplomas</h3>
               <p className="mt-3 max-w-lg text-sm leading-6 text-white/55">Explore the full catalogue from Engineering N1–N6 and Business N4–N6 to QCTO skills programmes, GCC, health and safety, IT and Matric upgrades.</p>
             </div>
+
+            {/* fields part */}
             <div>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {academicFields.map((field) =>
@@ -986,7 +995,11 @@ function Fees() {
   return (
     <section id="fees" className="section-pad bg-[#111] text-white">
       <div className="container">
-        <SectionTitle light eyebrow="Straightforward investment" title="A clear price for a stronger future." body="Start with a R500 registration fee and choose the learning pathway that matches your goals. All figures shown are demo brochure pricing for planning purposes." />
+        <SectionTitle light eyebrow="Straightforward investment" title="Fee Structure" body="(100% EMPLOYMENT)Pay less for hight quality. Start with a R500 registration fee and choose the learning pathway that matches your goals." />
+
+        {/* 10% discount on cash payment catchy outline */}
+
+
         <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
           <div className="overflow-hidden rounded-2xl border border-white/10">
             <div className="grid grid-cols-[1.5fr_.8fr_.8fr_.8fr] border-b border-white/10 bg-white/[.05] px-5 py-4 text-[10px] font-bold uppercase tracking-wider text-white/45">
@@ -1215,64 +1228,6 @@ function DepartmentsStudy() {
               </div>
             </details>
           )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Gallery() {
-  const items = [
-    { title: "Workshop learning", tag: "Hands-on" },
-    { title: "A culture of progress", tag: "Campus life" },
-    { title: "Skills in action", tag: "Practical" }
-  ];
-  return (
-    <section className="section-pad bg-white">
-      <div className="container">
-        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-          <SectionTitle eyebrow="Life at NSTC" title="A place to learn out loud." body="Beyond the timetable: community, confidence and the small moments that make a learning journey memorable." />
-          <a className="inline-flex items-center gap-2 text-sm font-bold text-slate-950" href="#contact">Visit a campus <ArrowRight className="h-4 w-4" /></a></div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {items.map((item, i) =>
-            <div key={item.title} className={`gallery-tile gallery-${i}`}>
-              <div className="relative z-10">
-                <span className="rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">{item.tag}</span>
-                <h3 className="mt-32 font-display text-3xl text-white">{item.title}</h3>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Team() {
-  const [offset, setOffset] = useState(0);
-  const team = [
-    { name: "Dr. Nandi Mthembu", role: "Principal & Academic Director" },
-    { name: "Siyabonga Radebe", role: "Head of Engineering" },
-    { name: "Lindiwe Nkosi", role: "Student Success Lead" },
-    { name: "Musa Dube", role: "Industry Partnerships" }
-  ];
-  return (
-    <section className="section-pad bg-[#f8f6f1]">
-      <div className="container">
-        <div className="flex items-end justify-between">
-          <SectionTitle eyebrow="People behind the pathway" title="Your progress has a team." /><div className="flex gap-2">
-            <button className="circle-control" onClick={() => setOffset(Math.max(0, offset - 1))}><ChevronLeft /></button>
-            <button className="circle-control" onClick={() => setOffset(Math.min(team.length - 2, offset + 1))}><ChevronRight /></button>
-          </div>
-        </div>
-        <div className="mt-10 overflow-hidden">
-          <div className="team-track" style={{ transform: `translateX(-${offset * 25}%)` }}>{team.map((person, i) => <div className="team-card" key={person.name}>
-            <div className={`team-photo team-${i}`}><span>{initials(person.name)}</span></div>
-            <p className="mt-5 eyebrow">NSTC team</p>
-            <h3 className="mt-1 font-display text-2xl text-slate-950">{person.name}</h3>
-            <p className="mt-1 text-sm text-slate-500">{person.role}</p>
-          </div>)}
-          </div>
         </div>
       </div>
     </section>
@@ -1669,8 +1624,6 @@ function Landing({ data, setData, onApply }: {
       <Fees />
       <OccupationalCertificates />
       <DepartmentsStudy />
-      <Gallery />
-      <Team />
       <section className="quote-band">
         <div className="container flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
           <div>
