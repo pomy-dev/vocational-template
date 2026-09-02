@@ -15,6 +15,10 @@ import { MapView } from "./components/Map";
 // ============================ Static Images =============================== //
 import StudentGrad from "/assets/students-in-grad.jpg";
 import TertiaryExperience from "/assets/tertiary-experience.jpg";
+import ExperienceOne from "/assets/justone.jpeg";
+import ExperienceTwo from "/assets/justtwo.jpeg";
+import ExperienceThree from "/assets/justthree.jpeg";
+import DayOne from "/assets/datone.jpeg";
 import GradOfTwo from "/assets/grad.jpg";
 import NSTCLogo from "/assets/logo.jpeg";
 
@@ -40,7 +44,8 @@ type Course = {
   monthly?: number;
   popular?: boolean;
   subjects: string[];
-  mode: "Online" | "On campus" | "Hybrid"
+  mode: "Online" | "On campus" | "Hybrid",
+  image?: string;
 };
 type Student = {
   id: string;
@@ -117,14 +122,14 @@ const fee = (value: number) => `R${value.toLocaleString("en-ZA")}`;
 const initials = (name: string) => name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 
 const courses: Course[] = [
-  { id: "eng-electrical", name: "Electrical Engineering N1–N6", category: "Engineering Studies", level: "N1–N6", duration: "3 months", fee: 18500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Mathematics", "Engineering Science", "Logic Systems", "Industrial Electronics", "Electrical Trade Theory"] },
-  { id: "business-management", name: "Business Management N4–N6", category: "Business & Management", level: "N4–N6", duration: "6 months", fee: 16500, regFee: 500, popular: true, mode: "On campus", subjects: ["Economics", "Financial Accounting", "Management Communication", "Sales Management", "Computer Practice"] },
-  { id: "it", name: "Information Technology", category: "Information Technology", level: "Certificate", duration: "12 months", fee: 14500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Computer Hardware", "Networking", "Programming", "Database Fundamentals", "Technical Support"] },
-  { id: "health-safety", name: "Health & Safety Officer", category: "Health & Safety", level: "Occupational", duration: "12 months", fee: 22000, regFee: 500, mode: "On campus", subjects: ["Occupational Health", "Risk Assessment", "First Aid", "Incident Investigation", "Safety Legislation"] },
-  { id: "bricklayer", name: "Occupational Certificate: Bricklayer", category: "QCTO Skills", level: "Occupational", duration: "18 months", fee: 32000, regFee: 500, mode: "On campus", subjects: ["Construction Theory", "Practical Skills", "Workplace Experience", "Site Safety"] },
-  { id: "supply-chain", name: "Supply Chain Practitioner", category: "Logistics & Transport", level: "Occupational", duration: "12 months", fee: 24000, regFee: 500, mode: "Hybrid", subjects: ["Procurement", "Inventory Management", "Logistics", "Supply Chain Systems"] },
-  { id: "matric", name: "Matric Rewrite & Upgrade", category: "Matric Rewrite", level: "Grade 12", duration: "6 months", fee: 8500, regFee: 500, mode: "On campus", subjects: ["Mathematics", "Physical Science", "Life Science", "English", "Accounting"] },
-  { id: "solar", name: "Solar Panel Installation", category: "Short Course", level: "Skills", duration: "2 months", fee: 7500, regFee: 2500, monthly: 2500, mode: "On campus", subjects: ["Solar Theory", "Panel Installation", "Wiring & Testing"] },
+  { id: "eng-electrical", image: "/assets/engineering.jpg", name: "Electrical Engineering N1–N6", category: "Engineering Studies", level: "N1–N6", duration: "3 months", fee: 18500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Mathematics", "Engineering Science", "Logic Systems", "Industrial Electronics", "Electrical Trade Theory"] },
+  { id: "business-management", image: "/assets/management.jpg", name: "Business Management N4–N6", category: "Business & Management", level: "N4–N6", duration: "6 months", fee: 16500, regFee: 500, popular: true, mode: "On campus", subjects: ["Economics", "Financial Accounting", "Management Communication", "Sales Management", "Computer Practice"] },
+  { id: "it", image: "/assets/it.jpg", name: "Information Technology", category: "Information Technology", level: "Certificate", duration: "12 months", fee: 14500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Computer Hardware", "Networking", "Programming", "Database Fundamentals", "Technical Support"] },
+  { id: "health-safety", image: "/assets/health&safety.jpg", name: "Health & Safety Officer", category: "Health & Safety", level: "Occupational", duration: "12 months", fee: 22000, regFee: 500, mode: "On campus", subjects: ["Occupational Health", "Risk Assessment", "First Aid", "Incident Investigation", "Safety Legislation"] },
+  { id: "bricklayer", image: "/assets/bricklayer.jpg", name: "Occupational Certificate: Bricklayer", category: "QCTO Skills", level: "Occupational", duration: "18 months", fee: 32000, regFee: 500, mode: "On campus", subjects: ["Construction Theory", "Practical Skills", "Workplace Experience", "Site Safety"] },
+  { id: "supply-chain", image: "/assets/supplychain.jpg", name: "Supply Chain Practitioner", category: "Logistics & Transport", level: "Occupational", duration: "12 months", fee: 24000, regFee: 500, mode: "Hybrid", subjects: ["Procurement", "Inventory Management", "Logistics", "Supply Chain Systems"] },
+  { id: "matric", image: "/assets/matric.jpg", name: "Matric Rewrite & Upgrade", category: "Matric Rewrite", level: "Grade 12", duration: "6 months", fee: 8500, regFee: 500, mode: "On campus", subjects: ["Mathematics", "Physical Science", "Life Science", "English", "Accounting"] },
+  { id: "solar", image: "/assets/solar.jpg", name: "Solar Panel Installation", category: "Short Course", level: "Skills", duration: "2 months", fee: 7500, regFee: 2500, monthly: 2500, mode: "On campus", subjects: ["Solar Theory", "Panel Installation", "Wiring & Testing"] },
   { id: "first-aid", name: "First Aid / Fire", category: "Short Course", level: "Skills", duration: "5 days", fee: 2800, regFee: 0, mode: "On campus", subjects: ["First Aid", "Fire Safety", "Emergency Response"] },
   { id: "welding", name: "Arc Welding", category: "Artisan & Trade Testing", level: "Practical", duration: "4 weeks", fee: 25000, regFee: 500, mode: "On campus", subjects: ["Welding Safety", "Arc Techniques", "Joint Preparation", "Trade Test Prep"] },
 ];
@@ -291,6 +296,26 @@ const salesItems = [
   ["Textbooks", "Engineering, business, matric and occupational course texts", "From R150"],
   ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R1,800"],
   ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R150"]
+] as const;
+
+const partners = [
+  ["Stevetshwete", "/assets/stevetshwete.jpg"],
+  ["Nkangala", "/assets/nkangala.png"],
+  ["Seriti", "/assets/seriti.png"],
+  ["Victor Khanye", "/assets/victorkhanye.jpg"],
+  ["Thembisile Hani", "/assets/thembisilehani.png"],
+  ["Exxaro", "/assets/exxaro.png"],
+  ["Eskom", "/assets/eskom.png"],
+  ["Transnet", "/assets/transner.jpg"],
+  ["MICT SETA", "/assets/mictseta.jpg"],
+  ["Thungela", "/assets/thungela.jpg"],
+  ["Anglo American", "/assets/angloamerican.png"],
+  ["Mafube", "/assets/mafube.jpg"],
+  ["Columbus", "/assets/columbus.jpg"],
+  ["Samancor", "/assets/samancor.jpg"],
+  ["Mwelase", "/assets/mwelasemining.jpg"],
+  ["Two Rivers", "/assets/tworivers.png"],
+  ["SBV", "/assets/sbv.jpg"]
 ] as const;
 
 const qcto = [
@@ -635,6 +660,23 @@ function Hero({ onApply }: { onApply: () => void }) {
             <Button onClick={onApply}>Start your application <ArrowRight className="h-4 w-4" /></Button>
             <a className="hero-link" href="#programmes"><Play className="h-4 w-4 fill-current" /> Explore programmes</a>
           </div>
+
+          <div className="hero-partner-feature" aria-labelledby="hero-partner-title">
+            <p id="hero-partner-title" className="eyebrow text-[#D4AF37]">Partner with us</p>
+            <p className="mt-2 text-sm leading-6 text-white/65">For companies, mines and sponsors</p>
+            <ul className="hero-partner-benefits" aria-label="Partnership benefits">
+              {[
+                "Tax exemption",
+                "B-BBEE scorecard",
+                "WSP / ATR",
+                "SDL grant",
+                "CSI",
+                "Social labour plan",
+                "Enterprise development"
+              ].map((benefit) => <li key={benefit}>{benefit}</li>)}
+            </ul>
+          </div>
+
         </div>
         <SponsorPanel />
       </div>
@@ -735,7 +777,22 @@ function AccreditationBodies() {
 }
 
 function PartnersShowcase() {
-  return <section id="partners" className="section-pad bg-white"><div className="container"><SectionTitle eyebrow="Our partners & accreditors" title="Pathways built with trusted institutions." body="Our learning ecosystem is connected to the South African organisations that shape quality, skills development and workplace opportunity." /><div className="partner-grid mt-10">{accreditationBodies.map(({ code, name, logo }) => <article className="partner-card" key={code}><div className="partner-logo"><img src={logo} alt={`${name} logo`} /></div><div><p className="eyebrow text-[#a27e10]">{code}</p><h3>{name}</h3><p>Accredited pathway partner</p></div></article>)}</div></div></section>;
+  return (
+    <section id="partners" className="section-pad bg-white">
+      <div className="container">
+        <SectionTitle eyebrow="Partners & Stakeholders" title="Our partners in trust" body="" />
+        <div className="partner-grid mt-10">
+          {partners.map(([name, logo]) =>
+            <article className="partner-card" key={name}>
+              <div className="partner-logo">
+                <img src={logo} alt={`${name} logo`} className="rounded-lg" />
+              </div>
+            </article>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function About() {
@@ -744,7 +801,7 @@ function About() {
       <div className="container grid gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
         {/* histor card */}
         <div className="about-art">
-          <div className="about-art-inner about-image-art" style={{ backgroundImage: `linear-gradient(145deg, rgba(10,10,10,.25), rgba(10,10,10,.72)), url(${StudentGrad})` }}>
+          <div className="about-art-inner about-image-art" style={{ backgroundImage: `linear-gradient(145deg, rgba(10,10,10,.25), rgba(10,10,10,.72)), url(${DayOne})` }}>
             <span className="eyebrow text-[#D4AF37]">Since day one</span>
             <div className="flex items-end justify-between">
               <span className="font-display text-2xl text-white">We teach skills<br />to change lives.</span>
@@ -777,7 +834,7 @@ function About() {
   );
 }
 
-function FlipCard({ course, image }: { course: Course; image: string }) {
+function FlipCard({ course, image }: { course: Course; image?: string }) {
   return (
     <div className="flip-card group">
       <div className="flip-inner">
@@ -821,12 +878,11 @@ function Programmes({ onApply }: { onApply: () => void }) {
           <SectionTitle eyebrow="Learn with direction" title="Pathways for every kind." body="From National Certificates to occupational qualifications and short practical programmes, choose the route that fits your ambitions." />
           <Button variant="dark" onClick={onApply}>Find your programme <ArrowRight className="h-4 w-4" /></Button>
         </div>
-        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course, index) => <FlipCard key={course.id} course={course} image={[StudentGrad, TertiaryExperience, GradOfTwo][index % 3]} />)}</div>
-        <div className="mt-16 rounded-2xl catalogue-panel p-7 text-white md:p-10" style={{ backgroundImage: `linear-gradient(110deg, rgba(10,10,10,.94), rgba(10,10,10,.68)), url(${TertiaryExperience})` }}>
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course, index) => <FlipCard key={course.id} course={course} image={course?.image} />)}</div>
+        <div className="mt-16 rounded-2xl catalogue-panel bg-[#111] p-7 text-white md:p-10">
           <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
             {/* catelogue part */}
-            <div>
-              {/* Add background image */}
+            <div className="catalogue-intro h-[100%] rounded-xl p-6 md:p-8" style={{ backgroundImage: `linear-gradient(110deg, rgba(10,10,10,.94), rgba(10,10,10,.68)), url(${ExperienceOne})` }}>
               <p className="eyebrow text-[#D4AF37]">Academic catalogue</p>
               <h3 className="mt-3 font-display text-3xl">N Certificates & Diplomas</h3>
               <p className="mt-3 max-w-lg text-sm leading-6 text-white/55">Explore the full catalogue from Engineering N1–N6 and Business N4–N6 to QCTO skills programmes, GCC, health and safety, IT and Matric upgrades.</p>
@@ -983,9 +1039,10 @@ function Fees() {
     <section id="fees" className="section-pad bg-[#111] text-white">
       <div className="container">
         <SectionTitle light eyebrow="Straightforward investment" title="Fee Structure" body="(100% EMPLOYMENT)Pay less for hight quality. Start with a R500 registration fee and choose the learning pathway that matches your goals." />
-
-        {/* 10% discount on cash payment catchy outline */}
-
+        <div className="cash-discount-banner discount-promo mt-8" role="status">
+          <span className="discount-badge">10%<br />OFF</span>
+          <p className="font-display text-xl text-[#f1d36d] sm:text-2xl">10% discount on cash payment this season</p>
+        </div>
 
         <div className="mt-11 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
           <div className="overflow-hidden rounded-2xl border border-white/10">
@@ -1233,7 +1290,7 @@ function Contact() {
   return (
     <section id="contact" className="section-pad bg-[#f8f6f1]">
       <div className="container grid gap-12 lg:grid-cols-[.9fr_1.1fr]">
-        {/* locations and map */}
+        {/* locations */}
         <div>
           <SectionTitle eyebrow="Start a conversation" title="Come build your next chapter with us." body="Visit one of our campuses, call the admissions team, or send a question and we will point you in the right direction." />
           <div className="mt-8 space-y-4">
@@ -1272,25 +1329,6 @@ function Contact() {
               </div>
             </div>
           </div>
-          <div className="contact-map-email mt-8">
-            <div className="h-72 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <MapView
-                className="h-full w-full"
-                initialCenter={{ lat: -25.94, lng: 28.74 }}
-                initialZoom={7}
-                markers={[
-                  { id: "midrand", lat: -25.9897, lng: 28.1284, label: "Midrand Campus", sublabel: "675 Old Pretoria Road" },
-                  { id: "middelburg", lat: -25.7731, lng: 29.4689, label: "Middelburg Campus", sublabel: "22 OR Tambo Street" },
-                  { id: "sandton", lat: -26.1076, lng: 28.0567, label: "Sandton Campus", sublabel: "Wynberg Johannesburg area" },
-                  { id: "burgersfort", lat: -24.6667, lng: 30.3333, label: "Burgersfort Campus", sublabel: "OR Tambo Street" },
-                ]}
-              />
-            </div>
-            <div className="email-panel rounded-2xl border border-slate-200 bg-white p-5">
-              <p className="eyebrow">Email the right desk</p>
-              <div className="mt-4 space-y-3">{[["Manager", "manager@nationalskills.com"], ["General information", "info@nationalskills.com"], ["Examinations", "exams@nationalskills.com"], ["Finance", "finance@nationaskills.com"], ["Certificates", "certificate@nationalskills.com"], ["CEO office", "ceo@nationalskills.com"]].map(([label, address]) => <a className="email-row" href={`mailto:${address}`} key={address}><Mail className="h-4 w-4 shrink-0 text-[#a27e10]" /><span><strong>{label}</strong><small>{address}</small></span></a>)}</div>
-            </div>
-          </div>
         </div>
 
         <div className="rounded-2xl bg-white p-7 shadow-[0_20px_60px_rgba(15,23,42,.07)] md:p-10">
@@ -1327,6 +1365,34 @@ function Contact() {
                 </Button>
               </form>
             )}
+        </div>
+      </div>
+      <div className="container contact-map-email mt-8">
+        <div className="h-72 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <MapView
+            className="h-full w-full"
+            initialCenter={{ lat: -25.94, lng: 28.74 }}
+            initialZoom={7}
+            markers={[
+              { id: "midrand", lat: -25.9897, lng: 28.1284, label: "Midrand Campus", sublabel: "675 Old Pretoria Road" },
+              { id: "middelburg", lat: -25.7731, lng: 29.4689, label: "Middelburg Campus", sublabel: "22 OR Tambo Street" },
+              { id: "sandton", lat: -26.1076, lng: 28.0567, label: "Sandton Campus", sublabel: "Wynberg Johannesburg area" },
+              { id: "burgersfort", lat: -24.6667, lng: 30.3333, label: "Burgersfort Campus", sublabel: "OR Tambo Street" },
+            ]}
+          />
+        </div>
+        <div className="email-panel rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="eyebrow">Email the right desk</p>
+          <div className="mt-4 space-y-3">{
+            [["Manager", "manager@nationalskills.com"], ["Secretary", "info@nationalskills.com"], ["Examinations", "exams@nationalskills.com"], ["Finance", "finance@nationaskills.com"], ["Certificates", "certificate@nationalskills.com"]].map(([label, address]) =>
+              <a className="email-row" href={`mailto:${address}`} key={address}>
+                <Mail className="h-4 w-4 shrink-0 text-[#a27e10]" />
+                <span><strong>{label}</strong>
+                  <small>{address}</small>
+                </span>
+              </a>
+            )}
+          </div>
         </div>
       </div>
       <div className="container mt-12 grid gap-5 border-t border-slate-200 pt-10 md:grid-cols-3">
@@ -1622,8 +1688,8 @@ function Landing({ data, setData, onApply }: {
         <div className="container flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
           <div>
             <Star className="h-7 w-7 text-[#D4AF37]" />
-            <p className="mt-4 max-w-3xl font-display text-3xl leading-tight text-white md:text-4xl">“NSTC gave me more than a certificate. It gave me the confidence to walk into a workshop and know I belong there.”</p>
-            <p className="mt-4 text-sm text-white/45">— Kagiso Ndlovu, Occupational Certificate graduate</p>
+            <p className="mt-4 max-w-3xl font-display text-3xl leading-tight text-white md:text-4xl">“Thanks to NSTC and Department of Higher Education. I obtained my Diploma in Public Management, it was not an easy journey, repeated some modules twice. I was promoted in the at the manicipality to a good position and  salary.”</p>
+            <p className="mt-4 text-sm text-white/45">— Pillay Dilisha, Public Management graduate</p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <div className="avatar-large bg-white/10 text-white">KN</div>

@@ -225,6 +225,7 @@ a {
   position: relative;
   z-index: 2;
 }
+
 .hero .public-nav {
   z-index: 50;
 }
@@ -280,6 +281,32 @@ a {
 
 .hero-link:hover {
   background: rgba(255, 255, 255, .08);
+}
+
+.hero-partner-feature {
+  margin-top: 28px;
+  max-width: 620px;
+  border: 1px solid rgba(212, 175, 55, .42);
+  border-radius: 12px;
+  background: rgba(9, 9, 9, .42);
+  padding: 16px 18px;
+}
+
+.hero-partner-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-partner-benefits li {
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .06);
+  padding: 7px 10px;
+  color: rgba(255, 255, 255, .78);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .stats-strip {
@@ -1836,27 +1863,174 @@ textarea.field {
 @media (prefers-reduced-motion: reduce) {
 
   .sponsor-copy,
-  .accreditation-badge {
+  .accreditation-badge,
+  .discount-promo {
     animation: none;
   }
 }
-.about-image-art { background-position: center; background-size: cover; }
-.flip-front { background-position: center; background-size: cover; }
-.flip-front:before { position: absolute; inset: 0; z-index: -1; background: linear-gradient(155deg, rgba(255,255,255,.08), transparent 45%); content: ''; pointer-events: none; }
-.catalogue-panel { background-position: center; background-size: cover; }
-.cash-discount-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; border: 1px solid rgba(212,175,55,.35); border-radius: 18px; background: linear-gradient(100deg, rgba(212,175,55,.17), rgba(255,255,255,.04)); padding: 22px 24px; }
-.discount-badge { display: inline-flex; min-width: 82px; height: 82px; flex: 0 0 auto; align-items: center; justify-content: center; border: 1px solid #d4af37; border-radius: 999px; color: #d4af37; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 800; text-align: center; transform: rotate(8deg); }
-.partner-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.partner-card { display: flex; align-items: center; gap: 14px; border: 1px solid #e4e6e8; border-radius: 16px; background: #fff; padding: 16px; transition: transform .2s ease, box-shadow .2s ease; }
-.partner-card:hover { box-shadow: 0 18px 40px rgba(15,23,42,.08); transform: translateY(-3px); }
-.partner-logo { display: inline-flex; height: 44px; min-width: 54px; align-items: center; justify-content: center; border-radius: 12px; background: #111; color: #d4af37; font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 800; letter-spacing: .04em; overflow: hidden; }
-.partner-logo img { max-height: 32px; max-width: 46px; object-fit: contain; }
-.partner-card h3 { color: #17181b; font-size: 13px; font-weight: 800; }
-.partner-card p { margin-top: 3px; color: #8b8f96; font-size: 11px; }
-.contact-map-email { display: grid; gap: 14px; grid-template-columns: 1.15fr .85fr; }
-.email-panel { min-width: 0; }
-.email-row { display: flex; align-items: flex-start; gap: 9px; color: #555b64; }
-.email-row strong, .email-row small { display: block; }
-.email-row strong { color: #17181b; font-size: 11px; }
-.email-row small { margin-top: 2px; overflow-wrap: anywhere; color: #767980; font-size: 10px; line-height: 1.35; }
-@media (max-width: 767px) { .partner-grid { grid-template-columns: 1fr; } .cash-discount-banner { align-items: flex-start; padding: 18px; } .discount-badge { min-width: 68px; height: 68px; font-size: 11px; } .contact-map-email { grid-template-columns: 1fr; } }
+
+.about-image-art {
+  background-position: center;
+  background-size: cover;
+}
+
+.flip-front {
+  background-position: center;
+  background-size: cover;
+}
+
+.flip-front:before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(155deg, rgba(255, 255, 255, .08), transparent 45%);
+  content: '';
+  pointer-events: none;
+}
+
+.catalogue-intro {
+  background-position: center;
+  background-size: cover;
+}
+
+.cash-discount-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid rgba(212, 175, 55, .35);
+  border-radius: 18px;
+  background: linear-gradient(100deg, rgba(212, 175, 55, .17), rgba(255, 255, 255, .04));
+  padding: 22px 24px;
+}
+
+.discount-promo {
+  animation: discount-blink 1.15s ease-in-out infinite;
+}
+
+@keyframes discount-blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .38;
+  }
+}
+
+.discount-badge {
+  display: inline-flex;
+  min-width: 82px;
+  height: 82px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d4af37;
+  border-radius: 999px;
+  color: #d4af37;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  transform: rotate(8deg);
+}
+
+.partner-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  grid-template-rows: repeat(2, 104px);
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-color: rgba(212, 175, 55, .72) transparent;
+}
+
+.partner-card {
+  display: flex;
+  width: fit-content;
+  min-width: auto;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(212, 175, 55, .72);
+  border-radius: 10px;
+  background: #090909;
+  padding: 7px;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.partner-card:hover {
+  border-color: #f1d36d;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .14);
+  transform: translateY(-3px);
+}
+
+.partner-logo {
+  display: inline-flex;
+  height: 70px;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.partner-logo img {
+  height: 66px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
+.contact-map-email {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1.15fr .85fr;
+}
+
+.email-panel {
+  min-width: 0;
+}
+
+.email-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #555b64;
+}
+
+.email-row strong,
+.email-row small {
+  display: block;
+}
+
+.email-row strong {
+  color: #17181b;
+  font-size: 11px;
+}
+
+.email-row small {
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+  color: #767980;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+@media (max-width: 767px) {
+  .cash-discount-banner {
+    align-items: flex-start;
+    padding: 18px;
+  }
+
+  .discount-badge {
+    min-width: 68px;
+    height: 68px;
+    font-size: 11px;
+  }
+
+  .contact-map-email {
+    grid-template-columns: 1fr;
+  }
+}
