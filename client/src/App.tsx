@@ -16,8 +16,6 @@ import { MapView } from "./components/Map";
 import StudentGrad from "/assets/students-in-grad.jpg";
 import TertiaryExperience from "/assets/tertiary-experience.jpg";
 import ExperienceOne from "/assets/justone.jpeg";
-import ExperienceTwo from "/assets/justtwo.jpeg";
-import ExperienceThree from "/assets/justthree.jpeg";
 import DayOne from "/assets/datone.jpeg";
 import GradOfTwo from "/assets/grad.jpg";
 import NSTCLogo from "/assets/logo.jpeg";
@@ -202,6 +200,12 @@ const artisanFields = [
   ["Instrumentation", 20000],
   ["Brick Laying", 20500],
   ["Carpentry", 20500]
+] as const;
+
+const firstClassFields = [
+  ["Artificial Intelligence", 10000],
+  ["Drone Engineering & Design", 45000],
+  ["Robotics Engineering", 45000]
 ] as const;
 
 const weldingFields = [
@@ -409,14 +413,17 @@ function useData() {
   return [data, setData] as const;
 }
 
+// Simulated delay for async actions
 function delay(ms = 650) { return new Promise((resolve) => window.setTimeout(resolve, ms)); }
 
+// Custom hook to handle async actions with loading state
 function useAction() {
   const [loading, setLoading] = useState(false);
   const run = async (action: () => void | Promise<void>) => { setLoading(true); await delay(); await action(); setLoading(false); };
   return { loading, run };
 }
 
+// Spinner Component
 function Spinner({ label = "Working" }: { label?: string }) {
   return (
     <span className="inline-flex items-center gap-2">
@@ -425,6 +432,7 @@ function Spinner({ label = "Working" }: { label?: string }) {
     </span>);
 }
 
+// Button Component
 function Button({ children, variant = "gold", className = "", onClick, type = "button", disabled = false }: {
   children: ReactNode;
   variant?: "gold" | "dark" | "light" | "ghost" | "danger";
@@ -439,6 +447,7 @@ function Button({ children, variant = "gold", className = "", onClick, type = "b
   );
 }
 
+// Modal Component
 function Modal({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
   return (
     <div className="modal-backdrop" onMouseDown={onClose}>
@@ -453,6 +462,7 @@ function Modal({ title, children, onClose }: { title: string; children: ReactNod
   );
 }
 
+// Confirmation Modal Component
 function Confirm({ title, body, onCancel, onConfirm, loading }: {
   title: string;
   body: string;
@@ -473,6 +483,9 @@ function Confirm({ title, body, onCancel, onConfirm, loading }: {
   );
 }
 
+// ============================= Website Components ======================== //
+
+// Logo Component
 function Logo({ light = false }: { light?: boolean }) {
   return (
     <a href="/" className={`flex items-center gap-3 ${light ? "text-white" : "text-slate-950"}`}>
@@ -485,6 +498,7 @@ function Logo({ light = false }: { light?: boolean }) {
   );
 }
 
+// Custom Pill Component
 function Pill({ children, tone = "gold" }: {
   children: ReactNode;
   tone?: "gold" | "green" | "red" | "slate"
@@ -492,6 +506,7 @@ function Pill({ children, tone = "gold" }: {
   return (<span className={`pill pill-${tone}`}>{children}</span>);
 }
 
+// Custome Section Title Component
 function SectionTitle({ eyebrow, title, body, light = false }: {
   eyebrow: string;
   title: string;
@@ -509,6 +524,7 @@ function SectionTitle({ eyebrow, title, body, light = false }: {
   );
 }
 
+// Navbar Area Component
 function PublicNav({ onApply }: { onApply: () => void }) {
   const [open, setOpen] = useState(false);
   return (
@@ -519,7 +535,7 @@ function PublicNav({ onApply }: { onApply: () => void }) {
           <a href="#about">About</a>
           <a href="#programmes">Programmes</a>
           <a href="#skills">Graduate CVs</a>
-          <a href="#apprenticeships">Job Market</a>
+          <a href="#apprenticeships">Employment</a>
           <a href="#occupational">Occupational</a>
           <a href="#fees">Fees</a>
           <a href="#sales">Market Place</a>
@@ -534,8 +550,8 @@ function PublicNav({ onApply }: { onApply: () => void }) {
       {open && <div className="mobile-nav lg:hidden">
         <a href="#about" onClick={() => setOpen(false)}>About</a>
         <a href="#programmes" onClick={() => setOpen(false)}>Programmes</a>
-        <a href="#skills" onClick={() => setOpen(false)}>Skills & trades</a>
-        <a href="/apprenticeships" onClick={() => setOpen(false)}>Apprenticeships</a>
+        <a href="#skills" onClick={() => setOpen(false)}>Graduate CVs</a>
+        <a href="/apprenticeships" onClick={() => setOpen(false)}>Employment</a>
         <a href="#fees" onClick={() => setOpen(false)}>Fees</a>
         <a href="/portal">Student portal</a>
         <Button onClick={onApply}>Apply now</Button>
@@ -545,6 +561,7 @@ function PublicNav({ onApply }: { onApply: () => void }) {
   );
 }
 
+// Sponsor Panel Component
 function SponsorPanel() {
 
   const messages = [
@@ -620,6 +637,7 @@ function SponsorPanel() {
   );
 }
 
+// Hero Section Component
 function Hero({ onApply }: { onApply: () => void }) {
   const [showMore, setShowMore] = useState(false);
 
@@ -684,7 +702,7 @@ function Hero({ onApply }: { onApply: () => void }) {
   );
 }
 
-
+// Stats Section Component
 function Stats() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [started, setStarted] = useState(false);
@@ -737,6 +755,7 @@ function Stats() {
   );
 }
 
+// Accreditation Bodies Section Component
 function AccreditationBodies() {
   const marqueeBodies = [...accreditationBodies, ...accreditationBodies];
 
@@ -776,6 +795,7 @@ function AccreditationBodies() {
   );
 }
 
+// Partners Showcase Section Component
 function PartnersShowcase() {
   return (
     <section id="partners" className="section-pad bg-white">
@@ -795,6 +815,7 @@ function PartnersShowcase() {
   );
 }
 
+// About Section Component
 function About() {
   return (
     <section id="about" className="section-pad bg-[#f8f6f1]">
@@ -834,6 +855,7 @@ function About() {
   );
 }
 
+// Flip Card Component
 function FlipCard({ course, image }: { course: Course; image?: string }) {
   return (
     <div className="flip-card group">
@@ -870,6 +892,7 @@ function FlipCard({ course, image }: { course: Course; image?: string }) {
   );
 }
 
+// Programmes Section Component
 function Programmes({ onApply }: { onApply: () => void }) {
   return (
     <section id="programmes" className="section-pad bg-white">
@@ -908,6 +931,7 @@ function Programmes({ onApply }: { onApply: () => void }) {
   );
 }
 
+// Skills Section Component
 function Skills({ data, setData }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>
@@ -1034,6 +1058,7 @@ function Skills({ data, setData }: {
   );
 }
 
+// Fees Section Component
 function Fees() {
   return (
     <section id="fees" className="section-pad bg-[#111] text-white">
@@ -1189,6 +1214,7 @@ function Fees() {
       </div>
 
       <div className="mt-8 grid gap-5 border-t border-white/10 pt-8 pl-2 pr-2 md:grid-cols-2">
+        {/* Machine Courses */}
         <div>
           <p className="eyebrow text-[#D4AF37]">Machine & licence training</p>
           <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
@@ -1200,8 +1226,22 @@ function Fees() {
           </div>
         </div>
         <div>
+          {/* First Class Fields */}
           <>
-            <p className="eyebrow text-[#D4AF37]">Semi-skilled & artisan fields · 4 weeks</p>
+            <p className="eyebrow text-[#D4AF37]">Premium Courses · First Class</p>
+            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
+              {firstClassFields.map(([name, price]) =>
+                <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
+                  <span className="text-white/60">{name}</span>
+                  <strong className="text-[#D4AF37]">{fee(price)}</strong>
+                </div>
+              )}
+            </div>
+          </>
+
+          {/* Artisans Fields */}
+          <>
+            <p className="eyebrow text-[#D4AF37] mt-12">Semi-skilled & artisan fields · 4 weeks</p>
             <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
               {artisanFields.map(([name, price]) =>
                 <div key={name} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-xs">
@@ -1211,6 +1251,8 @@ function Fees() {
               )}
             </div>
           </>
+
+          {/* Welding Fields */}
           <>
             <p className="eyebrow text-[#D4AF37] mt-12">Semi-skilled Welding Courses · 4 weeks</p>
             <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
@@ -1228,6 +1270,7 @@ function Fees() {
   );
 }
 
+// Occupational Certificates Section Component
 function OccupationalCertificates() {
   return (
     <section id="occupational" className="section-pad bg-[#f8f6f1]">
@@ -1254,6 +1297,7 @@ function OccupationalCertificates() {
   );
 }
 
+// Departments of Study Section Component
 function DepartmentsStudy() {
   return (
     <section id="departments" className="section-pad bg-white">
@@ -1278,6 +1322,7 @@ function DepartmentsStudy() {
   );
 }
 
+// Contact Section Component
 function Contact() {
   const [sent, setSent] = useState(false);
   const { loading, run } = useAction();
@@ -1292,7 +1337,7 @@ function Contact() {
       <div className="container grid gap-12 lg:grid-cols-[.9fr_1.1fr]">
         {/* locations */}
         <div>
-          <SectionTitle eyebrow="Start a conversation" title="Come build your next chapter with us." body="Visit one of our campuses, call the admissions team, or send a question and we will point you in the right direction." />
+          <SectionTitle eyebrow="Start a conversation" title="Come build your next future with us." body="Visit one of our campuses, call the admissions team, or send a question and we will point you in the right direction." />
           <div className="mt-8 space-y-4">
             <div className="contact-line">
               <MapPin />
@@ -1325,7 +1370,7 @@ function Contact() {
               <Phone />
               <div>
                 <strong>Admissions desk</strong>
-                <span>+27 10 020 2026 · Mon–Fri, 08:00–16:30</span>
+                <span>+27 71 203 6198 · Mon–Fri, 08:00–16:30</span>
               </div>
             </div>
           </div>
@@ -1384,7 +1429,7 @@ function Contact() {
         <div className="email-panel rounded-2xl border border-slate-200 bg-white p-5">
           <p className="eyebrow">Email the right desk</p>
           <div className="mt-4 space-y-3">{
-            [["Manager", "manager@nationalskills.com"], ["Secretary", "info@nationalskills.com"], ["Examinations", "exams@nationalskills.com"], ["Finance", "finance@nationaskills.com"], ["Certificates", "certificate@nationalskills.com"]].map(([label, address]) =>
+            [["Secretary", "support@nationalskills.com"], ["Manager", "manager@nationalskills.com"], ["Examinations", "exams@nationalskills.com"], ["Finance", "accounts@nationaskills.com"], ["Certificates", "certificate@nationalskills.com"]].map(([label, address]) =>
               <a className="email-row" href={`mailto:${address}`} key={address}>
                 <Mail className="h-4 w-4 shrink-0 text-[#a27e10]" />
                 <span><strong>{label}</strong>
@@ -1409,6 +1454,7 @@ function Contact() {
   );
 }
 
+// Apprenticeships Section Component
 function Apprenticeships({ data, setData }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>
@@ -1498,6 +1544,7 @@ function Apprenticeships({ data, setData }: {
   );
 }
 
+// Suggestion Box Section Component
 function SuggestionBox({ data, setData }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>
@@ -1569,6 +1616,7 @@ function SuggestionBox({ data, setData }: {
   );
 }
 
+// Apprenticeship Portal Component
 function ApprenticeshipPortal({ data, setData, onApply }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
@@ -1588,6 +1636,7 @@ function ApprenticeshipPortal({ data, setData, onApply }: {
   );
 }
 
+// Sales Portal Component
 function SalesPortal() {
   return (
     <section id="sales" className="section-pad bg-[#f8f6f1]">
@@ -1606,7 +1655,8 @@ function SalesPortal() {
               <h3 className="mt-6 font-display text-2xl text-slate-950">{name}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-500">{body}</p>
               <p className="mt-5 text-sm font-bold text-[#a27e10]">{price}</p>
-              <a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950" href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a></article>
+              <a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950" href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a>
+            </article>
           )}
         </div>
       </div>
@@ -1614,6 +1664,7 @@ function SalesPortal() {
   );
 }
 
+// Footer Component
 function Footer() {
   return (
     <footer className="bg-[#090909] py-12 text-white">
@@ -1648,7 +1699,7 @@ function Footer() {
     </footer>
   );
 }
-
+// Scroll Image Band Component
 function ScrollImageBand({ image, eyebrow, title }: {
   image: string;
   eyebrow: string;
@@ -1664,6 +1715,7 @@ function ScrollImageBand({ image, eyebrow, title }: {
   );
 }
 
+// Landing Page Component
 function Landing({ data, setData, onApply }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
@@ -1708,6 +1760,8 @@ function Landing({ data, setData, onApply }: {
     </div>
   );
 }
+
+// =================== Student Portal Components =================== //
 
 function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [mode, setMode] = useState<"login" | "forgot" | "reset">("login");
@@ -1927,6 +1981,7 @@ function StudentSettings({ onSignOut }: { onSignOut: () => void }) {
   );
 }
 
+// Portal Shell Component
 function PortalShell({ children, active, onNavigate, role = "Student" }: {
   children: ReactNode;
   active: string;
@@ -2011,6 +2066,7 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
   );
 }
 
+// Metric Card Component
 function MetricCard({ label, value, detail, icon: I, tone = "gold" }: {
   label: string;
   value: string | number;
@@ -2696,6 +2752,8 @@ function StudentPortal({ data, setData, path, navigate }: {
     </PortalShell>
   );
 }
+
+// ============================ LECTURER PORTAL ============================ //
 
 function LecturerAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [error, setError] = useState("");
