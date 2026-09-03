@@ -296,18 +296,61 @@ const departmentCatalog = [
 ] as const;
 
 const salesItems = [
-  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R6,000", "/assets/it.jpg"],
-  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R150", "/assets/engineering.jpg"],
-  ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R1,800", "/assets/practicals.jpg"],
-  ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R150", "/assets/matric.jpg"]
+  ["AI-ready laptops", "Study-ready devices with optional sponsorship support", "From R6,000", "/assets/laptopsale.jpg"],
+  ["Textbooks", "Engineering, business, matric and occupational course texts", "From R150", "/assets/booksale.jpg"],
+  ["Drawing boards", "Durable technical drawing boards for workshop and studio work", "From R1,800", "/assets/boardsale.jpg"],
+  ["Study guides", "Past exam question and answer papers, revision packs and practical guides", "From R150", "/assets/studyguidesale.jpg"]
 ] as const;
 
 const partnerServices = [
-  { id: "tax-exemption", label: "Tax exemption", title: "Taxation, accounting & business compliance", kicker: "03 · Finance and compliance", summary: "Build a compliant finance foundation through registered practitioners and specialist partners. NSTC supports tax readiness, accounting systems and evidence-led business compliance.", who: "Companies, SMEs, NPOs, NPCs and public-interest organisations.", deliverables: ["Annual financial statements and management accounts", "Income Tax, VAT and PAYE preparation and compliance reviews", "SARS verification, audit and dispute-support preparation", "CIPC, company-secretarial and governance administration"], guardrail: "Tax advice and submissions must be performed by appropriately registered practitioners; this service is advisory and implementation support, not a substitute for statutory professional registration." },
-  { id: "bbbee", label: "B-BBEE Score Card", title: "B-BBEE advisory & transformation", kicker: "01 · Transformation", summary: "Move from scorecard anxiety to a defensible transformation roadmap that connects ownership, management control, skills, procurement and socio-economic development.", who: "Large enterprises, SMEs, public entities, multinationals and supply-chain participants.", deliverables: ["B-BBEE diagnostic and gap analysis", "Scorecard scenario modelling and annual roadmap", "Skills, procurement, enterprise and supplier-development planning", "Evidence file review, mock verification and executive dashboard"], guardrail: "NSTC provides advisory, implementation and verification readiness; it is not presented as an independent SANAS verification agency." },
-  { id: "wsp-atr", label: "WSP / ATR", title: "Skills audit, WSP/ATR & levy services", kicker: "05 · Workforce capability", summary: "Turn workforce data into a compliant, fundable and measurable training plan that supports SETA submissions, scarce-skills planning and absorption.", who: "Levy-paying employers, HR teams, SDFs, training committees and project employers.", deliverables: ["Organisation-wide skills audit and competency-gap analysis", "Workplace Skills Plan and Annual Training Report compilation", "PIVOTAL and mandatory-grant submission support where applicable", "Skills Development Levy strategy and grant tracking"], guardrail: "SETA and grant outcomes depend on the applicable scheme, employer profile, evidence quality and statutory deadlines." },
-  { id: "sdl-grant", label: "SDL grant", title: "Skills development funding readiness", kicker: "05 · Funding and evidence", summary: "Strengthen the link between the Skills Development Levy, training priorities, compliant evidence and fundable workplace programmes.", who: "Employers, training providers and organisations planning learnerships, internships, apprenticeships or bursaries.", deliverables: ["Training-needs and critical-skills mapping", "Learnership, internship, apprenticeship and bursary programme selection", "Attendance, agreements, invoices, completion and absorption evidence controls", "Quarterly spend, points and impact tracking"], guardrail: "Funding is not guaranteed; submissions remain subject to SETA rules, approved scope and review by the relevant authority." },
-  { id: "csi", label: "CSI", title: "Socio-economic development & CSI", kicker: "02 · Community impact", summary: "Design CSI and socio-economic development portfolios that align with applicable codes, community needs and measurable outcomes.", who: "Corporate foundations, CSI/ESG teams, mines, manufacturers, NPOs, NGOs and community programmes.", deliverables: ["SED strategy and annual portfolio plan", "Beneficiary due diligence and programme contracting", "Education, bursary, food-security, youth and disability initiatives", "Board, ESG and CSI reporting with beneficiary-impact data"], guardrail: "Targets depend on the applicable B-BBEE code and entity profile; programme claims should be supported by evidence." },
+  {
+    id: "tax-exemption",
+    label: "Tax exemption",
+    title: "Taxation, accounting & business compliance",
+    kicker: "03 · Finance and compliance",
+    summary: "Build a compliant finance foundation through registered practitioners and specialist partners. NSTC supports tax readiness, accounting systems and evidence-led business compliance.",
+    who: "Companies, SMEs, NPOs, NPCs and public-interest organisations.",
+    deliverables: ["Annual financial statements and management accounts", "Income Tax, VAT and PAYE preparation and compliance reviews", "SARS verification, audit and dispute-support preparation", "CIPC, company-secretarial and governance administration"],
+    guardrail: "Tax advice and submissions must be performed by appropriately registered practitioners; this service is advisory and implementation support, not a substitute for statutory professional registration."
+  },
+  {
+    id: "bbbee",
+    label: "B-BBEE Score Card",
+    title: "B-BBEE advisory & transformation",
+    kicker: "01 · Transformation",
+    summary: "Move from scorecard anxiety to a defensible transformation roadmap that connects ownership, management control, skills, procurement and socio-economic development.",
+    who: "Large enterprises, SMEs, public entities, multinationals and supply-chain participants.",
+    deliverables: ["B-BBEE diagnostic and gap analysis", "Scorecard scenario modelling and annual roadmap", "Skills, procurement, enterprise and supplier-development planning", "Evidence file review, mock verification and executive dashboard"],
+    guardrail: "NSTC provides advisory, implementation and verification readiness; it is not presented as an independent SANAS verification agency."
+  },
+  {
+    id: "wsp-atr",
+    label: "WSP / ATR",
+    title: "Skills audit, WSP/ATR & levy services",
+    kicker: "05 · Workforce capability",
+    summary: "Turn workforce data into a compliant, fundable and measurable training plan that supports SETA submissions, scarce-skills planning and absorption.",
+    who: "Levy-paying employers, HR teams, SDFs, training committees and project employers.",
+    deliverables: ["Organisation-wide skills audit and competency-gap analysis", "Workplace Skills Plan and Annual Training Report compilation", "PIVOTAL and mandatory-grant submission support where applicable", "Skills Development Levy strategy and grant tracking"],
+    guardrail: "SETA and grant outcomes depend on the applicable scheme, employer profile, evidence quality and statutory deadlines."
+  },
+  {
+    id: "sdl-grant",
+    label: "SDL grant",
+    title: "Skills development funding readiness",
+    kicker: "05 · Funding and evidence",
+    summary: "Strengthen the link between the Skills Development Levy, training priorities, compliant evidence and fundable workplace programmes.",
+    who: "Employers, training providers and organisations planning learnerships, internships, apprenticeships or bursaries.",
+    deliverables: ["Training-needs and critical-skills mapping", "Learnership, internship, apprenticeship and bursary programme selection", "Attendance, agreements, invoices, completion and absorption evidence controls", "Quarterly spend, points and impact tracking"],
+    guardrail: "Funding is not guaranteed; submissions remain subject to SETA rules, approved scope and review by the relevant authority."
+  },
+  {
+    id: "csi",
+    label: "CSI",
+    title: "Socio-economic development & CSI",
+    kicker: "02 · Community impact",
+    summary: "Design CSI and socio-economic development portfolios that align with applicable codes, community needs and measurable outcomes.",
+    who: "Corporate foundations, CSI/ESG teams, mines, manufacturers, NPOs, NGOs and community programmes.", deliverables: ["SED strategy and annual portfolio plan", "Beneficiary due diligence and programme contracting", "Education, bursary, food-security, youth and disability initiatives", "Board, ESG and CSI reporting with beneficiary-impact data"], guardrail: "Targets depend on the applicable B-BBEE code and entity profile; programme claims should be supported by evidence."
+  },
   { id: "social-labour-plan", label: "Social labour plan", title: "Mining, SLP & community solutions", kicker: "07 · Project and community solutions", summary: "Connect mining and infrastructure commitments to practical local skills, supplier development, community participation and transparent evidence.", who: "Mines, energy companies, infrastructure partners, municipalities and community-development stakeholders.", deliverables: ["Social and Labour Plan implementation support", "Community needs assessment and beneficiary registers", "Local procurement, supplier-development and skills pipelines", "Progress dashboards, stakeholder reporting and evidence packs"], guardrail: "Statutory plans and regulated submissions should be reviewed by appropriately qualified specialists and the responsible authority." },
   { id: "enterprise-development", label: "Enterprise development", title: "Enterprise & supplier development", kicker: "02 · Inclusive value chains", summary: "Build stronger suppliers and inclusive value chains by linking beneficiary support to real procurement opportunities instead of treating development as a points exercise.", who: "Large buyers, mines, manufacturers, municipalities, SMEs and supplier-development beneficiaries.", deliverables: ["Supplier segmentation and diversity mapping", "Beneficiary eligibility and due-diligence support", "Business diagnostics, compliance, finance readiness and operations support", "Mentorship, technical assistance, procurement conversion and impact measurement"], guardrail: "Beneficiary eligibility, contribution recognition and procurement outcomes remain subject to the applicable code and documented evidence." },
   { id: "employment-equity", label: "Employment Equity", title: "Management control & Employment Equity", kicker: "01.2 · Workforce transformation", summary: "Translate workforce data and the 2025–2030 sector framework into annual recruitment, promotion, succession and development actions.", who: "Employers, HR leadership, transformation committees and public-sector entities.", deliverables: ["EE gap analysis and workforce-profile dashboard", "EEA12 analysis and EEA13 five-year plan support", "Numerical goals, targets and progress tracking", "Succession, recruitment, retention and leadership-development actions"], guardrail: "Implementation should preserve merit, role requirements, operational continuity and the requirements of the applicable Employment Equity framework." },
@@ -315,6 +358,15 @@ const partnerServices = [
   { id: "quality-systems", label: "ISO systems", title: "ISO quality, environment & safety systems", kicker: "11 · Management systems", summary: "Build practical management systems for quality, environmental responsibility and occupational health and safety with evidence-ready documentation.", who: "Industrial firms, mines, construction companies, schools, municipalities and service businesses.", deliverables: ["ISO 9001 quality-management system support", "ISO 14001 environmental-management system support", "ISO 45001 occupational-health-and-safety system support", "Policy, procedure, internal-audit and continual-improvement registers"], guardrail: "Certification is performed by an independent accredited certification body; NSTC provides preparation and implementation support." },
   { id: "npo-governance", label: "NPO / NPC governance", title: "NPO, NPC governance & funding readiness", kicker: "14 · Non-profit solutions", summary: "Strengthen governance, registration readiness, board systems, proposal quality and donor evidence for organisations delivering public benefit.", who: "NPOs, NPCs, NGOs, foundations, community organisations and development agencies.", deliverables: ["NPO registration-readiness and NPC/CIPC coordination", "Board charter, conflict-of-interest and delegation frameworks", "Risk registers, policy toolkits and organisational scorecards", "Concept notes, proposals, logframes, budgets and sustainability plans"], guardrail: "NPO/NPC registration does not automatically create tax exemption or Section 18A status; regulated applications require appropriately qualified specialists." },
   { id: "international-trade", label: "International trade", title: "International partnerships & trade", kicker: "16 · Market access", summary: "Support responsible South Africa–Africa and international partnership development, trade readiness and market-access pathways.", who: "Exporters, manufacturers, investors, development agencies, municipalities and strategic partners.", deliverables: ["Market and partner-readiness diagnostics", "Trade and investment opportunity mapping", "Partnership, capability and implementation documentation", "AfCFTA and China–Africa insight briefings with referral support"], guardrail: "Customs, legal and regulated trade matters require appropriately qualified professionals and should not be presented as guaranteed market access." }
+] as const;
+
+const serviceBorderPalettes = [
+  ["#d4af37", "#63a6a6"],
+  ["#e07a5f", "#81b29a"],
+  ["#6fa3d2", "#d9b44a"],
+  ["#c08497", "#72a98f"],
+  ["#e09f3e", "#6c91bf"],
+  ["#b8a1d9", "#d49a5b"]
 ] as const;
 
 const corporateReferences = [
@@ -673,15 +725,49 @@ function PartnerServiceModal({ service, onClose }: { service: typeof partnerServ
     document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKeyDown);
-    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener("keydown", onKeyDown); };
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [onClose]);
-  return <div className="service-modal" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
-    <button className="service-modal-backdrop" aria-label="Close service details" onClick={onClose} />
-    <section className="service-modal-panel">
-      <div className="service-modal-header"><div><p className="eyebrow text-[#D4AF37]">{service.kicker}</p><h2 id="service-modal-title" className="mt-3 font-display text-3xl text-white md:text-5xl">{service.title}</h2></div><button className="service-close" onClick={onClose} aria-label="Close service details"><X className="h-5 w-5" /></button></div>
-      <div className="service-modal-body"><p className="max-w-3xl text-lg leading-8 text-white/75">{service.summary}</p><div className="mt-10 grid gap-8 md:grid-cols-2"><div><p className="eyebrow text-[#D4AF37]">Who it is for</p><p className="mt-3 text-sm leading-7 text-white/70">{service.who}</p></div><div><p className="eyebrow text-[#D4AF37]">Expected outputs</p><ul className="mt-3 space-y-3 text-sm leading-6 text-white/70">{service.deliverables.map((item) => <li key={item}><Check className="mr-2 inline h-4 w-4 text-[#D4AF37]" />{item}</li>)}</ul></div></div><div className="service-guardrail mt-10"><ShieldCheck className="h-5 w-5 shrink-0 text-[#D4AF37]" /><p><strong className="text-white">Responsible-service note.</strong> {service.guardrail}</p></div><a className="btn btn-gold mt-10" href="#contact" onClick={onClose}>Request a consultation <ArrowRight className="h-4 w-4" /></a></div>
-    </section>
-  </div>;
+  return (
+    <div className="service-modal p-6" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
+      <button className="service-modal-backdrop" aria-label="Close service details" onClick={onClose} />
+      <section className="service-modal-panel">
+        <div className="service-modal-header">
+          <div>
+            <p className="eyebrow text-[#D4AF37]">{service.kicker}</p>
+            <h2 id="service-modal-title" className="mt-3 font-display text-3xl text-white md:text-5xl">{service.title}</h2>
+          </div>
+          <button className="service-close" onClick={onClose} aria-label="Close service details">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="service-modal-body">
+          <p className="max-w-3xl text-lg leading-8 text-white/75">{service.summary}</p>
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            <div>
+              <p className="eyebrow text-[#D4AF37]">Who it is for</p>
+              <p className="mt-3 text-sm leading-7 text-white/70">{service.who}</p>
+            </div>
+            <div>
+              <p className="eyebrow text-[#D4AF37]">Expected outputs</p>
+              <ul className="mt-3 space-y-3 text-sm leading-6 text-white/70">
+                {service.deliverables.map((item) =>
+                  <li key={item}><Check className="mr-2 inline h-4 w-4 text-[#D4AF37]" />{item}</li>
+                )}
+              </ul>
+            </div>
+          </div>
+          <div className="service-guardrail mt-10">
+            <ShieldCheck className="h-5 w-5 shrink-0 text-[#D4AF37]" />
+            <p><strong className="text-white">Responsible-service note.</strong> {service.guardrail}</p>
+          </div>
+          <a className="btn btn-gold mt-10" href="#contact" onClick={onClose}>Request a consultation <ArrowRight className="h-4 w-4" /></a>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 function PartnerServicesFeature() {
@@ -691,16 +777,59 @@ function PartnerServicesFeature() {
   const totalPages = Math.ceil(partnerServices.length / pageSize);
   const visibleServices = partnerServices.slice(page * pageSize, (page + 1) * pageSize);
   const selected = partnerServices.find((service) => service.id === selectedId) ?? null;
-  const close = () => { setSelectedId(null); if (window.location.hash.startsWith("#partner-service-")) window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`); };
+  const close = () => {
+    setSelectedId(null);
+    if (window.location.hash.startsWith("#partner-service-")) window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`);
+  };
+
   const open = (id: string) => { setSelectedId(id); window.history.pushState({}, "", `#partner-service-${id}`); };
+
   useEffect(() => {
-    const syncFromHash = () => { const id = window.location.hash.replace("#partner-service-", ""); if (id && partnerServices.some((service) => service.id === id)) setSelectedId(id); };
-    syncFromHash(); window.addEventListener("popstate", syncFromHash); window.addEventListener("hashchange", syncFromHash); return () => { window.removeEventListener("popstate", syncFromHash); window.removeEventListener("hashchange", syncFromHash); };
+    const syncFromHash = () => {
+      const id = window.location.hash.replace("#partner-service-", "");
+      if (id && partnerServices.some((service) => service.id === id)) setSelectedId(id);
+    };
+    syncFromHash();
+    window.addEventListener("popstate", syncFromHash);
+    window.addEventListener("hashchange", syncFromHash);
+    return () => {
+      window.removeEventListener("popstate", syncFromHash);
+      window.removeEventListener("hashchange", syncFromHash);
+    };
   }, []);
-  return <>
-    <div className="hero-partner-feature" aria-labelledby="hero-partner-title"><div className="flex items-end justify-between gap-4"><div><p id="hero-partner-title" className="eyebrow text-[#D4AF37]">Partner with us for services</p><p className="mt-2 text-sm leading-6 text-white/65">Companies · mines · sponsors — select a service to view the strategy, deliverables and responsible-service note.</p></div><span className="service-page-count">{page + 1} / {totalPages}</span></div><ul className="hero-partner-benefits" aria-label="Partnership services">{visibleServices.map((service) => <li key={service.id}><button className="partner-service-button" onClick={() => open(service.id)} aria-haspopup="dialog"><span>{service.label}</span><ArrowUpRight className="h-4 w-4" /></button></li>)}</ul><div className="service-pager"><button className="service-page-button" onClick={() => setPage((value) => (value - 1 + totalPages) % totalPages)} aria-label="Previous partner services"><ChevronLeft className="h-5 w-5" /></button><span>Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, partnerServices.length)} of {partnerServices.length} services</span><button className="service-page-button" onClick={() => setPage((value) => (value + 1) % totalPages)} aria-label="Next partner services"><ChevronRight className="h-5 w-5" /></button></div></div>
-    {selected && <PartnerServiceModal service={selected} onClose={close} />}
-  </>;
+
+  return (
+    <>
+      <div className="hero-partner-feature" aria-labelledby="hero-partner-title">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p id="hero-partner-title" className="eyebrow text-[#D4AF37]">Partner with us for services</p>
+            <p className="mt-2 text-sm leading-6 text-white/65">Companies · mines · sponsors</p>
+          </div>
+          <span className="service-page-count">{page + 1} / {totalPages}</span>
+        </div>
+        <ul className="hero-partner-benefits" aria-label="Partnership services">
+          {visibleServices.map((service, index) => {
+            const [firstColor, secondColor] = serviceBorderPalettes[index % serviceBorderPalettes.length];
+            return <li key={service.id}>
+              <button className="partner-service-button" style={{ "--service-color-a": firstColor, "--service-color-b": secondColor } as React.CSSProperties} onClick={() => open(service.id)} aria-haspopup="dialog">
+                <span>{service.label}</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </button>
+            </li>;
+          })}
+        </ul>
+        <div className="service-pager">
+          <button className="service-page-button" onClick={() => setPage((value) => (value - 1 + totalPages) % totalPages)} aria-label="Previous partner services">
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <span>Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, partnerServices.length)} of {partnerServices.length} services</span>
+          <button className="service-page-button" onClick={() => setPage((value) => (value + 1) % totalPages)} aria-label="Next partner services"><ChevronRight className="h-5 w-5" /></button>
+        </div>
+      </div>
+      {selected && <PartnerServiceModal service={selected} onClose={close} />}
+    </>
+  );
 }
 
 // Hero Section Component
@@ -746,30 +875,7 @@ function Hero({ onApply }: { onApply: () => void }) {
           </div>
 
           {/* partners for services */}
-          <div className="hero-partner-feature" aria-labelledby="hero-partner-title">
-            <p id="hero-partner-title" className="eyebrow text-[#D4AF37]">Partner with us</p>
-            <p className="mt-2 text-sm leading-6 text-white/65">For companies, mines and sponsors</p>
-            <ul className="hero-partner-benefits" aria-label="Partnership benefits">
-              {[
-                "B-BBEE scorecard",
-                "Enterprise development",
-                "Tax exemption",
-                "HR development",
-                "WSP / ATR",
-                "Corporate dealings",
-                "CSI",
-                "Sports & Social develoment",
-                "Social labour plans",
-                "SDL grant",
-                "Employee Wellness",
-                "China-Africa programme",
-                "International Trade",
-                "Civil Society development",
-                "ISO",
-                "Innovation Challenge",
-              ].map((benefit) => <li key={benefit}>{benefit}</li>)}
-            </ul>
-          </div>
+          <PartnerServicesFeature />
 
         </div>
         <SponsorPanel />
@@ -1726,7 +1832,7 @@ function SalesPortal() {
         </div>
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {salesItems.map(([name, body, price, image]) =>
-            <article className="sale-card sale-card--image" key={name} style={{ backgroundImage: `linear-gradient(145deg, rgba(9,11,16,.72), rgba(9,11,16,.9)), url(${image})` }}>
+            <article className="sale-card sale-card--image" key={name} style={{ backgroundImage: `linear-gradient(145deg, rgba(9,11,16,.52), rgba(9,11,16,.7)), url(${image})` }}>
               <div className="sale-icon"><ShoppingBag className="h-5 w-5" /></div>
               <h3 className="mt-6 font-display text-2xl text-white">{name}</h3>
               <p className="mt-2 text-sm leading-6 text-white/70">{body}</p>
