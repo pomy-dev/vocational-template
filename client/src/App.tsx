@@ -745,7 +745,31 @@ function Hero({ onApply }: { onApply: () => void }) {
             <a className="hero-link" href="#programmes"><Play className="h-4 w-4 fill-current" /> Explore programmes</a>
           </div>
 
-          <PartnerServicesFeature />
+          {/* partners for services */}
+          <div className="hero-partner-feature" aria-labelledby="hero-partner-title">
+            <p id="hero-partner-title" className="eyebrow text-[#D4AF37]">Partner with us</p>
+            <p className="mt-2 text-sm leading-6 text-white/65">For companies, mines and sponsors</p>
+            <ul className="hero-partner-benefits" aria-label="Partnership benefits">
+              {[
+                "B-BBEE scorecard",
+                "Enterprise development",
+                "Tax exemption",
+                "HR development",
+                "WSP / ATR",
+                "Corporate dealings",
+                "CSI",
+                "Sports & Social develoment",
+                "Social labour plans",
+                "SDL grant",
+                "Employee Wellness",
+                "China-Africa programme",
+                "International Trade",
+                "Civil Society development",
+                "ISO",
+                "Innovation Challenge",
+              ].map((benefit) => <li key={benefit}>{benefit}</li>)}
+            </ul>
+          </div>
 
         </div>
         <SponsorPanel />
