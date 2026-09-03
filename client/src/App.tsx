@@ -679,6 +679,7 @@ function Hero({ onApply }: { onApply: () => void }) {
             <a className="hero-link" href="#programmes"><Play className="h-4 w-4 fill-current" /> Explore programmes</a>
           </div>
 
+          {/* partners for services */}
           <div className="hero-partner-feature" aria-labelledby="hero-partner-title">
             <p id="hero-partner-title" className="eyebrow text-[#D4AF37]">Partner with us</p>
             <p className="mt-2 text-sm leading-6 text-white/65">For companies, mines and sponsors</p>
