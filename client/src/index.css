@@ -2034,3 +2034,31 @@ textarea.field {
     grid-template-columns: 1fr;
   }
 }
+@property --service-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.hero-partner-feature { margin-top: 30px; max-width: 680px; border-top: 1px solid rgba(255,255,255,.12); padding-top: 18px; }
+.hero-partner-benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 14px 0 0; padding: 0; list-style: none; }
+.hero-partner-benefits li { min-width: 0; }
+.partner-service-button { position: relative; display: flex; min-height: 58px; width: 100%; align-items: center; justify-content: space-between; gap: 7px; overflow: hidden; border: 1px solid transparent; border-radius: 11px; background: linear-gradient(#16181d, #16181d) padding-box, conic-gradient(from var(--service-angle), #d4af37, #63a6a6, #d4af37) border-box; padding: 11px 12px; color: rgba(255,255,255,.82); font-size: 11px; font-weight: 700; text-align: left; transition: transform .18s ease, color .18s ease, box-shadow .18s ease; animation: service-border-rotate 4.5s linear infinite; }
+.partner-service-button:hover, .partner-service-button:focus-visible { color: white; box-shadow: 0 10px 24px rgba(0,0,0,.2); transform: translateY(-2px); outline: none; }
+.partner-service-button:active { transform: scale(.97); }
+@keyframes service-border-rotate { to { --service-angle: 360deg; } }
+.service-page-count { flex: 0 0 auto; color: rgba(255,255,255,.48); font-family: 'DM Mono', monospace; font-size: 10px; }
+.service-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; color: rgba(255,255,255,.45); font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; }
+.service-page-button { display: inline-flex; height: 34px; width: 34px; flex: 0 0 auto; align-items: center; justify-content: center; border: 1px solid rgba(212,175,55,.55); border-radius: 9px 3px 9px 3px; background: rgba(212,175,55,.1); color: #d4af37; transition: background .18s ease, transform .18s ease; }
+.service-page-button:hover { background: rgba(212,175,55,.22); transform: translateY(-2px); }
+.service-modal { position: fixed; inset: 0; z-index: 100; overflow-y: auto; }
+.service-modal-backdrop { position: fixed; inset: 0; border: 0; background: rgba(4,6,10,.78); backdrop-filter: blur(8px); }
+.service-modal-panel { position: relative; min-height: 100vh; width: min(100%, 1120px); margin-left: 0; border-right: 1px solid rgba(255,255,255,.12); background: radial-gradient(circle at 70% 0%, rgba(212,175,55,.16), transparent 33%), linear-gradient(145deg, #101216, #070809 62%); padding: 34px 24px 56px; animation: service-panel-in .34s cubic-bezier(.23,1,.32,1); }
+@keyframes service-panel-in { from { opacity: 0; transform: translateX(-100%); } to { opacity: 1; transform: translateX(0); } }
+.service-modal-header, .service-modal-body { position: relative; max-width: 900px; margin-inline: auto; }
+.service-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding-top: 40px; }
+.service-close { display: inline-flex; height: 42px; width: 42px; flex: 0 0 auto; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; background: rgba(255,255,255,.06); color: white; transition: background .18s ease, transform .18s ease; }
+.service-close:hover { background: rgba(255,255,255,.13); transform: rotate(6deg); }
+.service-guardrail { display: flex; align-items: flex-start; gap: 12px; border: 1px solid rgba(212,175,55,.3); border-radius: 14px; background: rgba(212,175,55,.08); padding: 16px; color: rgba(255,255,255,.65); font-size: 13px; line-height: 1.6; }
+.footer-reference-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; }
+.footer-reference-grid a { color: rgba(255,255,255,.48); font-size: 11px; line-height: 1.45; transition: color .18s ease; }
+.footer-reference-grid a:hover { color: white; }
+.sale-card--image { background-position: center; background-size: cover; border-color: rgba(255,255,255,.1); }
+.sale-card--image .sale-icon { background: rgba(212,175,55,.18); color: #f2cf63; }
+@media (max-width: 767px) { .hero-partner-benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); } .service-modal-panel { padding: 26px 17px 44px; } .service-modal-header { padding-top: 30px; } .footer-reference-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .partner-service-button { animation: none; } .service-modal-panel { animation: none; } }
