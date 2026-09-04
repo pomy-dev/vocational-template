@@ -351,13 +351,76 @@ const partnerServices = [
     summary: "Design CSI and socio-economic development portfolios that align with applicable codes, community needs and measurable outcomes.",
     who: "Corporate foundations, CSI/ESG teams, mines, manufacturers, NPOs, NGOs and community programmes.", deliverables: ["SED strategy and annual portfolio plan", "Beneficiary due diligence and programme contracting", "Education, bursary, food-security, youth and disability initiatives", "Board, ESG and CSI reporting with beneficiary-impact data"], guardrail: "Targets depend on the applicable B-BBEE code and entity profile; programme claims should be supported by evidence."
   },
-  { id: "social-labour-plan", label: "Social labour plan", title: "Mining, SLP & community solutions", kicker: "07 · Project and community solutions", summary: "Connect mining and infrastructure commitments to practical local skills, supplier development, community participation and transparent evidence.", who: "Mines, energy companies, infrastructure partners, municipalities and community-development stakeholders.", deliverables: ["Social and Labour Plan implementation support", "Community needs assessment and beneficiary registers", "Local procurement, supplier-development and skills pipelines", "Progress dashboards, stakeholder reporting and evidence packs"], guardrail: "Statutory plans and regulated submissions should be reviewed by appropriately qualified specialists and the responsible authority." },
-  { id: "enterprise-development", label: "Enterprise development", title: "Enterprise & supplier development", kicker: "02 · Inclusive value chains", summary: "Build stronger suppliers and inclusive value chains by linking beneficiary support to real procurement opportunities instead of treating development as a points exercise.", who: "Large buyers, mines, manufacturers, municipalities, SMEs and supplier-development beneficiaries.", deliverables: ["Supplier segmentation and diversity mapping", "Beneficiary eligibility and due-diligence support", "Business diagnostics, compliance, finance readiness and operations support", "Mentorship, technical assistance, procurement conversion and impact measurement"], guardrail: "Beneficiary eligibility, contribution recognition and procurement outcomes remain subject to the applicable code and documented evidence." },
-  { id: "employment-equity", label: "Employment Equity", title: "Management control & Employment Equity", kicker: "01.2 · Workforce transformation", summary: "Translate workforce data and the 2025–2030 sector framework into annual recruitment, promotion, succession and development actions.", who: "Employers, HR leadership, transformation committees and public-sector entities.", deliverables: ["EE gap analysis and workforce-profile dashboard", "EEA12 analysis and EEA13 five-year plan support", "Numerical goals, targets and progress tracking", "Succession, recruitment, retention and leadership-development actions"], guardrail: "Implementation should preserve merit, role requirements, operational continuity and the requirements of the applicable Employment Equity framework." },
-  { id: "hr-staffing", label: "HR & staffing", title: "Human resources, staffing & placement", kicker: "04 · Workforce solutions", summary: "Recruit, place, mobilise and develop people through compliant workforce solutions and registered employment-services partners where required.", who: "Project employers, manufacturers, mines, SMEs, public entities and candidates.", deliverables: ["Permanent and temporary staff sourcing, screening and placement", "Workforce planning and project manpower mobilisation", "Onboarding, contracts, timesheets and workforce reporting", "Candidate database, job matching and employment-relations support"], guardrail: "PEA/TES services should only be delivered under required registration or through appropriately registered partners." },
-  { id: "quality-systems", label: "ISO systems", title: "ISO quality, environment & safety systems", kicker: "11 · Management systems", summary: "Build practical management systems for quality, environmental responsibility and occupational health and safety with evidence-ready documentation.", who: "Industrial firms, mines, construction companies, schools, municipalities and service businesses.", deliverables: ["ISO 9001 quality-management system support", "ISO 14001 environmental-management system support", "ISO 45001 occupational-health-and-safety system support", "Policy, procedure, internal-audit and continual-improvement registers"], guardrail: "Certification is performed by an independent accredited certification body; NSTC provides preparation and implementation support." },
-  { id: "npo-governance", label: "NPO / NPC governance", title: "NPO, NPC governance & funding readiness", kicker: "14 · Non-profit solutions", summary: "Strengthen governance, registration readiness, board systems, proposal quality and donor evidence for organisations delivering public benefit.", who: "NPOs, NPCs, NGOs, foundations, community organisations and development agencies.", deliverables: ["NPO registration-readiness and NPC/CIPC coordination", "Board charter, conflict-of-interest and delegation frameworks", "Risk registers, policy toolkits and organisational scorecards", "Concept notes, proposals, logframes, budgets and sustainability plans"], guardrail: "NPO/NPC registration does not automatically create tax exemption or Section 18A status; regulated applications require appropriately qualified specialists." },
-  { id: "international-trade", label: "International trade", title: "International partnerships & trade", kicker: "16 · Market access", summary: "Support responsible South Africa–Africa and international partnership development, trade readiness and market-access pathways.", who: "Exporters, manufacturers, investors, development agencies, municipalities and strategic partners.", deliverables: ["Market and partner-readiness diagnostics", "Trade and investment opportunity mapping", "Partnership, capability and implementation documentation", "AfCFTA and China–Africa insight briefings with referral support"], guardrail: "Customs, legal and regulated trade matters require appropriately qualified professionals and should not be presented as guaranteed market access." }
+  {
+    id: "social-labour-plan",
+    label: "Social labour plan",
+    title: "Mining, SLP & community solutions",
+    kicker: "07 · Project and community solutions",
+    summary: "Connect mining and infrastructure commitments to practical local skills, supplier development, community participation and transparent evidence.",
+    who: "Mines, energy companies, infrastructure partners, municipalities and community-development stakeholders.",
+    deliverables: ["Social and Labour Plan implementation support", "Community needs assessment and beneficiary registers", "Local procurement, supplier-development and skills pipelines", "Progress dashboards, stakeholder reporting and evidence packs"],
+    guardrail: "Statutory plans and regulated submissions should be reviewed by appropriately qualified specialists and the responsible authority."
+  },
+  {
+    id: "enterprise-development",
+    label: "Enterprise development",
+    title: "Enterprise & supplier development",
+    kicker: "02 · Inclusive value chains",
+    summary: "Build stronger suppliers and inclusive value chains by linking beneficiary support to real procurement opportunities instead of treating development as a points exercise.",
+    who: "Large buyers, mines, manufacturers, municipalities, SMEs and supplier-development beneficiaries.",
+    deliverables: ["Supplier segmentation and diversity mapping", "Beneficiary eligibility and due-diligence support", "Business diagnostics, compliance, finance readiness and operations support", "Mentorship, technical assistance, procurement conversion and impact measurement"],
+    guardrail: "Beneficiary eligibility, contribution recognition and procurement outcomes remain subject to the applicable code and documented evidence."
+  },
+  {
+    id: "employment-equity",
+    label: "Employment Equity",
+    title: "Management control & Employment Equity",
+    kicker: "01.2 · Workforce transformation",
+    summary: "Translate workforce data and the 2025–2030 sector framework into annual recruitment, promotion, succession and development actions.",
+    who: "Employers, HR leadership, transformation committees and public-sector entities.",
+    deliverables: ["EE gap analysis and workforce-profile dashboard", "EEA12 analysis and EEA13 five-year plan support", "Numerical goals, targets and progress tracking", "Succession, recruitment, retention and leadership-development actions"],
+    guardrail: "Implementation should preserve merit, role requirements, operational continuity and the requirements of the applicable Employment Equity framework."
+  },
+  {
+    id: "hr-staffing",
+    label: "HR & staffing",
+    title: "Human resources, staffing & placement",
+    kicker: "04 · Workforce solutions",
+    summary: "Recruit, place, mobilise and develop people through compliant workforce solutions and registered employment-services partners where required.",
+    who: "Project employers, manufacturers, mines, SMEs, public entities and candidates.",
+    deliverables: ["Permanent and temporary staff sourcing, screening and placement", "Workforce planning and project manpower mobilisation", "Onboarding, contracts, timesheets and workforce reporting", "Candidate database, job matching and employment-relations support"],
+    guardrail: "PEA/TES services should only be delivered under required registration or through appropriately registered partners."
+  },
+  {
+    id: "quality-systems",
+    label: "ISO systems",
+    title: "ISO quality, environment & safety systems",
+    kicker: "11 · Management systems",
+    summary: "Build practical management systems for quality, environmental responsibility and occupational health and safety with evidence-ready documentation.",
+    who: "Industrial firms, mines, construction companies, schools, municipalities and service businesses.",
+    deliverables: ["ISO 9001 quality-management system support", "ISO 14001 environmental-management system support", "ISO 45001 occupational-health-and-safety system support", "Policy, procedure, internal-audit and continual-improvement registers"],
+    guardrail: "Certification is performed by an independent accredited certification body; NSTC provides preparation and implementation support."
+  },
+  {
+    id: "npo-governance",
+    label: "NPO / NPC governance",
+    title: "NPO, NPC governance & funding readiness",
+    kicker: "14 · Non-profit solutions",
+    summary: "Strengthen governance, registration readiness, board systems, proposal quality and donor evidence for organisations delivering public benefit.",
+    who: "NPOs, NPCs, NGOs, foundations, community organisations and development agencies.",
+    deliverables: ["NPO registration-readiness and NPC/CIPC coordination", "Board charter, conflict-of-interest and delegation frameworks", "Risk registers, policy toolkits and organisational scorecards", "Concept notes, proposals, logframes, budgets and sustainability plans"],
+    guardrail: "NPO/NPC registration does not automatically create tax exemption or Section 18A status; regulated applications require appropriately qualified specialists."
+  },
+  {
+    id: "international-trade",
+    label: "International trade",
+    title: "International partnerships & trade",
+    kicker: "16 · Market access",
+    summary: "Support responsible South Africa–Africa and international partnership development, trade readiness and market-access pathways.",
+    who: "Exporters, manufacturers, investors, development agencies, municipalities and strategic partners.",
+    deliverables: ["Market and partner-readiness diagnostics", "Trade and investment opportunity mapping", "Partnership, capability and implementation documentation", "AfCFTA and China–Africa insight briefings with referral support"],
+    guardrail: "Customs, legal and regulated trade matters require appropriately qualified professionals and should not be presented as guaranteed market access."
+  }
 ] as const;
 
 const serviceBorderPalettes = [
@@ -381,7 +444,7 @@ const corporateReferences = [
   ["SARS – Public Benefit Organisations / Section 18A", "https://www.sars.gov.za/types-of-tax/individuals/section-18a/"],
   ["ISO – Management system standards", "https://www.iso.org/standards.html"],
   ["the dtic – AfCFTA", "https://www.thedtic.gov.za/afcfta/"],
-  ["FOCAC – Beijing Action Plan", "https://www.focac.org.cn/eng/"],
+  ["FOCAC – Beijing Action Plan", "https://www.focac.org.cn/eng/"]
 ] as const;
 
 const partners = [
@@ -724,16 +787,20 @@ function SponsorPanel() {
 }
 
 function PartnerServiceModal({ service, onClose }: { service: typeof partnerServices[number]; onClose: () => void }) {
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [onClose]);
+
   return (
     <div className="service-modal p-6" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
       <button className="service-modal-backdrop" aria-label="Close service details" onClick={onClose} />
