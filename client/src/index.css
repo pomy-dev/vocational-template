@@ -2054,7 +2054,7 @@ textarea.field {
 .partner-service-button {
   position: relative;
   display: flex;
-  min-height: 58px;
+  min-height: 38px;
   width: 100%;
   align-items: center;
   justify-content: space-between;

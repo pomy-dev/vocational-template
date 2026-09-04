@@ -495,13 +495,17 @@ function useData() {
   return [data, setData] as const;
 }
 
-// Simulated delay for async actions
+
 function delay(ms = 650) { return new Promise((resolve) => window.setTimeout(resolve, ms)); }
 
 // Custom hook to handle async actions with loading state
 function useAction() {
   const [loading, setLoading] = useState(false);
-  const run = async (action: () => void | Promise<void>) => { setLoading(true); await delay(); await action(); setLoading(false); };
+  const run = async (action: () => void | Promise<void>) => {
+    setLoading(true); await delay();
+    await action();
+    setLoading(false);
+  };
   return { loading, run };
 }
 
@@ -840,7 +844,7 @@ function Hero({ onApply }: { onApply: () => void }) {
     <section className="hero">
       <div className="hero-grid" />
       <PublicNav onApply={onApply} />
-      <div className="container relative grid min-h-[660px] items-center gap-10 pb-16 pt-20 lg:grid-cols-[1.05fr_.95fr]">
+      <div className="container relative grid min-h-[660px] items-center gap-10 pb-16 pt-20 lg:grid-cols-[1.05fr_.95fr] mt-12">
         <div className="max-w-2xl">
           <div className="eyebrow text-[#D4AF37]">Future Skills · Skills In Demand · Learn Today Lead Tomorrow</div>
           <h1 className="mt-5 font-display text-4xl leading-[.98] text-white md:text-8l">Fighting Unemployment <span className="gold-text">& Poverty Through Education.</span></h1>
