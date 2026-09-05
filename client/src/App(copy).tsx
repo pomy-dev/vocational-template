@@ -18,7 +18,7 @@ import TertiaryExperience from "/assets/tertiary-experience.jpg";
 import ExperienceOne from "/assets/justone.jpeg";
 import DayOne from "/assets/datone.jpeg";
 import GradOfTwo from "/assets/grad.jpg";
-import NSTCLogo from "/assets/MainLogo.jpg";
+import NSTCLogo from "/assets/logo.jpeg";
 
 type Icon = typeof ArrowRight;
 type Status = "Active" | "Suspended" | "Completed" | "Alumni";
@@ -678,16 +678,7 @@ function PublicNav({ onApply }: { onApply: () => void }) {
   const [open, setOpen] = useState(false);
   return (
     <header className="public-nav">
-      <div className="mission-band" aria-label="NSTC impact pathway">
-        <div className="container mission-band__content">
-          <p className="mission-band__promise">
-            <span>Empower</span><i aria-hidden="true">|</i><span>Employ</span><i aria-hidden="true">|</i><span>Excel</span><i aria-hidden="true">|</i>
-          </p>
-          <p className="mission-band__pillars">Skills <i aria-hidden="true">|</i> Innovation <i aria-hidden="true">|</i> Impact</p>
-          <p className="mission-band__pathway">Train <i aria-hidden="true">→</i> Certify <i aria-hidden="true">→</i> Workplace Experience <i aria-hidden="true">→</i> Employment/Enterprise <i aria-hidden="true">→</i> Impact</p>
-        </div>
-      </div>
-      <div className="container public-nav__main flex h-[78px] items-center justify-between">
+      <div className="container flex h-[78px] items-center justify-between">
         <Logo light />
         <nav className="hidden items-center gap-7 lg:flex">
           <a href="#about">About</a>
@@ -1080,7 +1071,7 @@ function PartnersShowcase() {
 // About Section Component
 function About() {
   return (
-    <section id="about" className="section-pad bg-[#f2f5fa]">
+    <section id="about" className="section-pad bg-[#f8f6f1]">
       <div className="container grid gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
         {/* histor card */}
         <div className="about-art">
@@ -1161,10 +1152,10 @@ function Programmes({ onApply }: { onApply: () => void }) {
       <div className="container">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <SectionTitle eyebrow="Learn with direction" title="Pathways for every kind." body="From National Certificates to occupational qualifications and short practical programmes, choose the route that fits your ambitions." />
-          <Button variant="gold" onClick={onApply}>Find your programme <ArrowRight className="h-4 w-4" /></Button>
+          <Button variant="dark" onClick={onApply}>Find your programme <ArrowRight className="h-4 w-4" /></Button>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{courses.slice(0, 8).map((course, index) => <FlipCard key={course.id} course={course} image={course?.image} />)}</div>
-        <div className="mt-16 rounded-2xl catalogue-panel bg-[#071a3a] p-7 text-white md:p-10">
+        <div className="mt-16 rounded-2xl catalogue-panel bg-[#111] p-7 text-white md:p-10">
           <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
             {/* catelogue part */}
             <div className="catalogue-intro h-[100%] rounded-xl p-6 md:p-8" style={{ backgroundImage: `linear-gradient(110deg, rgba(10,10,10,.94), rgba(10,10,10,.68)), url(${ExperienceOne})` }}>
@@ -1251,7 +1242,7 @@ function Skills({ data, setData }: {
   };
 
   return (
-    <section id="skills" className="section-pad bg-[#f2f5fa]">
+    <section id="skills" className="section-pad bg-[#f8f6f1]">
       <div className="container">
         <SectionTitle eyebrow="Talent on demand" title="The hands that keep South Africa moving." body="Our artisan, operator and occupational graduates leave with practical confidence. Companies can request talent by category and let our placement team make the connection." />
         <div className="mt-9 flex flex-wrap gap-2">{categories.map((item) => <button key={item} className={`filter-chip ${category === item ? "active" : ""}`} onClick={() => setCategory(item)}>{item}</button>)}</div>
@@ -1323,7 +1314,7 @@ function Skills({ data, setData }: {
 // Fees Section Component
 function Fees() {
   return (
-    <section id="fees" className="section-pad bg-[#071a3a] text-white">
+    <section id="fees" className="section-pad bg-[#111] text-white">
       <div className="container">
         <SectionTitle light eyebrow="Straightforward investment" title="Fee Structure" body="(100% EMPLOYMENT)Pay less for hight quality. Start with a R500 registration fee and choose the learning pathway that matches your goals." />
         <div className="cash-discount-banner discount-promo mt-8" role="status">
@@ -1535,7 +1526,7 @@ function Fees() {
 // Occupational Certificates Section Component
 function OccupationalCertificates() {
   return (
-    <section id="occupational" className="section-pad bg-[#f2f5fa]">
+    <section id="occupational" className="section-pad bg-[#f8f6f1]">
       <div className="container">
         <SectionTitle eyebrow="Occupational certificates" title="Practical routes into the world of work." body="Explore the colleges and SETA-aligned certificates that build opportunity in communities across South Africa." />
         <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -1595,7 +1586,7 @@ function Contact() {
   };
 
   return (
-    <section id="contact" className="section-pad bg-[#f2f5fa]">
+    <section id="contact" className="section-pad bg-[#f8f6f1]">
       <div className="container grid gap-12 lg:grid-cols-[.9fr_1.1fr]">
         {/* locations */}
         <div>
@@ -1751,7 +1742,7 @@ function Apprenticeships({ data, setData }: {
         </div>
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {data.apprenticeships.map((post) =>
-            <article key={post.id} className="rounded-2xl border border-slate-200 bg-[#f2f5fa] p-6 transition hover:-translate-y-1 hover:shadow-lg">
+            <article key={post.id} className="rounded-2xl border border-slate-200 bg-[#f8f6f1] p-6 transition hover:-translate-y-1 hover:shadow-lg">
               <div className="flex items-center justify-between gap-3">
                 <Pill>{post.type}</Pill>
                 <span className="text-xs text-slate-400">Closes {post.closing}</span>
@@ -1886,9 +1877,9 @@ function ApprenticeshipPortal({ data, setData, onApply }: {
 }) {
   return (
     <div className="public-page">
-      <div className="bg-[#071a3a] pb-14">
+      <div className="bg-[#090909] pb-14">
         <PublicNav onApply={onApply} />
-        <div className="container pt-36">
+        <div className="container pt-20">
           <SectionTitle light eyebrow="Apprenticeship & internship placement" title="Step into the workplace." body="Find a live opportunity, submit your CV securely through this placement sub-portal, and let NSTC connect your practical training with industry." />
         </div>
       </div>
@@ -1901,7 +1892,7 @@ function ApprenticeshipPortal({ data, setData, onApply }: {
 // Sales Portal Component
 function SalesPortal() {
   return (
-    <section id="sales" className="section-pad bg-[#f2f5fa]">
+    <section id="sales" className="section-pad bg-[#f8f6f1]">
       <div className="container">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <SectionTitle eyebrow="NSTC sales portal" title="Tools for the next chapter." body="Order laptops, textbooks, drawing boards and study guides from the college supply desk." />
@@ -1912,12 +1903,12 @@ function SalesPortal() {
         </div>
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {salesItems.map(([name, body, price, image]) =>
-            <article className="sale-card sale-card--image" key={name} style={{ backgroundImage: `linear-gradient(145deg, rgba(9,11,16,.72), rgba(9,11,16,.9)), url(${image})` }}>
+            <article className="sale-card sale-card--image" key={name} style={{ backgroundImage: `linear-gradient(145deg, rgba(9,11,16,.52), rgba(9,11,16,.7)), url(${image})` }}>
               <div className="sale-icon"><ShoppingBag className="h-5 w-5" /></div>
               <h3 className="mt-6 font-display text-2xl text-white">{name}</h3>
               <p className="mt-2 text-sm leading-6 text-white/70">{body}</p>
               <p className="mt-5 text-sm font-bold text-[#f2cf63]">{price}</p>
-              <a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white" style={{ color: "#ccc" }} href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a>
+              <a className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white" href="tel:0712036198">Place an order <ArrowRight className="h-4 w-4" /></a>
             </article>
           )}
         </div>
@@ -1929,7 +1920,7 @@ function SalesPortal() {
 // Footer Component
 function Footer() {
   return (
-    <footer className="bg-[#071a3a] py-12 text-white">
+    <footer className="bg-[#090909] py-12 text-white">
       <div className="container grid gap-10 lg:grid-cols-[1fr_1fr_1fr]">
         <div>
           <Logo light />
@@ -1955,18 +1946,8 @@ function Footer() {
         </div>
       </div>
       <div className="container mt-10 grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-[1.1fr_.9fr]">
-        <div>
-          <p className="eyebrow text-[#D4AF37]">Corporate-services references</p>
-          <div className="footer-reference-grid mt-4">
-            {corporateReferences.map(([label, url]) =>
-              <a href={url} target="_blank" rel="noreferrer" key={label}>{label} <ExternalLink className="inline h-3 w-3" /></a>
-            )}
-          </div>
-        </div>
-        <div className="lg:text-right">
-          <p className="eyebrow text-[#D4AF37]">Technology partner</p>
-          <p className="mt-3 text-sm text-white/60">Powered by: <a className="font-bold text-white underline decoration-[#D4AF37] underline-offset-4" href="https://indabuko-global.vercel.app" target="_blank" rel="noreferrer">Indabuko Tech Crafts</a></p>
-          <p className="mt-2 text-sm text-white/60">Call <a className="text-white" href="tel:+26876957019">+27 074 503 2009 / +268 7695 7019</a></p></div>
+        <div><p className="eyebrow text-[#D4AF37]">Corporate-services references</p><div className="footer-reference-grid mt-4">{corporateReferences.map(([label, url]) => <a href={url} target="_blank" rel="noreferrer" key={label}>{label} <ExternalLink className="inline h-3 w-3" /></a>)}</div></div>
+        <div className="lg:text-right"><p className="eyebrow text-[#D4AF37]">Technology partner</p><p className="mt-3 text-sm text-white/60">Powered by: <a className="font-bold text-white underline decoration-[#D4AF37] underline-offset-4" href="https://indabuko-global.vercel.app" target="_blank" rel="noreferrer">Indabuko Tech Crafts</a></p><p className="mt-2 text-sm text-white/60">Call <a className="text-white" href="tel:+26876957019">+268 7695 7019</a></p></div>
       </div>
       <div className="container mt-8 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/30 md:flex-row">
         <span>© 2026 National Skills & Technical College · Accredited learning pathways across South Africa</span>
@@ -4403,7 +4384,7 @@ function App() {
     // navigate("/portal/apply"); 
   }} />;
   else if (location === "/apprenticeships") page = <ApprenticeshipPortal data={data} setData={setData} onApply={() => go("/portal/apply")} />;
-  else if (location === "/sales") page = <><div className="bg-[#071a3a] pb-14"><PublicNav onApply={() => go("/portal/apply")} /><div className="container pt-36"><SectionTitle light eyebrow="NSTC sales portal" title="Study tools, ready when you are." body="Order learning devices and course materials from the National Skills & Technical College supply desk." /></div></div><SalesPortal /><Footer /></>;
+  else if (location === "/sales") page = <><div className="bg-[#090909] pb-14"><PublicNav onApply={() => go("/portal/apply")} /><div className="container pt-20"><SectionTitle light eyebrow="NSTC sales portal" title="Study tools, ready when you are." body="Order learning devices and course materials from the National Skills & Technical College supply desk." /></div></div><SalesPortal /><Footer /></>;
   else if (location.startsWith("/portal")) page = <StudentPortal data={data} setData={setData} path={location} navigate={go} />;
   else if (location === "/parent") page = <ParentPortal data={data} navigate={go} />;
   else if (location.startsWith("/lecturer")) page = <LecturerPortal data={data} setData={setData} path={location} navigate={go} />;
