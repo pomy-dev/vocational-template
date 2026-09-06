@@ -5,20 +5,8 @@
     <loc>https://nationalskills.org.za/</loc>
   </url>
 
-  <url>
-    <loc>https://nationalskills.org.za/apprenticeships</loc>
-  </url>
-
-  <url>
-    <loc>https://nationalskills.org.za/sales</loc>
-  </url>
-
-  <url>
-    <loc>https://nationalskills.org.za/parent</loc>
-  </url>
-
-  <url>
+  <!-- <url>
     <loc>https://nationalskills.org.za/portal/apply</loc>
-  </url>
+  </url> -->
 
 </urlset>
