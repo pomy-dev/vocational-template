@@ -3,52 +3,96 @@
 
 <head>
   <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Primary SEO -->
-  <title>National Skills & Technical College | NSTC</title>
-
+  <title>National Skills &amp; Technical College | NSTC</title>
   <meta name="description"
-    content="National Skills & Technical College provides short contemporary courses, vocational and technical education and training, equipping students with practical skills for employment, entrepreneurship and industry." />
-
+    content="National Skills & Technical College (NSTC) provides vocational, technical and occupational education and skills training for employment, entrepreneurship and industry." />
   <meta name="keywords"
-    content="National Skills & Technical College, NSTC, technical college, vocational education, skills training, technical training" />
-
+    content="National Skills & Technical College, NSTC, National Skills, skills college, technical college, vocational college, skills training, technical education, occupational qualifications, apprenticeships" />
   <meta name="author" content="National Skills & Technical College" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#ffffff" />
 
-  <!-- Canonical URL -->
+  <!-- Canonical -->
   <link rel="canonical" href="https://nationalskills.org.za/" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/NSTC.png" type="image/png" />
+  <!-- Site icon / favicon -->
+  <!-- Google can use this favicon in organic search results. Keep this URL stable. -->
+  <link rel="icon" href="/assets/NSTC.png" type="image/png" sizes="512x512" />
+  <link rel="apple-touch-icon" href="/assets/NSTC.png" />
 
-  <!-- Open Graph / Social Sharing -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="National Skills & Technical College | NSTC" />
   <meta property="og:description"
-    content="National Skills & Technical College — vocational and technical education and training for practical skills, employment and entrepreneurship." />
+    content="National Skills & Technical College (NSTC) provides vocational, technical and occupational education and skills training for employment, entrepreneurship and industry." />
   <meta property="og:url" content="https://nationalskills.org.za/" />
   <meta property="og:site_name" content="National Skills & Technical College" />
   <meta property="og:image" content="https://nationalskills.org.za/assets/NSTC.png" />
+  <meta property="og:image:alt" content="National Skills & Technical College (NSTC) logo" />
 
-  <!-- Twitter / X -->
+  <!-- X / Twitter -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="National Skills & Technical College | NSTC" />
   <meta name="twitter:description"
-    content="National Skills & Technical College — vocational and technical education and training." />
+    content="Vocational, technical and occupational education and skills training from National Skills & Technical College (NSTC)." />
   <meta name="twitter:image" content="https://nationalskills.org.za/assets/NSTC.png" />
+  <meta name="twitter:image:alt" content="National Skills & Technical College (NSTC) logo" />
 
-  <!-- Organization structured data -->
+  <!--
+    Structured data:
+    1. WebSite helps Google understand the preferred site name.
+    2. EducationalOrganization identifies the organization and its preferred logo.
+    3. WebPage identifies this URL as the organization's home page.
+  -->
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "National Skills & Technical College",
-      "alternateName": "NSTC",
-      "url": "https://nationalskills.org.za/",
-      "logo": "https://nationalskills.org.za/assets/NSTC.png"
-    }
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": "https://nationalskills.org.za/#organization",
+        "name": "National Skills & Technical College",
+        "alternateName": "NSTC",
+        "url": "https://nationalskills.org.za/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://nationalskills.org.za/assets/NSTC.png",
+          "contentUrl": "https://nationalskills.org.za/assets/NSTC.png"
+        },
+        "description": "National Skills & Technical College (NSTC) provides vocational, technical and occupational education and skills training for employment, entrepreneurship and industry."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://nationalskills.org.za/#website",
+        "url": "https://nationalskills.org.za/",
+        "name": "National Skills & Technical College",
+        "alternateName": "NSTC",
+        "publisher": {
+          "@id": "https://nationalskills.org.za/#organization"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://nationalskills.org.za/#webpage",
+        "url": "https://nationalskills.org.za/",
+        "name": "National Skills & Technical College | NSTC",
+        "isPartOf": {
+          "@id": "https://nationalskills.org.za/#website"
+        },
+        "about": {
+          "@id": "https://nationalskills.org.za/#organization"
+        },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://nationalskills.org.za/assets/NSTC.png"
+        }
+      }
+    ]
+  }
   </script>
 </head>
 
