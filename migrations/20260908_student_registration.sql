@@ -3,6 +3,22 @@
 -- enrollment or payment record fails.
 create sequence if not exists public.student_number_sequence start with 1;
 
+insert into storage.buckets (id, name, public)
+values ('registration-documents', 'registration-documents', false)
+on conflict (id) do nothing;
+
+drop policy if exists registration_documents_upload on storage.objects;
+create policy registration_documents_upload
+on storage.objects for insert to anon, authenticated
+with check (bucket_id = 'registration-documents' and name like 'applications/%');
+
+drop policy if exists registration_documents_cleanup on storage.objects;
+create policy registration_documents_cleanup
+on storage.objects for delete to anon, authenticated
+using (bucket_id = 'registration-documents' and name like 'applications/%');
+
+drop function if exists public.register_student_application(text, text, text, text, text, text, text, text, text, text, text, text);
+
 create or replace function public.register_student_application(
   p_full_name text,
   p_email text,
@@ -15,7 +31,10 @@ create or replace function public.register_student_application(
   p_guardian_name text default null,
   p_guardian_relationship text default null,
   p_guardian_email text default null,
-  p_guardian_phone text default null
+  p_guardian_phone text default null,
+  p_application_trace_id uuid default null,
+  p_photo jsonb default null,
+  p_receipt jsonb default null
 )
 returns table (student_id uuid, student_number text, enrollment_id uuid)
 language plpgsql
@@ -62,9 +81,24 @@ begin
   values (v_student_id, v_enrollment_id, 'Registration fee', 500.00, 'pending', v_student_number, false,
     concat_ws(' · ', nullif(trim(p_field), ''), nullif(trim(p_guardian_relationship), '')));
 
+  if p_application_trace_id is not null then
+    insert into registration_documents (application_trace_id, student_id, enrollment_id, document_type, storage_path, file_url, file_name, mime_type)
+    select p_application_trace_id, v_student_id, v_enrollment_id, item.document_type,
+      item.document_data->>'path', item.document_data->>'url', item.document_data->>'name', item.document_data->>'mimeType'
+    from (values
+      ('photo'::text, p_photo),
+      ('receipt'::text, p_receipt)
+    ) as item(document_type, document_data)
+    where item.document_data is not null
+      and coalesce(item.document_data->>'path', '') <> ''
+      and coalesce(item.document_data->>'url', '') <> ''
+      and coalesce(item.document_data->>'name', '') <> ''
+      and coalesce(item.document_data->>'mimeType', '') <> '';
+  end if;
+
   return query select v_student_id, v_student_number, v_enrollment_id;
 end;
 $$;
 
-revoke all on function public.register_student_application(text, text, text, text, text, text, text, text, text, text, text, text) from public;
-grant execute on function public.register_student_application(text, text, text, text, text, text, text, text, text, text, text, text) to anon, authenticated;
+revoke all on function public.register_student_application(text, text, text, text, text, text, text, text, text, text, text, text, uuid, jsonb, jsonb) from public;
+grant execute on function public.register_student_application(text, text, text, text, text, text, text, text, text, text, text, text, uuid, jsonb, jsonb) to anon, authenticated;

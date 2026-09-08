@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { MapView } from "./components/Map";
-import { registerStudent, type StudentRegistration } from "./lib/studentRegistration";
+import { registerStudent, removeRegistrationFiles, uploadRegistrationFiles, type StudentRegistration } from "./lib/studentRegistration";
 
 // ============================ Static Images =============================== //
 import StudentGrad from "/assets/students-in-grad.jpg";
@@ -22,7 +22,7 @@ import GradOfTwo from "/assets/grad.jpg";
 import NSTCLogo from "/assets/MainLogo.jpg";
 
 type Icon = typeof ArrowRight;
-type Status = "Unapproved" | "Active" | "Suspended" | "Completed" | "Alumni";
+type Status = "Active" | "Suspended" | "Completed" | "Alumni";
 type NextOfKin = { name: string; relationship: string; email: string; phone: string };
 type ApprenticeshipPost = { id: string; title: string; employer: string; location: string; type: string; closing: string; description: string };
 type Suggestion = { id: string; name: string; email: string; category: string; message: string; date: string };
@@ -30,7 +30,6 @@ type Complaint = { id: string; subject: string; category: string; message: strin
 type LearningResource = { id: string; title: string; course: string; subject: string; fileType: string; published: boolean; uploaded: string };
 type LecturerNotification = { id: string; title: string; body: string; date: string; read: boolean };
 type TutorProfile = { name: string; initials: string; email: string; phone: string; courses: string[] };
-
 
 type Course = {
   id: string;
@@ -128,9 +127,7 @@ const courses: Course[] = [
   { id: "bricklayer", image: "/assets/bricklayer.jpg", name: "Occupational Certificate: Bricklayer", category: "QCTO Skills", level: "Occupational", duration: "18 months", fee: 32000, regFee: 500, mode: "On campus", subjects: ["Construction Theory", "Practical Skills", "Workplace Experience", "Site Safety"] },
   { id: "supply-chain", image: "/assets/supplychain.jpg", name: "Supply Chain Practitioner", category: "Logistics & Transport", level: "Occupational", duration: "12 months", fee: 24000, regFee: 500, mode: "Hybrid", subjects: ["Procurement", "Inventory Management", "Logistics", "Supply Chain Systems"] },
   { id: "matric", image: "/assets/matric.jpg", name: "Matric Rewrite & Upgrade", category: "Matric Rewrite", level: "Grade 12", duration: "6 months", fee: 8500, regFee: 500, mode: "On campus", subjects: ["Mathematics", "Physical Science", "Life Science", "English", "Accounting"] },
-  { id: "solar", image: "/assets/solar.jpg", name: "Solar Panel Installation", category: "Short Course", level: "Skills", duration: "2 months", fee: 7500, regFee: 2500, monthly: 2500, mode: "On campus", subjects: ["Solar Theory", "Panel Installation", "Wiring & Testing"] },
-  { id: "first-aid", name: "First Aid / Fire", category: "Short Course", level: "Skills", duration: "5 days", fee: 2800, regFee: 0, mode: "On campus", subjects: ["First Aid", "Fire Safety", "Emergency Response"] },
-  { id: "welding", name: "Arc Welding", category: "Artisan & Trade Testing", level: "Practical", duration: "4 weeks", fee: 25000, regFee: 500, mode: "On campus", subjects: ["Welding Safety", "Arc Techniques", "Joint Preparation", "Trade Test Prep"] },
+  { id: "solar", image: "/assets/solar.jpg", name: "Solar Panel Installation", category: "Short Course", level: "Skills", duration: "2 months", fee: 7500, regFee: 2500, monthly: 2500, mode: "On campus", subjects: ["Solar Theory", "Panel Installation", "Wiring & Testing"] }
 ];
 
 const shortCourses = [
@@ -211,7 +208,7 @@ const firstClassFields = [
 
 const weldingFields = [
   ["Arc Welding", 25000],
-  ["C02", 25000],
+  ["C02 Welding", 25000],
   ["Gas Metal Arc Welding", 25000],
   ["Tungsten Gas Welding", 25250]
 ] as const;
@@ -1982,6 +1979,7 @@ function Footer() {
     </footer>
   );
 }
+
 // Scroll Image Band Component
 function ScrollImageBand({ image, eyebrow, title }: {
   image: string;
@@ -2045,7 +2043,6 @@ function Landing({ data, setData, onApply }: {
 }
 
 // =================== Student Portal Components =================== //
-
 function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [mode, setMode] = useState<"login" | "forgot" | "reset">("login");
   const [error, setError] = useState("");
@@ -2773,7 +2770,6 @@ type ApplicationDraft = {
   phone: string;
   course: string;
   category: string;
-  field: string;
   level: string;
   period: string;
   kinName: string;
@@ -2792,37 +2788,92 @@ function Registration({ onComplete }: {
   const [error, setError] = useState("");
   const [registration, setRegistration] = useState<StudentRegistration | null>(null);
   const [receipt, setReceipt] = useState({ name: "", url: "", mimeType: "" });
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    course: courses[0].name,
-    category: "Course",
-    field: "Engineering Studies",
-    level: "N1",
-    period: "Trimester 2",
-    kinName: "",
-    kinRelationship: "",
-    kinEmail: "",
-    kinPhone: ""
+  const [photo, setPhoto] = useState({ name: "", url: "", mimeType: "" });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [applicationTraceId] = useState(() => crypto.randomUUID());
+
+  const categories = [
+    "Main Courses",
+    "Short Courses",
+    "Machine & Licence",
+    "Artisan Fields",
+    "Premium Courses",
+    "Welding Fields"
+  ] as const;
+
+  const getCourseOptions = (category: typeof categories[number]) => {
+    switch (category) {
+      case "Main Courses": return courses.map((c) => c.name);
+      case "Short Courses": return shortCourses.map(([name]) => name);
+      case "Machine & Licence": return machineCourses.map(([name]) => name);
+      case "Artisan Fields": return artisanFields.map(([name]) => name);
+      case "Premium Courses": return firstClassFields.map(([name]) => name);
+      case "Welding Fields": return weldingFields.map(([name]) => name);
+      default: return [];
+    }
+  };
+
+  const [form, setForm] = useState(() => {
+    const defaultCategory = "Main Courses" as typeof categories[number];
+    const defaultCourseOptions = getCourseOptions(defaultCategory);
+    return {
+      name: "",
+      email: "",
+      phone: "",
+      category: defaultCategory,
+      field: defaultCategory,
+      course: defaultCourseOptions.length > 0 ? defaultCourseOptions[0] : "",
+      level: "N1",
+      period: "Trimester 2",
+      kinName: "",
+      kinRelationship: "",
+      kinEmail: "",
+      kinPhone: ""
+    };
   });
   const { loading, run } = useAction();
+  const isMainCourse = form.category === "Main Courses";
+  const selectedCourse = isMainCourse ? courses.find((course) => course.name === form.course) : undefined;
+  const selectedSubjects = selectedCourse?.subjects ?? [];
 
-  const update = (key: string, value: string) => setForm((old) => ({
-    ...old, [key]: value
-  }));
+  const update = (key: string, value: string) => {
+    setForm((old) => {
+      const newForm = { ...old, [key]: value };
+      if (key === "category" && old.category !== value) {
+        const nextCategory = value as typeof categories[number];
+        const newOptions = getCourseOptions(nextCategory);
+        newForm.field = nextCategory;
+        if (newOptions.length > 0) {
+          newForm.course = newOptions[0];
+        } else {
+          newForm.course = "";
+        }
+      }
+      return newForm;
+    });
+  };
 
   const next = async () => {
     if (step < 3) setStep(step + 1);
     else {
       setError("");
+      let uploadedPaths: string[] = [];
       try {
         await run(async () => {
-          const created = await registerStudent(form);
+          const { photo: uploadedPhoto, receipt: uploadedReceipt } = await uploadRegistrationFiles({ photo: photoFile ?? undefined, receipt: receiptFile ?? undefined }, applicationTraceId);
+          uploadedPaths = [uploadedPhoto?.path, uploadedReceipt?.path].filter((path): path is string => Boolean(path));
+          const created = await registerStudent({
+            ...form,
+            applicationTraceId,
+            photo: uploadedPhoto,
+            receipt: uploadedReceipt,
+          });
           setRegistration(created);
         });
         setDone(true);
       } catch (submissionError) {
+        await removeRegistrationFiles(uploadedPaths);
         setError(submissionError instanceof Error ? submissionError.message : "Registration could not be submitted.");
       }
     }
@@ -2838,7 +2889,9 @@ function Registration({ onComplete }: {
         <h2 id="registration-success-title" className="mt-2 font-display text-4xl text-slate-950">Welcome to NSTC.</h2>
         <p id="registration-success-description" className="mt-4 max-w-lg text-sm leading-6 text-slate-600">Your provisional student number is <strong className="text-slate-950">{registration?.studentNumber}</strong>. Admissions will verify your documents and confirm your orientation schedule.</p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Button onClick={() => registration && onComplete({ ...form, receipt, registration })}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
+          <Button onClick={() => {
+            // registration && onComplete({ ...form, receipt, registration })
+          }}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
           <a className="btn btn-light" href="/">Back to website</a>
         </div>
       </div>
@@ -2873,7 +2926,20 @@ function Registration({ onComplete }: {
             <input value={form.phone} onChange={(e) => update("phone", e.target.value)} className="field" placeholder="+27 ..." />
           </label>
           <label>Identity document / passport
-            <input className="field" type="file" />
+            <input className="field" type="file" accept=".png,.jpg,.jpeg" onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setPhotoFile(file);
+                setPhoto({
+                  name: file.name,
+                  url: URL.createObjectURL(file),
+                  mimeType: file.type,
+                });
+              } else {
+                setPhotoFile(null);
+                setPhoto({ name: "", url: "", mimeType: "" });
+              }
+            }} />
           </label>
           <div className="rounded-xl border border-slate-200 p-4 mt-6">
             <p className="eyebrow text-[#a27e10]">Next of kin</p>
@@ -2897,15 +2963,24 @@ function Registration({ onComplete }: {
       {step === 2 &&
         <div className="mt-10 space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
-            <label>Field of study
-              <select value={form.field} onChange={(e) => update("field", e.target.value)} className="field">
-                {academicFields.map((f) =>
-                  <option key={f}>{f}</option>
+            <div>
+              <p className="field-label">Field of study</p>
+              <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Field of study categories">
+                {categories.map((category) =>
+                  <button
+                    key={category}
+                    type="button"
+                    className={`filter-chip ${form.category === category ? "active" : ""}`}
+                    onClick={() => update("category", category)}
+                    aria-pressed={form.category === category}
+                  >
+                    {category}
+                  </button>
                 )}
-              </select>
-            </label>
+              </div>
+            </div>
             <label>Level
-              <select value={form.level} onChange={(e) => update("level", e.target.value)} className="field">
+              <select disabled={!isMainCourse} value={form.level} onChange={(e) => update("level", e.target.value)} className="field">
                 <option>N1</option>
                 <option>N2</option>
                 <option>N4</option>
@@ -2916,11 +2991,13 @@ function Registration({ onComplete }: {
           </div>
           <label>Programme
             <select value={form.course} onChange={(e) => update("course", e.target.value)} className="field">
-              {courses.map((c) => <option key={c.id}>{c.name}</option>)}
+              {getCourseOptions(form.category as typeof categories[number]).map((course) =>
+                <option key={course}>{course}</option>
+              )}
             </select>
           </label>
           <label>Examination period
-            <select value={form.period} onChange={(e) => update("period", e.target.value)} className="field">
+            <select disabled={!isMainCourse} value={form.period} onChange={(e) => update("period", e.target.value)} className="field">
               <option>Trimester 1</option>
               <option>Trimester 2</option>
               <option>Trimester 3</option>
@@ -2929,11 +3006,12 @@ function Registration({ onComplete }: {
           <div>
             <p className="field-label">Select subjects / modules</p>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {courses[0].subjects.map((s) =>
+              {selectedSubjects.map((s) =>
                 <label key={s} className="check-option">
-                  <input type="checkbox" defaultChecked />
+                  <input type="checkbox" defaultChecked disabled={!isMainCourse} />
                   <span>{s}</span></label>
               )}
+              {!selectedSubjects.length && <p className="text-sm text-slate-400">Subjects and modules are available for Main Courses.</p>}
             </div>
           </div>
         </div>
@@ -2959,12 +3037,14 @@ function Registration({ onComplete }: {
             <input className="field" type="file" accept=".png,.jpg,.jpeg" onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
+                setReceiptFile(file);
                 setReceipt({
                   name: file.name,
                   url: URL.createObjectURL(file),
                   mimeType: file.type,
                 });
               } else {
+                setReceiptFile(null);
                 setReceipt({ name: "", url: "", mimeType: "" });
               }
             }} />
@@ -3027,9 +3107,9 @@ function StudentPortal({ data, setData, path, navigate }: {
                 email: application.email,
                 phone: application.phone,
                 studentNo: application.registration.studentNumber,
-                campus: "Wynberg Johannesburg",
+                campus: "Middleburg Campus",
                 course: application.course,
-                status: "Unapproved",
+                status: "Active",
                 startDate: new Date().toISOString().slice(0, 10),
                 attendance: 0,
                 balance: 500,

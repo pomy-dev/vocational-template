@@ -416,6 +416,21 @@ create table if not exists application_payment_receipts (
   created_at timestamptz not null default now()
 );
 
+create table if not exists registration_documents (
+  id uuid primary key default gen_random_uuid(),
+  application_trace_id uuid not null,
+  student_id uuid not null references students(id) on delete cascade,
+  enrollment_id uuid not null references enrollments(id) on delete cascade,
+  document_type text not null check (document_type in ('photo', 'receipt')),
+  storage_path text not null unique,
+  file_url text not null,
+  file_name text not null,
+  mime_type text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (application_trace_id, document_type)
+);
+
 create table if not exists sales_orders (
   id uuid primary key default gen_random_uuid(),
   customer_name text not null,
@@ -428,3 +443,5 @@ create table if not exists sales_orders (
 
 create index if not exists occupational_college_idx on occupational_programmes(college_name);
 create index if not exists payment_receipt_application_idx on application_payment_receipts(application_id);
+create index if not exists registration_documents_student_idx on registration_documents(student_id);
+create index if not exists registration_documents_trace_idx on registration_documents(application_trace_id);

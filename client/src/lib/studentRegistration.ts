@@ -13,6 +13,16 @@ export type StudentRegistrationInput = {
   kinRelationship: string;
   kinEmail: string;
   kinPhone: string;
+  applicationTraceId: string;
+  photo?: RegistrationFile;
+  receipt?: RegistrationFile;
+};
+
+export type RegistrationFile = {
+  path: string;
+  url: string;
+  name: string;
+  mimeType: string;
 };
 
 export type StudentRegistration = {
@@ -40,6 +50,9 @@ export async function registerStudent(input: StudentRegistrationInput): Promise<
     p_guardian_relationship: input.kinRelationship.trim() || null,
     p_guardian_email: input.kinEmail.trim().toLowerCase() || null,
     p_guardian_phone: input.kinPhone.trim() || null,
+    p_application_trace_id: input.applicationTraceId,
+    p_photo: input.photo ?? null,
+    p_receipt: input.receipt ?? null,
   });
 
   if (error) throw new Error(error.message);
@@ -53,4 +66,40 @@ export async function registerStudent(input: StudentRegistrationInput): Promise<
     studentNumber: registration.student_number,
     enrollmentId: registration.enrollment_id,
   };
+}
+
+export async function uploadRegistrationFile(file: File, traceId: string, kind: "photo" | "receipt"): Promise<RegistrationFile> {
+  if (!isSupabaseConfigured) {
+    throw new Error("Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to .env.local.");
+  }
+
+  const extension = file.name.includes(".") ? file.name.split(".").pop()?.toLowerCase() : "bin";
+  const path = `applications/${traceId}/${kind}-${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage.from("registration-documents").upload(path, file, {
+    contentType: file.type || "application/octet-stream",
+    upsert: false,
+  });
+  if (error) throw new Error(`Could not upload ${kind}: ${error.message}`);
+
+  const { data } = supabase.storage.from("registration-documents").getPublicUrl(path);
+  return { path, url: data.publicUrl, name: file.name, mimeType: file.type || "application/octet-stream" };
+}
+
+export async function uploadRegistrationFiles(files: { photo?: File; receipt?: File }, traceId: string) {
+  const uploaded: RegistrationFile[] = [];
+  try {
+    if (files.photo) uploaded.push(await uploadRegistrationFile(files.photo, traceId, "photo"));
+    if (files.receipt) uploaded.push(await uploadRegistrationFile(files.receipt, traceId, "receipt"));
+    return {
+      photo: uploaded.find((file) => file.path.includes("/photo-")),
+      receipt: uploaded.find((file) => file.path.includes("/receipt-")),
+    };
+  } catch (error) {
+    if (uploaded.length) await supabase.storage.from("registration-documents").remove(uploaded.map((file) => file.path));
+    throw error;
+  }
+}
+
+export async function removeRegistrationFiles(paths: string[]) {
+  if (paths.length) await supabase.storage.from("registration-documents").remove(paths);
 }
