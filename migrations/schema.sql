@@ -400,11 +400,13 @@ create table if not exists occupational_programmes (
   programme_type text not null,
   is_published boolean not null default true
 );
+
 create table if not exists accreditation_bodies (
   code text primary key,
   name text not null,
   logo_url text
 );
+
 create table if not exists application_payment_receipts (
   id uuid primary key default gen_random_uuid(),
   application_id uuid references apprenticeship_applications(id) on delete set null,
@@ -413,6 +415,7 @@ create table if not exists application_payment_receipts (
   mime_type text,
   created_at timestamptz not null default now()
 );
+
 create table if not exists sales_orders (
   id uuid primary key default gen_random_uuid(),
   customer_name text not null,
@@ -422,5 +425,6 @@ create table if not exists sales_orders (
   status text not null default 'new',
   created_at timestamptz not null default now()
 );
+
 create index if not exists occupational_college_idx on occupational_programmes(college_name);
 create index if not exists payment_receipt_application_idx on application_payment_receipts(application_id);

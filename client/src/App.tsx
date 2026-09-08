@@ -21,7 +21,7 @@ import GradOfTwo from "/assets/grad.jpg";
 import NSTCLogo from "/assets/MainLogo.jpg";
 
 type Icon = typeof ArrowRight;
-type Status = "Active" | "Suspended" | "Completed" | "Alumni";
+type Status = "Unapproved" | "Active" | "Suspended" | "Completed" | "Alumni";
 type NextOfKin = { name: string; relationship: string; email: string; phone: string };
 type ApprenticeshipPost = { id: string; title: string; employer: string; location: string; type: string; closing: string; description: string };
 type Suggestion = { id: string; name: string; email: string; category: string; message: string; date: string };
@@ -578,7 +578,8 @@ function Spinner({ label = "Working" }: { label?: string }) {
     <span className="inline-flex items-center gap-2">
       <Loader2 className="h-4 w-4 animate-spin" />
       {label}
-    </span>);
+    </span>
+  );
 }
 
 // Button Component
@@ -700,20 +701,21 @@ function PublicNav({ onApply }: { onApply: () => void }) {
           <a href="#contact">Contact</a>
         </nav>
         <div className="hidden items-center gap-3 sm:flex">
-          <a className="nav-portal" href="#">Portal login <ArrowRight className="h-4 w-4" /></a>
+          <a className="nav-portal" href="/portal">Portal login <ArrowRight className="h-4 w-4" /></a>
           <Button onClick={onApply}>Apply now <ArrowRight className="h-4 w-4" /></Button>
         </div>
         <button className="text-white lg:hidden" onClick={() => setOpen(!open)}><Menu /></button>
       </div>
-      {open && <div className="mobile-nav lg:hidden">
-        <a href="#about" onClick={() => setOpen(false)}>About</a>
-        <a href="#programmes" onClick={() => setOpen(false)}>Programmes</a>
-        <a href="#skills" onClick={() => setOpen(false)}>Graduate CVs</a>
-        <a href="/apprenticeships" onClick={() => setOpen(false)}>Employment</a>
-        <a href="#fees" onClick={() => setOpen(false)}>Fees</a>
-        <a href="/portal">Student portal</a>
-        <Button onClick={onApply}>Apply now</Button>
-      </div>
+      {open &&
+        <div className="mobile-nav lg:hidden">
+          <a href="#about" onClick={() => setOpen(false)}>About</a>
+          <a href="#programmes" onClick={() => setOpen(false)}>Programmes</a>
+          <a href="#skills" onClick={() => setOpen(false)}>Graduate CVs</a>
+          <a href="/apprenticeships" onClick={() => setOpen(false)}>Employment</a>
+          <a href="#fees" onClick={() => setOpen(false)}>Fees</a>
+          <a href="/portal">Student portal</a>
+          <Button onClick={onApply}>Apply now</Button>
+        </div>
       }
     </header>
   );
@@ -2054,9 +2056,9 @@ function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
       if (email === "thabo.mokoena@example.com" && number === "NSTC-26-0014" && password === (localStorage.getItem("nstc-password") || "nstc2026")) {
         localStorage.setItem("nstc-portal-session", "active");
         onAuthenticated();
-      } else setError("Demo login: thabo.mokoena@example.com · NSTC-26-0014 · nstc2026");
+      } else setError("Invalid credentials. Use correct student details or reset your password.");
     } else if (mode === "forgot") {
-      setMessage("If the account exists, a reset link has been prepared for this demo.");
+      setMessage("If the account exists, request a reset link.");
       setMode("reset");
     } else {
       const next = String(f.get("newPassword") || "");
@@ -2099,7 +2101,7 @@ function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
           }
           {mode === "login" && <label>Password<input name="password" className="field" type="password" required placeholder="Your password" /></label>}
           {mode === "reset" && <label>New password<input name="newPassword" className="field" type="password" required placeholder="At least 6 characters" /></label>}
-          <Button type="submit" className="w-full justify-center">{mode === "login" ? "Sign in to student portal" : mode === "forgot" ? "Send reset instructions" : "Save new password"} <ArrowRight className="h-4 w-4" /></Button>
+          <Button type="submit" className="w-full justify-center mt-8">{mode === "login" ? "Sign in to student portal" : mode === "forgot" ? "Send reset instructions" : "Save new password"} <ArrowRight className="h-4 w-4" /></Button>
         </form>
         <div className="mt-6 flex flex-wrap justify-between gap-3 text-sm font-semibold text-slate-500">
           {mode === "login"
@@ -2108,7 +2110,6 @@ function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
           }
           <a href="/parent">Family / next-of-kin access</a>
         </div>
-        <p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>thabo.mokoena@example.com</strong>, <strong>NSTC-26-0014</strong>, password <strong>nstc2026</strong>.</p>
       </div>
     </div>
   );
@@ -2774,7 +2775,7 @@ type ApplicationDraft = {
   kinRelationship: string;
   kinEmail: string;
   kinPhone: string;
-  receiptName?: string
+  receipt: { name: string, url: string, mimeType: string }
 };
 
 function Registration({ onComplete }: {
@@ -2782,7 +2783,7 @@ function Registration({ onComplete }: {
 }) {
   const [step, setStep] = useState(1);
   const [done, setDone] = useState(false);
-  const [receiptName, setReceiptName] = useState("");
+  const [receipt, setReceipt] = useState({ name: "", url: "", mimeType: "" });
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -2802,10 +2803,15 @@ function Registration({ onComplete }: {
   const update = (key: string, value: string) => setForm((old) => ({
     ...old, [key]: value
   }));
+
   const next = () => {
     if (step < 3) setStep(step + 1);
-    else run(() => { onComplete({ ...form, receiptName }); setDone(true); });
+    else run(() => {
+      onComplete({ ...form, receipt });
+      setDone(true);
+    });
   };
+
   if (done)
     return (
       <div className="registration-card">
@@ -2836,24 +2842,41 @@ function Registration({ onComplete }: {
           <div className={`h-1.5 flex-1 rounded-full ${s <= step ? "bg-[#D4AF37]" : "bg-slate-100"}`} key={s} />
         )}
       </div>
-      {step === 1 && <div className="mt-10 space-y-5">
-        <div className="grid gap-5 sm:grid-cols-2">
-          <label>Full name
-            <input value={form.name} onChange={(e) => update("name", e.target.value)} className="field" placeholder="e.g. Thabo Mokoena" />
+      {
+        step === 1 &&
+        <div className="mt-10 space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label>Full name
+              <input value={form.name} onChange={(e) => update("name", e.target.value)} className="field" placeholder="e.g. Thabo Mokoena" />
+            </label>
+            <label>Email address
+              <input value={form.email} onChange={(e) => update("email", e.target.value)} className="field" type="email" placeholder="name@email.com" />
+            </label>
+          </div>
+          <label>Mobile number
+            <input value={form.phone} onChange={(e) => update("phone", e.target.value)} className="field" placeholder="+27 ..." />
           </label>
-          <label>Email address
-            <input value={form.email} onChange={(e) => update("email", e.target.value)} className="field" type="email" placeholder="name@email.com" />
+          <label>Identity document / passport
+            <input className="field" type="file" />
           </label>
+          <div className="rounded-xl border border-slate-200 p-4 mt-6">
+            <p className="eyebrow text-[#a27e10]">Next of kin</p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <label>Full name
+                <input value={form.kinName} onChange={(e) => update("kinName", e.target.value)} className="field" placeholder="Parent / guardian name" />
+              </label>
+              <label>Relationship
+                <input value={form.kinRelationship} onChange={(e) => update("kinRelationship", e.target.value)} className="field" placeholder="e.g. Mother" />
+              </label>
+              <label>Email
+                <input value={form.kinEmail} onChange={(e) => update("kinEmail", e.target.value)} className="field" type="email" placeholder="family@email.com" />
+              </label>
+              <label>Phone
+                <input value={form.kinPhone} onChange={(e) => update("kinPhone", e.target.value)} className="field" placeholder="+27 ..." />
+              </label>
+            </div>
+          </div>
         </div>
-        <label>Mobile number
-          <input value={form.phone} onChange={(e) => update("phone", e.target.value)} className="field" placeholder="+27 ..." />
-        </label>
-        <label>Identity document / passport
-          <input className="field" type="file" />
-        </label>
-        <div className="rounded-xl border border-slate-200 p-4"><p className="eyebrow text-[#a27e10]">Next of kin</p><div className="mt-4 grid gap-4 sm:grid-cols-2"><label>Full name<input value={form.kinName} onChange={(e) => update("kinName", e.target.value)} className="field" placeholder="Parent / guardian name" /></label><label>Relationship<input value={form.kinRelationship} onChange={(e) => update("kinRelationship", e.target.value)} className="field" placeholder="e.g. Mother" /></label><label>Email<input value={form.kinEmail} onChange={(e) => update("kinEmail", e.target.value)} className="field" type="email" placeholder="family@email.com" /></label><label>Phone<input value={form.kinPhone} onChange={(e) => update("kinPhone", e.target.value)} className="field" placeholder="+27 ..." /></label></div></div>
-        <p className="text-xs leading-5 text-slate-400">This demo stores registration information in your browser only. No real documents or payments are processed.</p>
-      </div>
       }
       {step === 2 &&
         <div className="mt-10 space-y-5">
@@ -2911,20 +2934,40 @@ function Registration({ onComplete }: {
             </div>
             <p className="mt-3 text-sm leading-6 text-slate-600">Registration is R500.00 plus a R2,000.00 deposit. Both amounts are non-refundable once the application is submitted.</p>
           </div>
-          <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600"><strong className="text-slate-950">Bank transfer registration</strong><br />First National Bank · Business Account · 62447593436 · Branch 250655<br />Reference: Initials & Surname</div>
+          <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+            <strong className="text-slate-950">Bank transfer registration</strong><br />
+            First National Bank · Business Account · 62447593436 · Branch 250655<br />
+            Reference: Initials & Surname
+          </div>
           <label className="block">Payment receipt image or document
-            <input className="field" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" onChange={(e) => setReceiptName(e.target.files?.[0]?.name || "")} />
+            <input className="field" type="file" accept=".png,.jpg,.jpeg" onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setReceipt({
+                  name: file.name,
+                  url: URL.createObjectURL(file),
+                  mimeType: file.type,
+                });
+              } else {
+                setReceipt({ name: "", url: "", mimeType: "" });
+              }
+            }} />
             <span className="mt-2 block text-xs font-normal text-slate-400">Upload a receipt as evidence of payment. A preview will appear before completion.</span>
           </label>
-          {receiptName && <div className="receipt-preview"><FileText className="h-5 w-5 text-[#a27e10]" /><span>{receiptName}</span><span className="ml-auto text-xs font-semibold text-emerald-700">Ready to attach</span></div>}
+
+          {receipt &&
+            <div className="receipt-preview">
+              <FileText className="h-5 w-5 text-[#a27e10]" />
+              <span>{receipt.name}</span>
+              <span className="ml-auto text-xs font-semibold text-emerald-700">Ready to attach</span>
+            </div>
+          }
         </div>
       }
       <div className="mt-10 flex justify-between gap-3">
         <Button variant="light" onClick={() => step === 1 ? onComplete() : setStep(step - 1)}>{step === 1
           ? "Cancel"
-          : <>
-            <ChevronLeft className="h-4 w-4" /> Back
-          </>
+          : <><ChevronLeft className="h-4 w-4" /> Back</>
         }
         </Button>
         <Button onClick={next} disabled={loading}>
@@ -2947,7 +2990,9 @@ function StudentPortal({ data, setData, path, navigate }: {
 }) {
   const [register, setRegister] = useState(path === "/portal/apply");
   const [loggedIn, setLoggedIn] = useState(() => path === "/portal/apply" || localStorage.getItem("nstc-portal-session") === "active");
+
   if (path !== "/portal/apply" && !loggedIn) return <StudentAuth onAuthenticated={() => setLoggedIn(true)} />;
+
   if (register)
     return (
       <div className="registration-page">
@@ -2968,15 +3013,15 @@ function StudentPortal({ data, setData, path, navigate }: {
                 studentNo: generated,
                 campus: "Wynberg Johannesburg",
                 course: application.course,
-                status: "Active",
+                status: "Unapproved",
                 startDate: new Date().toISOString().slice(0, 10),
-                attendance: 100,
+                attendance: 0,
                 balance: 500,
                 termAverage: 0,
                 initials: initials(application.name || "New learner"),
                 guardian: application.kinName || "",
                 nextOfKin: { name: application.kinName || "", relationship: application.kinRelationship || "", email: application.kinEmail || "", phone: application.kinPhone || "" },
-                remarks: "Newly registered learner awaiting first assessment."
+                remarks: ""
               }]
             }));
           }
@@ -2985,6 +3030,7 @@ function StudentPortal({ data, setData, path, navigate }: {
         }} />
       </div>
     );
+
   const active = path.startsWith("/portal/assignments")
     ? "/portal/assignments"
     : path.startsWith("/portal/results")
@@ -4399,11 +4445,19 @@ function App() {
   let page: ReactNode;
 
   if (location === "/" || location === "") page = <Landing data={data} setData={setData} onApply={() => {
-    setApply(true);
-    // navigate("/portal/apply"); 
+    setApply(true); navigate("/portal/apply");
   }} />;
   else if (location === "/apprenticeships") page = <ApprenticeshipPortal data={data} setData={setData} onApply={() => go("/portal/apply")} />;
-  else if (location === "/sales") page = <><div className="bg-[#071a3a] pb-14"><PublicNav onApply={() => go("/portal/apply")} /><div className="container pt-36"><SectionTitle light eyebrow="NSTC sales portal" title="Study tools, ready when you are." body="Order learning devices and course materials from the National Skills & Technical College supply desk." /></div></div><SalesPortal /><Footer /></>;
+  else if (location === "/sales") page = <>
+    <div className="bg-[#071a3a] pb-14">
+      <PublicNav onApply={() => go("/portal/apply")} />
+      <div className="container pt-36">
+        <SectionTitle light eyebrow="NSTC sales portal" title="Study tools, ready when you are." body="Order learning devices and course materials from the National Skills & Technical College supply desk." />
+      </div>
+    </div>
+    <SalesPortal />
+    <Footer />
+  </>;
   else if (location.startsWith("/portal")) page = <StudentPortal data={data} setData={setData} path={location} navigate={go} />;
   else if (location === "/parent") page = <ParentPortal data={data} navigate={go} />;
   else if (location.startsWith("/lecturer")) page = <LecturerPortal data={data} setData={setData} path={location} navigate={go} />;
@@ -4412,9 +4466,7 @@ function App() {
   else if (location === "/admin/attendance") page = <AdminAttendance data={data} navigate={go} />;
   else if (location === "/admin/finance") page = <AdminFinance data={data} navigate={go} />;
   else if (location === "/admin") page = <AdminDashboard data={data} setData={setData} navigate={go} />;
-  else page = <Landing data={data} setData={setData} onApply={() => {
-    //go("/portal/apply")
-  }} />;
+  else page = <Landing data={data} setData={setData} onApply={() => { go("/portal/apply") }} />;
 
   return (<><Toaster position="bottom-right" richColors />{page}{apply && null}</>);
 }
