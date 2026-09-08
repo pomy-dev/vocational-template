@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { MapView } from "./components/Map";
+import { registerStudent, type StudentRegistration } from "./lib/studentRegistration";
 
 // ============================ Static Images =============================== //
 import StudentGrad from "/assets/students-in-grad.jpg";
@@ -565,9 +566,13 @@ function delay(ms = 650) { return new Promise((resolve) => window.setTimeout(res
 function useAction() {
   const [loading, setLoading] = useState(false);
   const run = async (action: () => void | Promise<void>) => {
-    setLoading(true); await delay();
-    await action();
-    setLoading(false);
+    setLoading(true);
+    try {
+      await delay();
+      await action();
+    } finally {
+      setLoading(false);
+    }
   };
   return { loading, run };
 }
@@ -2776,13 +2781,16 @@ type ApplicationDraft = {
   kinEmail: string;
   kinPhone: string;
   receipt: { name: string, url: string, mimeType: string }
+  registration: StudentRegistration;
 };
 
 function Registration({ onComplete }: {
-  onComplete: (application?: ApplicationDraft) => void
+  onComplete: (application?: ApplicationDraft) => void | Promise<void>
 }) {
   const [step, setStep] = useState(1);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const [registration, setRegistration] = useState<StudentRegistration | null>(null);
   const [receipt, setReceipt] = useState({ name: "", url: "", mimeType: "" });
   const [form, setForm] = useState({
     name: "",
@@ -2804,25 +2812,33 @@ function Registration({ onComplete }: {
     ...old, [key]: value
   }));
 
-  const next = () => {
+  const next = async () => {
     if (step < 3) setStep(step + 1);
-    else run(() => {
-      onComplete({ ...form, receipt });
-      setDone(true);
-    });
+    else {
+      setError("");
+      try {
+        await run(async () => {
+          const created = await registerStudent(form);
+          setRegistration(created);
+        });
+        setDone(true);
+      } catch (submissionError) {
+        setError(submissionError instanceof Error ? submissionError.message : "Registration could not be submitted.");
+      }
+    }
   };
 
   if (done)
     return (
-      <div className="registration-card">
+      <div className="registration-card" role="dialog" aria-labelledby="registration-success-title" aria-describedby="registration-success-description">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
           <Check className="h-8 w-8" />
         </div>
         <p className="mt-6 eyebrow">Application complete</p>
-        <h2 className="mt-2 font-display text-4xl text-slate-950">Welcome to NSTC.</h2>
-        <p className="mt-4 max-w-lg text-sm leading-6 text-slate-600">Your provisional student number is <strong className="text-slate-950">NSTC-26-0317</strong>. Admissions will verify your documents and confirm your orientation schedule.</p>
+        <h2 id="registration-success-title" className="mt-2 font-display text-4xl text-slate-950">Welcome to NSTC.</h2>
+        <p id="registration-success-description" className="mt-4 max-w-lg text-sm leading-6 text-slate-600">Your provisional student number is <strong className="text-slate-950">{registration?.studentNumber}</strong>. Admissions will verify your documents and confirm your orientation schedule.</p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Button onClick={onComplete}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
+          <Button onClick={() => registration && onComplete({ ...form, receipt, registration })}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
           <a className="btn btn-light" href="/">Back to website</a>
         </div>
       </div>
@@ -2964,6 +2980,7 @@ function Registration({ onComplete }: {
           }
         </div>
       }
+      {error && <p className="mt-6 rounded-lg bg-red-50 p-3 text-sm leading-6 text-red-700" role="alert">{error}</p>}
       <div className="mt-10 flex justify-between gap-3">
         <Button variant="light" onClick={() => step === 1 ? onComplete() : setStep(step - 1)}>{step === 1
           ? "Cancel"
@@ -3001,16 +3018,15 @@ function StudentPortal({ data, setData, path, navigate }: {
           <a href="/" className="text-sm font-semibold text-white/60 hover:text-white">Back to website</a>
         </div>
         <Registration onComplete={(application) => {
-          if (application?.email) {
-            const generated = `NSTC-26-${String(data.students.length + 1).padStart(4, "0")}`;
+          if (application?.email && application.registration) {
             setData((old) => ({
               ...old,
               students: [...old.students, {
-                id: crypto.randomUUID(),
+                id: application.registration.studentId,
                 name: application.name || "New NSTC learner",
                 email: application.email,
                 phone: application.phone,
-                studentNo: generated,
+                studentNo: application.registration.studentNumber,
                 campus: "Wynberg Johannesburg",
                 course: application.course,
                 status: "Unapproved",
