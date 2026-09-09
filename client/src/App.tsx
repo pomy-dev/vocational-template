@@ -2978,23 +2978,32 @@ function Registration({ onComplete }: {
       }
       {step === 2 &&
         <div className="mt-10 space-y-5">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <p className="field-label">Field of study</p>
-              <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Field of study categories">
-                {categories.map((category) =>
-                  <button
-                    key={category}
-                    type="button"
-                    className={`filter-chip ${form.category === category ? "active" : ""}`}
-                    onClick={() => update("category", category)}
-                    aria-pressed={form.category === category}
-                  >
-                    {category}
-                  </button>
-                )}
-              </div>
+          {/* <div className="grid gap-5 sm:grid-cols-2"> */}
+          <div>
+            <p className="field-label">Field of study</p>
+            <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Field of study categories">
+              {categories.map((category) =>
+                <button
+                  key={category}
+                  type="button"
+                  className={`filter-chip ${form.category === category ? "active" : ""}`}
+                  onClick={() => update("category", category)}
+                  aria-pressed={form.category === category}
+                >
+                  {category}
+                </button>
+              )}
             </div>
+          </div>
+          {/* </div> */}
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label>Programme
+              <select value={form.course} onChange={(e) => update("course", e.target.value)} className="field">
+                {getCourseOptions(form.category as typeof categories[number]).map((course) =>
+                  <option key={course}>{course}</option>
+                )}
+              </select>
+            </label>
             <label>Level
               <select disabled={!isMainCourse} value={form.level} onChange={(e) => update("level", e.target.value)} className="field">
                 <option>N1</option>
@@ -3005,13 +3014,6 @@ function Registration({ onComplete }: {
               </select>
             </label>
           </div>
-          <label>Programme
-            <select value={form.course} onChange={(e) => update("course", e.target.value)} className="field">
-              {getCourseOptions(form.category as typeof categories[number]).map((course) =>
-                <option key={course}>{course}</option>
-              )}
-            </select>
-          </label>
           <label>Examination period
             <select disabled={!isMainCourse} value={form.period} onChange={(e) => update("period", e.target.value)} className="field">
               <option>Trimester 1</option>
