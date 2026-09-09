@@ -799,6 +799,7 @@ function SponsorPanel() {
   );
 }
 
+// Partner Service Modal Component
 function PartnerServiceModal({ service, onClose }: { service: typeof partnerServices[number]; onClose: () => void }) {
 
   useEffect(() => {
@@ -854,6 +855,7 @@ function PartnerServiceModal({ service, onClose }: { service: typeof partnerServ
   );
 }
 
+// Partner Services Feature Component
 function PartnerServicesFeature() {
   const pageSize = 6;
   const [page, setPage] = useState(0);
@@ -1695,7 +1697,7 @@ function Contact() {
         <div className="email-panel rounded-2xl border border-slate-200 bg-white p-5">
           <p className="eyebrow">Email the right desk</p>
           <div className="mt-4 space-y-3">{
-            [["Secretary", "support@nationalskills.com"], ["Manager", "manager@nationalskills.com"], ["Examinations", "exams@nationalskills.com"], ["Finance", "accounts@nationaskills.com"], ["Certificates", "certificate@nationalskills.com"]].map(([label, address]) =>
+            [["Secretary", "support@nationalskills.org.za"], ["Manager", "admin@nationalskills.org.za"], ["Examinations", "exams@nationalskills.org.za"], ["Finance", "accounts@nationaskills.org.za"], ["Certificates", "certificates@nationalskills.org.za"]].map(([label, address]) =>
               <a className="email-row" href={`mailto:${address}`} key={address}>
                 <Mail className="h-4 w-4 shrink-0 text-[#a27e10]" />
                 <span><strong>{label}</strong>
@@ -2043,6 +2045,8 @@ function Landing({ data, setData, onApply }: {
 }
 
 // =================== Student Portal Components =================== //
+
+// Student Authentication Component
 function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [mode, setMode] = useState<"login" | "forgot" | "reset">("login");
   const [error, setError] = useState("");
@@ -2117,6 +2121,7 @@ function StudentAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   );
 }
 
+// Student Support Component
 function StudentSupport({ data, setData }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>
@@ -2202,6 +2207,7 @@ function StudentSupport({ data, setData }: {
   );
 }
 
+// Student Settings Component
 function StudentSettings({ onSignOut }: { onSignOut: () => void }) {
   const [saved, setSaved] = useState(false);
 
@@ -2363,6 +2369,7 @@ function MetricCard({ label, value, detail, icon: I, tone = "gold" }: {
   );
 }
 
+// Progress Bar Component
 function ProgressBar({ value, color = "gold" }: { value: number; color?: string }) {
   return (
     <div className="h-2 overflow-hidden rounded-full bg-slate-100">
@@ -2371,6 +2378,7 @@ function ProgressBar({ value, color = "gold" }: { value: number; color?: string 
   );
 }
 
+// Student Overview Component
 function StudentOverview({ data, onNavigate }: {
   data: AppData;
   onNavigate: (path: string) => void
@@ -2487,6 +2495,7 @@ function StudentOverview({ data, onNavigate }: {
   );
 }
 
+// Page Heading Component
 function PageHeading({ eyebrow, title, body, actions }: {
   eyebrow: string;
   title: string;
@@ -2505,6 +2514,7 @@ function PageHeading({ eyebrow, title, body, actions }: {
   );
 }
 
+// Calendar Drawer Component
 function CalendarDrawer({ schedules, assignments, onClose }: { schedules: Schedule[]; assignments: Assignment[]; onClose: () => void }) {
   const [view, setView] = useState<"month" | "week">("month");
   useEffect(() => {
@@ -2532,6 +2542,7 @@ function CalendarDrawer({ schedules, assignments, onClose }: { schedules: Schedu
   );
 }
 
+// Student Learning Component
 function StudentLearning({ data, onNavigate }: { data: AppData; onNavigate: (path: string) => void }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   return (
@@ -2580,6 +2591,7 @@ function StudentLearning({ data, onNavigate }: { data: AppData; onNavigate: (pat
   );
 }
 
+// Student Assignments Component
 function StudentAssignments({ data }: { data: AppData }) {
   const [submitOpen, setSubmitOpen] = useState(false);
   const [selected, setSelected] = useState<Assignment | null>(null);
@@ -2653,6 +2665,7 @@ function StudentAssignments({ data }: { data: AppData }) {
   );
 }
 
+// Student Results Component
 function StudentResults({ data }: { data: AppData }) {
   return (
     <>
@@ -2718,6 +2731,7 @@ function StudentResults({ data }: { data: AppData }) {
   );
 }
 
+// Student Finances Component
 function StudentFinances({ data }: { data: AppData }) {
   return (
     <>
@@ -2764,6 +2778,7 @@ function StudentFinances({ data }: { data: AppData }) {
   );
 }
 
+// Student Registration Component
 type ApplicationDraft = {
   name: string;
   email: string;
@@ -2780,6 +2795,7 @@ type ApplicationDraft = {
   registration: StudentRegistration;
 };
 
+// Student Registration Component
 function Registration({ onComplete }: {
   onComplete: (application?: ApplicationDraft) => void | Promise<void>
 }) {
@@ -3079,6 +3095,7 @@ function Registration({ onComplete }: {
   );
 }
 
+// ============================ Main STUDENT PORTAL ============================ //
 function StudentPortal({ data, setData, path, navigate }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
