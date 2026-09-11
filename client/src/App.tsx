@@ -31,17 +31,27 @@ type LearningResource = { id: string; title: string; course: string; subject: st
 type LecturerNotification = { id: string; title: string; body: string; date: string; read: boolean };
 type TutorProfile = { name: string; initials: string; email: string; phone: string; courses: string[] };
 
+enum Level {
+  N1 = "N1", N2 = "N2", N3 = "N3", N4 = "N4", N5 = "N5", N6 = "N6",
+  Certificate = "Certificate", Diploma = "Diploma", Occupational = "Occupational",
+  Skills = "Skills", Grade12 = "Grade 12"
+}
+
+type Subject = {
+  name: string;
+  level: Level[];
+};
 type Course = {
   id: string;
   name: string;
   category: string;
-  level: string;
+  // level: string;
   duration: string;
   fee: number;
   regFee: number;
   monthly?: number;
   popular?: boolean;
-  subjects: string[];
+  subjects: Subject[];
   mode: "Online" | "On campus" | "Hybrid",
   image?: string;
 };
@@ -119,15 +129,132 @@ const gold = "#D4AF37";
 const fee = (value: number) => `R${value.toLocaleString("en-ZA")}`;
 const initials = (name: string) => name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 
+const Subjects: Subject[] = [
+  { name: "Building & Civil Technology", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Building Construction", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Building Administration", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Building & Structural Surveying", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Building & Structure Construction", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Building Science", level: [Level.N2] },
+  { name: "Building Drawing", level: [Level.N2] },
+  { name: "Bricklaying", level: [Level.N2] },
+  { name: "Chemistry", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Chemical Plant Operation Theory", level: [Level.N2] },
+  { name: "Capentry & Roof Theory", level: [Level.N2] },
+  { name: "Control System", level: [Level.N6] },
+  { name: "Digital Electronics", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Diesel Trade Theory", level: [Level.N2] },
+  { name: "Engineering Physics", level: [Level.N5, Level.N6] },
+  { name: "Engineering Science", level: [Level.N2, Level.N3, Level.N4] },
+  { name: "Electrical Trade Theory", level: [Level.N2] },
+  { name: "Engineering Drawing", level: [Level.N2, Level.N3] },
+  { name: "Electronics", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Economics", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Foundary Theory", level: [Level.N2] },
+  { name: "Industrial Electronics", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
+  { name: "Installation Rules1", level: [] },
+  { name: "Installation Rules2", level: [] },
+  { name: "Installation - Special Codes", level: [] },
+  { name: "Instrument Trade Theory", level: [Level.N2] },
+  { name: "Logic Systems", level: [Level.N2, Level.N3, Level.N4] },
+  { name: "Financial Accounting", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Fault Finding", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Fault Finding & Protective Device", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Fitting and Machining", level: [Level.N2] },
+  { name: "Fluid Mechanics", level: [Level.N5, Level.N6] },
+  { name: "GCC Factories", level: [] },
+  { name: "GCC Mines", level: [] },
+  { name: "Loss Control", level: [Level.N6] },
+  { name: "Mathematics", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
+  { name: "Mechanotechnics", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Motor Trade Theory", level: [Level.N2] },
+  { name: "Motor Electrical Theory", level: [Level.N2] },
+  { name: "Mechanical Drafting", level: [Level.N4] },
+  { name: "Physics", level: [Level.N5, Level.N6] },
+  { name: "Platers Theory", level: [Level.N2] },
+  { name: "Plant Operation Theory", level: [Level.N2] },
+  { name: "Power Machines", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Production & Quality Control", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Platers and Structural Steel Drawing", level: [Level.N2, Level.N3, Level.N4] },
+  { name: "Plumbing Theory", level: [Level.N2] },
+  { name: "Quantity Surveying", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Rigging Theory", level: [Level.N2] },
+  { name: "Strength of Materials & Structures", level: [Level.N5, Level.N6] },
+  { name: "Supervisory Management", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Water & Waste Water Treatment Practice", level: [Level.N2] },
+  { name: "Welders Theory", level: [Level.N2] },
+  { name: "Woodworkers", level: [Level.N2] }
+]
+
 const courses: Course[] = [
-  { id: "eng-electrical", image: "/assets/engineering.jpg", name: "Electrical Engineering N1–N6", category: "Engineering Studies", level: "N1–N6", duration: "3 months", fee: 18500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Mathematics", "Engineering Science", "Logic Systems", "Industrial Electronics", "Electrical Trade Theory"] },
-  { id: "business-management", image: "/assets/management.jpg", name: "Business Management N4–N6", category: "Business & Management", level: "N4–N6", duration: "6 months", fee: 16500, regFee: 500, popular: true, mode: "On campus", subjects: ["Economics", "Financial Accounting", "Management Communication", "Sales Management", "Computer Practice"] },
-  { id: "it", image: "/assets/it.jpg", name: "Information Technology", category: "Information Technology", level: "Certificate", duration: "12 months", fee: 14500, regFee: 500, popular: true, mode: "Hybrid", subjects: ["Computer Hardware", "Networking", "Programming", "Database Fundamentals", "Technical Support"] },
-  { id: "health-safety", image: "/assets/health&safety.jpg", name: "Health & Safety Officer", category: "Health & Safety", level: "Occupational", duration: "12 months", fee: 22000, regFee: 500, mode: "On campus", subjects: ["Occupational Health", "Risk Assessment", "First Aid", "Incident Investigation", "Safety Legislation"] },
-  { id: "bricklayer", image: "/assets/bricklayer.jpg", name: "Occupational Certificate: Bricklayer", category: "QCTO Skills", level: "Occupational", duration: "18 months", fee: 32000, regFee: 500, mode: "On campus", subjects: ["Construction Theory", "Practical Skills", "Workplace Experience", "Site Safety"] },
-  { id: "supply-chain", image: "/assets/supplychain.jpg", name: "Supply Chain Practitioner", category: "Logistics & Transport", level: "Occupational", duration: "12 months", fee: 24000, regFee: 500, mode: "Hybrid", subjects: ["Procurement", "Inventory Management", "Logistics", "Supply Chain Systems"] },
-  { id: "matric", image: "/assets/matric.jpg", name: "Matric Rewrite & Upgrade", category: "Matric Rewrite", level: "Grade 12", duration: "6 months", fee: 8500, regFee: 500, mode: "On campus", subjects: ["Mathematics", "Physical Science", "Life Science", "English", "Accounting"] },
-  { id: "solar", image: "/assets/solar.jpg", name: "Solar Panel Installation", category: "Short Course", level: "Skills", duration: "2 months", fee: 7500, regFee: 2500, monthly: 2500, mode: "On campus", subjects: ["Solar Theory", "Panel Installation", "Wiring & Testing"] }
+  {
+    id: "eng-electrical", image: "/assets/engineering.jpg",
+    name: "Electrical Engineering N1–N6",
+    category: "Engineering Studies", level: "N1–N6",
+    duration: "3 months", fee: 18500, regFee: 500, popular: true,
+    mode: "Hybrid",
+    subjects: [
+      {
+        name: "Mathematics",
+        level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6,]
+      },
+      {
+        name: "Engineering Science",
+        level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6]
+      }, "Logic Systems", "Industrial Electronics", "Electrical Trade Theory"]
+  },
+  {
+    id: "business-management", image: "/assets/management.jpg",
+    name: "Business Management N4–N6", category: "Business & Management",
+    level: "N4–N6", duration: "6 months", fee: 16500, regFee: 500, popular: true,
+    mode: "On campus",
+    subjects: ["Economics", "Financial Accounting", "Management Communication", "Sales Management", "Computer Practice"]
+  },
+  {
+    id: "it", image: "/assets/it.jpg", name: "Information Technology",
+    category: "Information Technology", level: "Certificate", duration: "12 months",
+    fee: 14500, regFee: 500, popular: true, mode: "Hybrid",
+    subjects: ["Computer Hardware", "Networking", "Programming", "Database Fundamentals", "Technical Support"]
+  },
+  {
+    id: "health-safety", image: "/assets/health&safety.jpg",
+    name: "Health & Safety Officer", category: "Health & Safety",
+    level: "Occupational", duration: "12 months", fee: 22000, regFee: 500,
+    mode: "On campus",
+    subjects: ["Occupational Health", "Risk Assessment", "First Aid", "Incident Investigation", "Safety Legislation"]
+  },
+  {
+    id: "bricklayer", image: "/assets/bricklayer.jpg",
+    name: "Occupational Certificate: Bricklayer", category: "QCTO Skills",
+    level: "Occupational", duration: "18 months", fee: 32000, regFee: 500,
+    mode: "On campus",
+    subjects: ["Construction Theory", "Practical Skills", "Workplace Experience", "Site Safety"]
+  },
+  {
+    id: "supply-chain", image: "/assets/supplychain.jpg",
+    name: "Supply Chain Practitioner", category: "Logistics & Transport",
+    level: "Occupational", duration: "12 months", fee: 24000, regFee: 500,
+    mode: "Hybrid",
+    subjects: ["Procurement", "Inventory Management", "Logistics", "Supply Chain Systems"]
+  },
+  {
+    id: "matric", image: "/assets/matric.jpg", name: "Matric Rewrite & Upgrade",
+    category: "Matric Rewrite", level: "Grade 12", duration: "6 months", fee: 8500,
+    regFee: 500, mode: "On campus",
+    subjects: ["Mathematics", "Physical Science", "Life Science", "English", "Accounting"]
+  },
+  {
+    id: "solar", image: "/assets/solar.jpg", name: "Solar Panel Installation",
+    category: "Short Course", level: "Skills", duration: "2 months", fee: 7500,
+    regFee: 2500, monthly: 2500, mode: "On campus",
+    subjects: ["Solar Theory", "Panel Installation", "Wiring & Testing"]
+  },
+  {
+    id: "mechinical", image: "/assets/mechanical.jpg", name: "Mechanical Engineering",
+    category: "Engineering Studies", level: "N1–N6", duration: "3 months", fee: 8500,
+    regFee: 2500, monthly: 2500, mode: "On campus",
+    subjects: ["Mathematics", "Engineering Science", "Fitting and Machining", "Fluid Mechanics", "Mechanical Draughting"]
+  }
 ];
 
 const shortCourses = [
@@ -2906,7 +3033,7 @@ function Registration({ onComplete }: {
         <p id="registration-success-description" className="mt-4 max-w-lg text-sm leading-6 text-slate-600">Your provisional student number is <strong className="text-slate-950">{registration?.studentNumber}</strong>. Admissions will verify your documents and confirm your orientation schedule.</p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Button onClick={() => {
-            // registration && onComplete({ ...form, receipt, registration })
+            registration && onComplete({ ...form, receipt, registration })
           }}>Open student dashboard <ArrowRight className="h-4 w-4" /></Button>
           <a className="btn btn-light" href="/">Back to website</a>
         </div>
@@ -2978,7 +3105,6 @@ function Registration({ onComplete }: {
       }
       {step === 2 &&
         <div className="mt-10 space-y-5">
-          {/* <div className="grid gap-5 sm:grid-cols-2"> */}
           <div>
             <p className="field-label">Field of study</p>
             <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Field of study categories">
@@ -2995,7 +3121,6 @@ function Registration({ onComplete }: {
               )}
             </div>
           </div>
-          {/* </div> */}
           <div className="grid gap-5 sm:grid-cols-2">
             <label>Programme
               <select value={form.course} onChange={(e) => update("course", e.target.value)} className="field">
@@ -3027,7 +3152,8 @@ function Registration({ onComplete }: {
               {selectedSubjects.map((s) =>
                 <label key={s} className="check-option">
                   <input type="checkbox" defaultChecked disabled={!isMainCourse} />
-                  <span>{s}</span></label>
+                  <span>{s}</span>
+                </label>
               )}
               {!selectedSubjects.length && <p className="text-sm text-slate-400">Subjects and modules are available for Main Courses.</p>}
             </div>
