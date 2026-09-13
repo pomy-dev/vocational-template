@@ -653,7 +653,7 @@ function FlipCard({ course, image }: { course: Course; image?: string }) {
           <ul className="mt-4 space-y-2 text-sm text-slate-600">
             {course.subjects.map((subject, idx) =>
               <li key={idx}><Check className="mr-2 inline h-4 w-4 text-[#a27e10]" />{subject.name}</li>
-            )}
+            ).slice(0, 4)}
           </ul>
           <a href="/#fees" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950">View course <ArrowRight className="h-4 w-4" /></a>
         </div>
@@ -1434,7 +1434,7 @@ function SalesPortal() {
   );
 }
 
-// Footer Component
+// Footer
 function Footer() {
   return (
     <footer className="bg-[#071a3a] py-12 text-white">
@@ -2330,9 +2330,9 @@ function Registration({ onComplete }: {
       phone: "",
       category: defaultCategory,
       field: defaultCategory,
-      course: defaultCourseOptions.length > 0 ? defaultCourseOptions[0] : "",
+      course: "",
       level: "N1",
-      period: "Trimester 2",
+      period: "",
       kinName: "",
       kinRelationship: "",
       kinEmail: "",
@@ -2412,7 +2412,21 @@ function Registration({ onComplete }: {
       }
     }
     if (step === 2) {
-      if (!commitCurrentProgramme(true)) return;
+      const currentProgrammeObject = currentProgramme();
+      const isCurrentProgrammeSelected = !!currentProgrammeObject.course;
+      const isCurrentProgrammeAlreadyAdded = programmes.some(p => p.course === currentProgrammeObject.course && p.category === currentProgrammeObject.category);
+
+      if (isCurrentProgrammeSelected && !isCurrentProgrammeAlreadyAdded) {
+        if (!commitCurrentProgramme()) {
+          return;
+        }
+      }
+
+      if (programmes.length === 0) {
+        setError("Select at least one programme to continue.");
+        return;
+      }
+      setError("");
     }
     if (step === 3) {
       if (!receiptFile || !receiptFile.type.startsWith("image/") || receiptFile.size > 5 * 1024 * 1024) {
@@ -2665,15 +2679,33 @@ function Registration({ onComplete }: {
             <p><strong className="text-slate-950">Programmes</strong><br />{programmes.map((programme) => `${programme.course} (${programme.period})`).join("; ")}</p>
             <p><strong className="text-slate-950">Payment evidence</strong><br />{receipt.name}<br /><span className="text-emerald-700">Receipt image validated</span></p>
           </div>
-          <div className="rounded-xl bg-slate-50 p-5 text-sm"><strong className="text-slate-950">Selected subjects and levels</strong><div className="mt-2 space-y-3">{programmes.map((programme) => <div key={programme.course}><p className="font-semibold text-slate-800">{programme.course}</p><p className="mt-1 text-slate-500">{programme.subjects.map((subject) => `${subject.name} · ${subject.level}`).join(", ") || "No individual subjects selected."}</p></div>)}</div></div>
+          <div className="rounded-xl bg-slate-50 p-5 text-sm">
+            <strong className="text-slate-950">Selected subjects and levels</strong>
+            <div className="mt-2 space-y-3">
+              {programmes.length > 0 ? (
+                programmes.map((programme) =>
+                  <div key={programme.course}>
+                    <p className="font-semibold text-slate-800">{programme.course}</p>
+                    <p className="mt-1 text-slate-500">
+                      {programme.subjects.map((subject) => `${subject.name} · ${subject.level}`).join(", ") || "No individual subjects selected."}
+                    </p>
+                  </div>
+                )
+              ) : (
+                <p className="text-slate-500">No programmes selected.</p>
+              )}
+            </div>
+          </div>
         </div>
       }
       {error && <p className="mt-6 rounded-lg bg-red-50 p-3 text-sm leading-6 text-red-700" role="alert">{error}</p>}
+
       <div className="mt-10 flex justify-between gap-3">
-        <Button variant="light" onClick={() => step === 1 ? onComplete() : setStep(step - 1)}>{step === 1
-          ? "Cancel"
-          : <><ChevronLeft className="h-4 w-4" /> Back</>
-        }
+        <Button variant="light" onClick={() => step === 1 ? onComplete() : setStep(step - 1)}>
+          {step === 1
+            ? "Cancel"
+            : <><ChevronLeft className="h-4 w-4" /> Back</>
+          }
         </Button>
         <Button onClick={next} disabled={loading}>
           {loading ? <Spinner label="Saving" />

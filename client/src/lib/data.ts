@@ -2,6 +2,7 @@ import { Level, Subject, Course, AppData } from "./types";
 
 export const subjects: Subject[] = [
   { name: "Applied Management", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Accounting", level: [Level.N4, Level.N5, Level.N6] },
 
   { name: "Building & Civil Technology", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Building Construction", level: [Level.N4, Level.N5, Level.N6] },
@@ -23,6 +24,7 @@ export const subjects: Subject[] = [
   { name: "Computer Practice", level: [Level.N4, Level.N5] },
   { name: "Computerized Financial Systems", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Cost & Management Accounting", level: [Level.N5, Level.N6] },
+  { name: "Construction Theory", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
 
   { name: "Digital Electronics", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Day Care Communication", level: [Level.N5, Level.N6] },
@@ -33,6 +35,7 @@ export const subjects: Subject[] = [
 
   { name: "Engineering Physics", level: [Level.N5, Level.N6] },
   { name: "Engineering Science", level: [Level.N2, Level.N3, Level.N4] },
+  { name: "English", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
   { name: "Electrical Trade Theory", level: [Level.N2] },
   { name: "Engineering Drawing", level: [Level.N2, Level.N3] },
   { name: "Electrotechnics", level: [Level.N4, Level.N5, Level.N6] },
@@ -58,12 +61,13 @@ export const subjects: Subject[] = [
   { name: "Industrial Electronics", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
   { name: "Installation Rules1", level: [] },
   { name: "Installation Rules2", level: [] },
-  { name: "Installation - Special Codes", level: [] },
+  { name: "Installations - Special Codes", level: [] },
   { name: "Instrument Trade Theory", level: [Level.N2] },
   { name: "Introductory Accounting", level: [Level.N4] },
   { name: "Introductory Information Processing", level: [Level.N4] },
   { name: "Income Tax", level: [Level.N6] },
   { name: "Information Processing", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Inventory Management", level: [Level.N4, Level.N5, Level.N6] },
 
   { name: "Jewellery Design", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Jewellery Manufacturing", level: [Level.N4, Level.N5, Level.N6] },
@@ -72,6 +76,8 @@ export const subjects: Subject[] = [
   { name: "Loss Control", level: [Level.N6] },
   { name: "Labour Relations", level: [Level.N5, Level.N6] },
   { name: "Legal Practice", level: [Level.N5, Level.N6] },
+  { name: "Logistics", level: [Level.N5, Level.N6] },
+  { name: "Life Science", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
 
   { name: "Nutrition & Menu Planning", level: [Level.N4] },
 
@@ -89,16 +95,20 @@ export const subjects: Subject[] = [
 
   { name: "Personel Management", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Public Administration", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Procument", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Public Finance", level: [Level.N5, Level.N6] },
   { name: "Public Law", level: [Level.N6] },
   { name: "Physics", level: [Level.N5, Level.N6] },
+  { name: "Physical Science", level: [Level.N5, Level.N6] },
   { name: "Personnel Training", level: [Level.N5, Level.N6] },
   { name: "Platers Theory", level: [Level.N2] },
   { name: "Plant Operation Theory", level: [Level.N2] },
   { name: "Power Machines", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Production & Quality Control", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Platers and Structural Steel Drawing", level: [Level.N2, Level.N3, Level.N4] },
+  { name: "Practical Skills", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
   { name: "Plumbing Theory", level: [Level.N2] },
+  { name: "Panel Installation", level: [Level.N2] },
 
   { name: "Quantity Surveying", level: [Level.N4, Level.N5, Level.N6] },
 
@@ -106,8 +116,11 @@ export const subjects: Subject[] = [
 
   { name: "Sanitation & Safety", level: [Level.N4] },
   { name: "Strength of Materials & Structures", level: [Level.N5, Level.N6] },
+  { name: "Site Safety", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
   { name: "Sales Management", level: [Level.N5, Level.N6] },
   { name: "Supervisory Management", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Supply Chain Systems", level: [Level.N4, Level.N5, Level.N6] },
+  { name: "Solar Theory", level: [Level.N4, Level.N5, Level.N6] },
 
   { name: "Travel Office Procedures", level: [Level.N4, Level.N5, Level.N6] },
   { name: "Travel Services", level: [Level.N4, Level.N5, Level.N6] },
@@ -116,7 +129,9 @@ export const subjects: Subject[] = [
 
   { name: "Water & Waste Water Treatment Practice", level: [Level.N2] },
   { name: "Welders Theory", level: [Level.N2] },
-  { name: "Woodworkers", level: [Level.N2] }
+  { name: "Woodworkers", level: [Level.N2] },
+  { name: "Workplace Experience", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] },
+  { name: "Wiring & Testing", level: [Level.N2, Level.N3, Level.N4, Level.N5, Level.N6] }
 ]
 
 // Put this near the top of the file
@@ -170,7 +185,7 @@ export const courses: Course[] = [
       getSubject("Management Communication"),
       getSubject("Computer Practice"),
       getSubject("Introductory Accounting"),
-      getSubject("Finactional Accounting"),
+      getSubject("Financial Accounting"),
       getSubject("Sales Management"),
       getSubject("Computerized Financial System")
     ]
