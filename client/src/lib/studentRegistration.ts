@@ -1,4 +1,5 @@
 import { isSupabaseConfigured, supabase } from "./supabase";
+import type { RegistrationProgramme } from "./types";
 
 export type StudentRegistrationInput = {
   name: string;
@@ -9,6 +10,7 @@ export type StudentRegistrationInput = {
   field: string;
   level: string;
   period: string;
+  programmes: RegistrationProgramme[];
   kinName: string;
   kinRelationship: string;
   kinEmail: string;
@@ -46,6 +48,7 @@ export async function registerStudent(input: StudentRegistrationInput): Promise<
     p_field: input.field,
     p_level: input.level,
     p_examination_period: input.period,
+    p_programmes: input.programmes,
     p_guardian_name: input.kinName.trim() || null,
     p_guardian_relationship: input.kinRelationship.trim() || null,
     p_guardian_email: input.kinEmail.trim().toLowerCase() || null,

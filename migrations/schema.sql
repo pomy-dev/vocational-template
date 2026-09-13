@@ -9,6 +9,7 @@ create type delivery_mode as enum ('online', 'on_campus', 'hybrid');
 create type enrollment_status as enum ('pending', 'active', 'completed', 'withdrawn');
 create type assessment_kind as enum ('assignment', 'exam');
 create type payment_status as enum ('pending', 'paid', 'refunded', 'failed');
+create type level as enum ('N1','N2','N3','N4','N5','N6','Certificate','Diploma','Occupational','Skills');
 
 create table campuses (
   id uuid primary key default gen_random_uuid(),
@@ -94,7 +95,10 @@ create table subjects (
   name text not null,
   code text,
   credits integer,
-  created_at timestamptz not null default now()
+  available_levels text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  unique (course_id, name),
+  check (array_position(available_levels, '') is null)
 );
 
 create table enrollments (
@@ -113,7 +117,9 @@ create table enrollments (
 create table enrollment_subjects (
   enrollment_id uuid not null references enrollments(id) on delete cascade,
   subject_id uuid not null references subjects(id) on delete restrict,
-  primary key (enrollment_id, subject_id)
+  selected_level text not null,
+  primary key (enrollment_id, subject_id),
+  check (length(trim(selected_level)) > 0)
 );
 
 create table staff_assignments (
@@ -284,6 +290,7 @@ create index schedules_date_idx on schedules(schedule_date);
 create index payments_student_idx on payments(student_id);
 create index assessments_course_idx on assessments(course_id);
 create index attendance_session_date_idx on attendance_sessions(session_date);
+create index enrollment_subjects_subject_idx on enrollment_subjects(subject_id);
 
 -- Helpful read-only dashboard view for the future management portal.
 create view student_dashboard_summary as
