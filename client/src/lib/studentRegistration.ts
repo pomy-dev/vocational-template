@@ -1,50 +1,5 @@
 import { isSupabaseConfigured, supabase } from "./supabase";
-import type { RegistrationProgramme } from "./types";
-
-export type StudentRegistrationInput = {
-  name: string;
-  email: string;
-  phone: string;
-  identityNumber?: string;
-
-  kinName: string;
-  kinRelationship: string;
-  kinEmail: string;
-  kinPhone: string;
-
-  programmes: RegistrationProgramme[];
-  applicationTraceId: string;
-
-  photo?: {
-    path: string;
-    url: string;
-    name: string;
-    mimeType: string;
-  } | null;
-
-  // Payment fields (new)
-  paymentReference: string;
-  amountPaid: number;
-  registrationFee?: number;
-  deposit?: number;
-
-  campusId?: string;
-};
-
-export type RegistrationFile = {
-  path: string;
-  url: string;
-  name: string;
-  mimeType: string;
-};
-
-export type StudentRegistration = {
-  studentId: string;
-  studentNumber: string;
-  enrollmentId: string;
-  paymentReference: string;
-  amountPaid: string;
-};
+import type { StudentRegistration, StudentRegistrationInput, RegistrationFile } from "./types";
 
 /** Submits an application through the atomic Supabase database function. */
 export async function registerStudent(input: StudentRegistrationInput): Promise<StudentRegistration> {
@@ -77,6 +32,12 @@ export async function registerStudent(input: StudentRegistrationInput): Promise<
     p_photo_name: input.photo?.name || null,
     p_photo_mime: input.photo?.mimeType || null,
 
+    // Receipt document
+    p_receipt_path: input.receipt?.path || null,
+    p_receipt_url: input.receipt?.url || null,
+    p_receipt_name: input.receipt?.name || null,
+    p_receipt_mime: input.receipt?.mimeType || null,
+
     // Payment details (from Paystack)
     p_payment_reference: input.paymentReference,
     p_amount_paid: input.amountPaid,
@@ -104,6 +65,30 @@ export async function registerStudent(input: StudentRegistrationInput): Promise<
     paymentReference: registration.payment_reference,
     amountPaid: registration.amount_paid,
   };
+}
+
+export async function sendConfirmationEmail(email: any, name: any, studentNumber: any, url: any, reference: any, totalAmount: any, programmes: any) {
+  // After successful registration
+  const { error: emailError } = await supabase.functions.invoke("send-registration-email", {
+    body: {
+      to: email,
+      studentName: name,
+      studentNumber: studentNumber,
+
+      // Receipt (optional)
+      receiptUrl: url!,
+
+      paymentReference: reference!,
+      amountPaid: totalAmount!,
+
+      programmes: programmes.map((p: any) => p.course), // optional but useful
+    },
+  });
+
+  if (emailError) {
+    console.error("Failed to send confirmation email:", emailError);
+    // Don't fail the whole registration if email fails
+  }
 }
 
 export async function uploadRegistrationFile(file: File, traceId: string, kind: "photo" | "receipt"): Promise<RegistrationFile> {

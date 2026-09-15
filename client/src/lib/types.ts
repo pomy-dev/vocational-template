@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import { type StudentRegistration } from "./studentRegistration"
 
 export type Icon = typeof ArrowRight;
 export type Status = "Active" | "Suspended" | "Completed" | "Alumni";
@@ -10,6 +9,54 @@ export type Complaint = { id: string; subject: string; category: string; message
 export type LearningResource = { id: string; title: string; course: string; subject: string; fileType: string; published: boolean; uploaded: string };
 export type LecturerNotification = { id: string; title: string; body: string; date: string; read: boolean };
 export type TutorProfile = { name: string; initials: string; email: string; phone: string; courses: string[] };
+
+
+export type StudentRegistrationInput = {
+  name: string;
+  email: string;
+  phone: string;
+  identityNumber?: string;
+
+  kinName: string;
+  kinRelationship: string;
+  kinEmail: string;
+  kinPhone: string;
+
+  programmes: RegistrationProgramme[];
+  applicationTraceId: string;
+
+  photo?: {
+    path: string;
+    url: string;
+    name: string;
+    mimeType: string;
+  } | null;
+
+  receipt?: RegistrationFile;
+
+  // Payment fields (new)
+  paymentReference?: string;
+  amountPaid?: number;
+  registrationFee?: number;
+  deposit?: number;
+
+  campusId?: string;
+};
+
+export type RegistrationFile = {
+  path: string;
+  url: string;
+  name: string;
+  mimeType: string;
+};
+
+export type StudentRegistration = {
+  studentId: string;
+  studentNumber: string;
+  enrollmentId: string;
+  paymentReference: string;
+  amountPaid: string;
+};
 
 export enum Level {
   N1 = "N1", N2 = "N2", N3 = "N3", N4 = "N4", N5 = "N5", N6 = "N6", Certificate = "Certificate",
@@ -103,7 +150,6 @@ export type AppData = {
   lecturerNotifications: LecturerNotification[];
   tutors: TutorProfile[];
 };
-
 export type ApplicationDraft = {
   name: string;
   email: string;
@@ -117,10 +163,9 @@ export type ApplicationDraft = {
   kinRelationship: string;
   kinEmail: string;
   kinPhone: string;
-  receipt: { name: string, url: string, mimeType: string }
+  receipt?: RegistrationFile;
   registration: StudentRegistration;
 };
-
 export type RegistrationProgramme = {
   course: string;
   category: string;
