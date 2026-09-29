@@ -97,7 +97,10 @@ export type Student = {
   initials: string;
   guardian: string;
   remarks: string;
-  nextOfKin?: NextOfKin
+  nextOfKin?: NextOfKin;
+  subjects?: string[];
+  courseSubjects?: Record<string, string[]>;
+  avatarUrl?: string;
 };
 export type Announcement = {
   id: string;
@@ -128,6 +131,11 @@ export type LecturerRecord = {
   subjects: string[];
   status: "Active" | "Disabled" | "Removed";
   notice?: string;
+  employeeType?: "Contract" | "Permanent" | "Part-time";
+  profession?: string;
+  bankAccount?: string;
+  temporaryPassword?: string;
+  avatarUrl?: string;
 };
 export type Schedule = {
   id: string;

@@ -492,3 +492,34 @@ create index if not exists lecturer_course_assignments_course_idx on lecturer_co
 create index if not exists lecturer_subject_assignments_subject_idx on lecturer_subject_assignments(subject_id);
 create index if not exists assessments_due_at_idx on assessments(due_at);
 create index if not exists schedules_course_subject_idx on schedules(course_id, subject_id);
+
+-- Employee onboarding, student academic detail and aggregated attendance reporting
+alter table if not exists lecturers add column if not exists employee_type text not null default 'permanent' check (employee_type in ('contract', 'permanent', 'part_time'));
+alter table if not exists lecturers add column if not exists profession text;
+alter table if not exists lecturers add column if not exists bank_account text;
+alter table if not exists lecturers add column if not exists temporary_password_hash text;
+alter table if not exists lecturers add column if not exists must_reset_password boolean not null default true;
+alter table if not exists lecturers add column if not exists avatar_url text;
+create table if not exists student_course_subjects (
+  student_id uuid not null references students(id) on delete cascade,
+  course_id uuid not null references courses(id) on delete cascade,
+  subject_id uuid not null references subjects(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (student_id, course_id, subject_id)
+);
+create table if not exists attendance_aggregates (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references students(id) on delete cascade,
+  course_id uuid references courses(id) on delete set null,
+  lecturer_id uuid references users(id) on delete set null,
+  period_type text not null check (period_type in ('day', 'week', 'month')),
+  period_start date not null,
+  present_sessions integer not null default 0,
+  total_sessions integer not null default 0,
+  attendance_percentage numeric(5,2) not null default 0,
+  created_at timestamptz not null default now(),
+  unique (student_id, course_id, lecturer_id, period_type, period_start)
+);
+create index if not exists student_course_subjects_student_idx on student_course_subjects(student_id);
+create index if not exists attendance_aggregates_period_idx on attendance_aggregates(period_type, period_start);
+create index if not exists attendance_aggregates_course_idx on attendance_aggregates(course_id);
