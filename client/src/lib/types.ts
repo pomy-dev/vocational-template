@@ -127,6 +127,7 @@ export type LecturerRecord = {
   phone: string;
   employeeNo: string;
   campus: string;
+  cv?: File;
   courses: string[];
   subjects: string[];
   status: "Active" | "Disabled" | "Removed";

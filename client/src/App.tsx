@@ -3844,11 +3844,12 @@ function LecturerStudents() {
 }
 
 function LecturerResources({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
-  const [message,setMessage]=useState(""); const [sheet,setSheet]=useState(false); const [month,setMonth]=useState("All months"); const [date,setDate]=useState("All dates"); const [mockAssignments,setMockAssignments]=useState<Assignment[]>([{id:"mock-as-1",title:"Electrical installation rules case study",course:"Electrical Engineering N1–N6",subject:"Electrical Trade Theory",due:"2026-06-12",status:"Published",createdAt:"2026-06-02"},{id:"mock-as-2",title:"Workshop risk assessment",course:"Electrical Engineering N1–N6",subject:"Engineering Science",due:"2026-06-20",status:"Published",createdAt:"2026-06-05"},{id:"mock-as-3",title:"Networking fundamentals quiz",course:"Information Technology",subject:"Networking",due:"2026-07-04",status:"Draft",createdAt:"2026-06-08"}]);
-  const submitResource=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();const f=new FormData(event.currentTarget);setData((old)=>({...old,resources:[{id:crypto.randomUUID(),title:String(f.get("title")||"New learning resource"),course:String(f.get("course")||lecturerCourses[0]),subject:String(f.get("subject")||lecturerSubjects[0]),fileType:"PDF",published:f.get("publish")==="on",uploaded:"2026-06-08"},...old.resources]}));event.currentTarget.reset();setMessage("Resource uploaded and saved to your teaching library.");};
-  const assignments=[...mockAssignments,...data.assignments]; const months=Array.from(new Set(assignments.map((a)=>a.due.slice(0,7)))); const dates=Array.from(new Set(assignments.map((a)=>a.due))); const visible=assignments.filter((a)=>(month==="All months"||a.due.startsWith(month))&&(date==="All dates"||a.due===date));
-  const createAssignment=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();const f=new FormData(event.currentTarget);const assignment:Assignment={id:crypto.randomUUID(),title:String(f.get("title")||"New assignment"),course:String(f.get("course")||lecturerCourses[0]),subject:String(f.get("subject")||lecturerSubjects[0]),due:String(f.get("due")||"2026-06-30"),status:"Published",instructions:String(f.get("instructions")||""),createdAt:"2026-06-08"};setMockAssignments((old)=>[assignment,...old]);setSheet(false);toast.success("Assignment added to the mock lecturer workspace.");};
-  return <><PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials and manage coursework in one place."/><div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]"><div className="portal-card"><p className="eyebrow">Upload & publish resource</p><form onSubmit={submitResource} className="mt-5 space-y-4"><label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook"/></label><label>Course<select name="course" className="field">{lecturerCourses.map((item)=><option key={item}>{item}</option>)}</select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item)=><option key={item}>{item}</option>)}</select></label><label>File<input className="field" type="file" required/></label><label className="check-option"><input name="publish" type="checkbox" defaultChecked/> Publish to enrolled students now</label><Button type="submit"><Upload className="h-4 w-4"/> Upload resource</Button>{message&&<p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}</form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published library</p><h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3></div><Pill>{data.resources.length} files</Pill></div><div className="mt-4 space-y-2">{data.resources.map((resource)=><div className="resource-row" key={resource.id}><div className="file-icon"><FileText/></div><div className="min-w-0"><p className="truncate text-sm font-semibold">{resource.title}</p><p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p></div><Pill tone={resource.published?"green":"slate"}>{resource.published?"Published":"Draft"}</Pill></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Assignment activity</p><h3 className="mt-2 font-display text-2xl text-slate-950">Assignments</h3></div><Button onClick={()=>setSheet(true)}><Plus className="h-4 w-4"/> New assignment</Button></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[["Published",assignments.filter((a)=>a.status==="Published").length],["Drafts",assignments.filter((a)=>a.status==="Draft").length],["Due this month",assignments.filter((a)=>a.due.startsWith("2026-06")).length]].map(([label,value])=><div className="rounded-xl bg-slate-50 p-4" key={String(label)}><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-display text-3xl text-slate-950">{value}</p></div>)}</div><div className="mt-6 flex flex-wrap gap-3"><select className="field mt-0 max-w-[190px]" value={month} onChange={(e)=>setMonth(e.target.value)}><option>All months</option>{months.map((m)=><option key={m}>{m}</option>)}</select><select className="field mt-0 max-w-[190px]" value={date} onChange={(e)=>setDate(e.target.value)}><option>All dates</option>{dates.map((d)=><option key={d}>{d}</option>)}</select></div><div className="mt-4 space-y-2">{visible.map((a)=><div className="list-row" key={a.id}><div className="min-w-0"><p className="font-semibold text-slate-950">{a.title}</p><p className="mt-1 text-xs text-slate-500">{a.course} · {a.subject||"General"} · Due {a.due}</p></div><Pill tone={a.status==="Published"?"green":"slate"}>{a.status}</Pill></div>)}</div></div>{sheet&&<div className="sheet-backdrop" onClick={()=>setSheet(false)}><div className="bottom-sheet" onClick={(e)=>e.stopPropagation()}><div className="flex items-center justify-between"><div><p className="eyebrow">Coursework composer</p><h3 className="mt-2 font-display text-2xl text-slate-950">Add a new assignment</h3></div><button className="icon-btn" onClick={()=>setSheet(false)}><X/></button></div><form onSubmit={createAssignment} className="mt-6 grid gap-4 md:grid-cols-2"><label className="md:col-span-2">Assignment title<input name="title" className="field" required/></label><label>Course<select name="course" className="field">{lecturerCourses.map((item)=><option key={item}>{item}</option>)}</select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item)=><option key={item}>{item}</option>)}</select></label><label>Due date<input name="due" className="field" type="date" required/></label><label>Instructions<textarea name="instructions" className="field min-h-[110px] py-3"/></label><div className="flex justify-end gap-3 md:col-span-2"><Button variant="light" type="button" onClick={()=>setSheet(false)}>Cancel</Button><Button type="submit"><Check className="h-4 w-4"/> Publish assignment</Button></div></form></div></div>}</>;
+  const [message, setMessage] = useState(""); const [sheet, setSheet] = useState(false); const [month, setMonth] = useState("All months"); const [date, setDate] = useState("All dates"); const [mockAssignments, setMockAssignments] = useState<Assignment[]>([{ id: "mock-as-1", title: "Electrical installation rules case study", course: "Electrical Engineering N1–N6", subject: "Electrical Trade Theory", due: "2026-06-12", status: "Published", createdAt: "2026-06-02" }, { id: "mock-as-2", title: "Workshop risk assessment", course: "Electrical Engineering N1–N6", subject: "Engineering Science", due: "2026-06-20", status: "Published", createdAt: "2026-06-05" }, { id: "mock-as-3", title: "Networking fundamentals quiz", course: "Information Technology", subject: "Networking", due: "2026-07-04", status: "Draft", createdAt: "2026-06-08" }]);
+  const submitResource = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const f = new FormData(event.currentTarget); setData((old) => ({ ...old, resources: [{ id: crypto.randomUUID(), title: String(f.get("title") || "New learning resource"), course: String(f.get("course") || lecturerCourses[0]), subject: String(f.get("subject") || lecturerSubjects[0]), fileType: "PDF", published: f.get("publish") === "on", uploaded: "2026-06-08" }, ...old.resources] })); event.currentTarget.reset(); setMessage("Resource uploaded and saved to your teaching library."); };
+  const assignments = [...mockAssignments, ...data.assignments]; const months = Array.from(new Set(assignments.map((a) => a.due.slice(0, 7)))); const dates = Array.from(new Set(assignments.map((a) => a.due))); const visible = assignments.filter((a) => (month === "All months" || a.due.startsWith(month)) && (date === "All dates" || a.due === date));
+  const createAssignment = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const f = new FormData(event.currentTarget); const assignment: Assignment = { id: crypto.randomUUID(), title: String(f.get("title") || "New assignment"), course: String(f.get("course") || lecturerCourses[0]), subject: String(f.get("subject") || lecturerSubjects[0]), due: String(f.get("due") || "2026-06-30"), status: "Published", instructions: String(f.get("instructions") || ""), createdAt: "2026-06-08" }; setMockAssignments((old) => [assignment, ...old]); setSheet(false); toast.success("Assignment added to the mock lecturer workspace."); };
+  return <>
+    <PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials and manage coursework in one place." /><div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]"><div className="portal-card"><p className="eyebrow">Upload & publish resource</p><form onSubmit={submitResource} className="mt-5 space-y-4"><label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook" /></label><label>Course<select name="course" className="field">{lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>File<input className="field" type="file" required /></label><label className="check-option"><input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now</label><Button type="submit"><Upload className="h-4 w-4" /> Upload resource</Button>{message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}</form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published library</p><h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3></div><Pill>{data.resources.length} files</Pill></div><div className="mt-4 space-y-2">{data.resources.map((resource) => <div className="resource-row" key={resource.id}><div className="file-icon"><FileText /></div><div className="min-w-0"><p className="truncate text-sm font-semibold">{resource.title}</p><p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p></div><Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Assignment activity</p><h3 className="mt-2 font-display text-2xl text-slate-950">Assignments</h3></div><Button onClick={() => setSheet(true)}><Plus className="h-4 w-4" /> New assignment</Button></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[["Published", assignments.filter((a) => a.status === "Published").length], ["Drafts", assignments.filter((a) => a.status === "Draft").length], ["Due this month", assignments.filter((a) => a.due.startsWith("2026-06")).length]].map(([label, value]) => <div className="rounded-xl bg-slate-50 p-4" key={String(label)}><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-display text-3xl text-slate-950">{value}</p></div>)}</div><div className="mt-6 flex flex-wrap gap-3"><select className="field mt-0 max-w-[190px]" value={month} onChange={(e) => setMonth(e.target.value)}><option>All months</option>{months.map((m) => <option key={m}>{m}</option>)}</select><select className="field mt-0 max-w-[190px]" value={date} onChange={(e) => setDate(e.target.value)}><option>All dates</option>{dates.map((d) => <option key={d}>{d}</option>)}</select></div><div className="mt-4 space-y-2">{visible.map((a) => <div className="list-row" key={a.id}><div className="min-w-0"><p className="font-semibold text-slate-950">{a.title}</p><p className="mt-1 text-xs text-slate-500">{a.course} · {a.subject || "General"} · Due {a.due}</p></div><Pill tone={a.status === "Published" ? "green" : "slate"}>{a.status}</Pill></div>)}</div></div>{sheet && <div className="sheet-backdrop" onClick={() => setSheet(false)}><div className="bottom-sheet" onClick={(e) => e.stopPropagation()}><div className="flex items-center justify-between"><div><p className="eyebrow">Coursework composer</p><h3 className="mt-2 font-display text-2xl text-slate-950">Add a new assignment</h3></div><button className="icon-btn" onClick={() => setSheet(false)}><X /></button></div><form onSubmit={createAssignment} className="mt-6 grid gap-4 md:grid-cols-2"><label className="md:col-span-2">Assignment title<input name="title" className="field" required /></label><label>Course<select name="course" className="field">{lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="due" className="field" type="date" required /></label><label>Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label><div className="flex justify-end gap-3 md:col-span-2"><Button variant="light" type="button" onClick={() => setSheet(false)}>Cancel</Button><Button type="submit"><Check className="h-4 w-4" /> Publish assignment</Button></div></form></div></div>}</>;
 }
 function LecturerAttendance() { const courseMap: Record<string, string[]> = { "Electrical Engineering N1–N6": ["Engineering Science", "Mathematics N2", "Electrical Trade Theory", "Logic Systems"], "Information Technology": ["Networking", "Database Fundamentals", "Technical Support"] }; const [course, setCourse] = useState(lecturerCourses[0]); const subjects = courseMap[course] || []; const [subject, setSubject] = useState(subjects[0]); const [present, setPresent] = useState<Record<string, boolean>>({ s1: true, s2: true, s3: true, s4: false, s5: true }); useEffect(() => setSubject(subjects[0]), [course]); const students = lecturerStudentRows.filter((st) => st.course === course || (course === lecturerCourses[0] && st.id === "s1")); const trend = subjects.map((item, i) => ({ item, value: 78 + ((i + course.length) * 7) % 19 })); return <><PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart." actions={<Button onClick={() => toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Selected course" value={course === lecturerCourses[0] ? "Electrical" : "IT"} detail={`${subjects.length} subjects available`} icon={BookOpen} /><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green" /><MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp} /></div><div className="mt-6 portal-card"><div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">{lecturerCourses.map((item) => <button key={item} className={`filter-chip ${course === item ? "active" : ""}`} onClick={() => setCourse(item)}>{item}</button>)}</div><div className="mt-5 flex flex-wrap gap-2">{subjects.map((item) => <button key={item} className={`filter-chip ${subject === item ? "active" : ""}`} onClick={() => setSubject(item)}>{item}</button>)}</div></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3><div className="mt-5">{students.map((student) => <label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(e) => setPresent((old) => ({ ...old, [student.id]: e.target.checked }))} /></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3><div className="mt-6 flex h-56 items-end gap-3">{trend.map(({ item, value }) => <div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}><span className="text-xs font-bold text-slate-700">{value}%</span><div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(28, value * 1.7)}px` }} /><span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p></div></div></>; }
 
@@ -4238,17 +4239,242 @@ function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   );
 }
 
-function AdminLecturers({ data, setData, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; navigate: (path: string) => void }) {
-  const blank: LecturerRecord = { id:"", name:"", email:"", phone:"", employeeNo:"", campus:"Wynberg Johannesburg", courses:[], subjects:[], status:"Active", employeeType:"Permanent", profession:"", bankAccount:"" };
-  const [editing,setEditing]=useState<LecturerRecord|null>(null); const [step,setStep]=useState(0); const [notice,setNotice]=useState<LecturerRecord|null>(null); const [temporaryPassword,setTemporaryPassword]=useState(""); const [query,setQuery]=useState(""); const [draft,setDraft]=useState<LecturerRecord>(blank); const [courseSelections,setCourseSelections]=useState<string[]>([]); const [subjectSelections,setSubjectSelections]=useState<string[]>([]);
-  const list=data.lecturers.filter((l)=>`${l.name} ${l.email} ${l.employeeNo} ${l.profession||""}`.toLowerCase().includes(query.toLowerCase()));
-  const selectedCourseObjects=courses.filter((c)=>courseSelections.includes(c.name)); const availableSubjects=Array.from(new Set(selectedCourseObjects.flatMap((c)=>c.subjects.map((sub)=>sub.name))));
-  const openEditor=(record:LecturerRecord)=>{setDraft(record);setCourseSelections(record.courses);setSubjectSelections(record.subjects);setStep(0);setEditing(record);};
-  const updateDraft=(key:keyof LecturerRecord,value:string)=>setDraft((old)=>({...old,[key]:value}));
-  const save=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const password=`NSTC-${Math.random().toString(36).slice(2,8).toUpperCase()}!`;const next:LecturerRecord={...draft,id:draft.id||crypto.randomUUID(),courses:courseSelections,subjects:subjectSelections,temporaryPassword:password};setData((old)=>({...old,lecturers:draft.id?old.lecturers.map((l)=>l.id===draft.id?next:l):[next,...old.lecturers]}));setEditing(null);setTemporaryPassword(password);toast.success("Employee account created with a temporary password.");};
-  const updateStatus=(status:LecturerRecord["status"])=>{if(!notice)return;const text=(document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value||"Status changed by the NSTC admin team.";setData((old)=>({...old,lecturers:old.lecturers.map((l)=>l.id===notice.id?{...l,status,notice:text}:l)}));setNotice(null);toast.success(`${status} notice drafted for ${notice.email}.`);};
-  return <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}><PageHeading eyebrow="People & permissions" title="Manage employees" body="Create employee accounts, record particulars and assign teaching courses where applicable." actions={<Button onClick={()=>openEditor(blank)}><Plus className="h-4 w-4"/> Create employee</Button>}/><div className="portal-card"><div className="flex flex-col justify-between gap-4 md:flex-row md:items-center"><div><p className="eyebrow">Employee directory</p><h3 className="mt-2 font-display text-2xl text-slate-950">Staff accounts</h3></div><input className="field mt-0 max-w-sm" value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search name, email, profession or employee no."/></div><div className="mt-6 overflow-x-auto"><table className="data-table"><thead><tr><th>Employee</th><th>Profession</th><th>Type</th><th>Courses</th><th>Status</th><th>Actions</th></tr></thead><tbody>{list.map((l)=><tr key={l.id}><td><p className="font-semibold text-slate-950">{l.name}</p><p className="text-xs text-slate-500">{l.employeeNo} · {l.email}<br/>{l.phone}</p></td><td>{l.profession||"Not recorded"}</td><td>{l.employeeType||"Permanent"}</td><td>{l.courses.join(" · ")||"No teaching allocation"}</td><td><Pill tone={l.status==="Active"?"green":"red"}>{l.status}</Pill></td><td><div className="flex flex-wrap gap-2"><button className="filter-chip" onClick={()=>openEditor(l)}>Edit</button><button className="filter-chip" onClick={()=>setNotice(l)}>{l.status==="Active"?"Disable / remove":"Draft notice"}</button></div></td></tr>)}</tbody></table></div></div>{editing&&<Modal title={draft.id?"Edit employee account":"Create employee account"} onClose={()=>setEditing(null)}><div className="mt-5 flex gap-2 border-b border-slate-100 pb-4">{["Demographics","Account","Courses"].map((label,index)=><button key={label} className={`filter-chip ${step===index?"active":""}`} onClick={()=>setStep(index)}>{index+1}. {label}</button>)}</div><form onSubmit={save} className="mt-5"><div className={step===0?"grid gap-4 md:grid-cols-2":"hidden"}><label>Full name<input className="field" required value={draft.name} onChange={(e)=>updateDraft("name",e.target.value)}/></label><label>Employee number<input className="field" required value={draft.employeeNo} onChange={(e)=>updateDraft("employeeNo",e.target.value)}/></label><label>Campus<select className="field" value={draft.campus} onChange={(e)=>updateDraft("campus",e.target.value)}><option>Wynberg Johannesburg</option><option>Middelburg</option></select></label><label>Profession<input className="field" required value={draft.profession||""} onChange={(e)=>updateDraft("profession",e.target.value)} placeholder="e.g. Lecturer, Finance Officer"/></label></div><div className={step===1?"grid gap-4 md:grid-cols-2":"hidden"}><label>Email address<input className="field" type="email" required value={draft.email} onChange={(e)=>updateDraft("email",e.target.value)}/></label><label>Phone<input className="field" required value={draft.phone} onChange={(e)=>updateDraft("phone",e.target.value)}/></label><label>Bank account<input className="field" value={draft.bankAccount||""} onChange={(e)=>updateDraft("bankAccount",e.target.value)} placeholder="Account number / payroll reference"/></label><div><span className="field-label">Employment type</span><div className="mt-2 flex flex-wrap gap-2">{["Contract","Permanent","Part-time"].map((type)=><button type="button" key={type} className={`filter-chip ${draft.employeeType===type?"active":""}`} onClick={()=>updateDraft("employeeType",type)}>{type}</button>)}</div></div></div><div className={step===2?"space-y-5":"hidden"}><div><p className="field-label">Courses from the academic catalogue</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{courses.map((course)=><label className="check-option" key={course.id}><input type="checkbox" checked={courseSelections.includes(course.name)} onChange={(e)=>setCourseSelections((old)=>e.target.checked?[...old,course.name]:old.filter((v)=>v!==course.name))}/>{course.name}</label>)}</div></div><div><p className="field-label">Subjects corresponding to selected courses</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{availableSubjects.map((subject)=><label className="check-option" key={subject}><input type="checkbox" checked={subjectSelections.includes(subject)} onChange={(e)=>setSubjectSelections((old)=>e.target.checked?[...old,subject]:old.filter((v)=>v!==subject))}/>{subject}</label>)}</div>{!availableSubjects.length&&<p className="mt-2 text-sm text-slate-500">Select at least one course to reveal its subjects.</p>}</div></div><div className="mt-7 flex justify-between gap-3"><Button variant="light" type="button" onClick={()=>step===0?setEditing(null):setStep(step-1)}> {step===0?"Cancel":"Back"}</Button>{step<2?<Button type="button" onClick={()=>setStep(step+1)}>Next <ArrowRight className="h-4 w-4"/></Button>:<Button type="submit"><Check className="h-4 w-4"/> Create account</Button>}</div></form></Modal>}{temporaryPassword&&<Modal title="Temporary password generated" onClose={()=>setTemporaryPassword("")}><div className="mt-5 rounded-xl bg-slate-950 p-5 text-center"><p className="text-xs uppercase tracking-wider text-white/50">Temporary password</p><p className="mt-3 font-mono text-2xl font-bold tracking-widest text-[#D4AF37]">{temporaryPassword}</p></div><p className="mt-5 text-sm leading-6 text-slate-600">Share this password securely with the employee. It must be reset when the account logs in for the first time.</p><div className="mt-5 flex justify-end"><Button onClick={()=>setTemporaryPassword("")}>Done</Button></div></Modal>}{notice&&<Modal title={`Status notice · ${notice.name}`} onClose={()=>setNotice(null)}><p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this employee. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p><textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice||"Your account has been placed under review because..."}/><div className="mt-5 flex flex-wrap justify-end gap-3"><Button variant="light" onClick={()=>setNotice(null)}>Cancel</Button><Button variant="light" onClick={()=>updateStatus("Disabled")}>Disable & prepare email</Button><Button onClick={()=>updateStatus("Removed")}>Remove & prepare email</Button></div></Modal>}</PortalShell>;
+function AdminLecturers({ data, setData, navigate }: {
+  data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>;
+  navigate: (path: string) => void
+}) {
+
+  const blank: LecturerRecord = {
+    id: "", name: "", email: "", phone: "", employeeNo: "",
+    campus: "Middleburg", courses: [], subjects: [],
+    status: "Active", employeeType: "Permanent", profession: "",
+    bankAccount: ""
+  };
+
+  const [editing, setEditing] = useState<LecturerRecord | null>(null);
+  const [step, setStep] = useState(0);
+  const [notice, setNotice] = useState<LecturerRecord | null>(null);
+  const [temporaryPassword, setTemporaryPassword] = useState("");
+  const [query, setQuery] = useState("");
+  const [draft, setDraft] = useState<LecturerRecord>(blank);
+  const [courseSelections, setCourseSelections] = useState<string[]>([]);
+  const [subjectSelections, setSubjectSelections] = useState<string[]>([]);
+
+  const list = data.lecturers.filter((l) => `${l.name} ${l.email} ${l.employeeNo} ${l.profession || ""}`.toLowerCase().includes(query.toLowerCase()));
+  const selectedCourseObjects = courses.filter((c) => courseSelections.includes(c.name));
+  const availableSubjects = Array.from(new Set(selectedCourseObjects.flatMap((c) => c.subjects.map((sub) => sub.name))));
+  const openEditor = (record: LecturerRecord) => { setDraft(record); setCourseSelections(record.courses); setSubjectSelections(record.subjects); setStep(0); setEditing(record); };
+  const updateDraft = (key: keyof LecturerRecord, value: string) => setDraft((old) => ({ ...old, [key]: value }));
+
+  const save = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget)
+    const cvDoc = f.get("cv")
+    const password = `NSTC-${Math.random().toString(36).slice(2, 8).toUpperCase()}!`;
+    const next: LecturerRecord = {
+      ...draft, id: draft.id || crypto.randomUUID(),
+      courses: courseSelections,
+      cv: cvDoc instanceof File ? cvDoc : undefined,
+      subjects: subjectSelections,
+      temporaryPassword: password
+    };
+    setData((old) => ({
+      ...old,
+      lecturers: draft.id
+        ? old.lecturers.map((l) => l.id === draft.id ? next : l)
+        : [next, ...old.lecturers]
+    }));
+    setEditing(null);
+    setTemporaryPassword(password);
+    toast.success("Employee account created with a temporary password.");
+  };
+
+  const updateStatus = (status: LecturerRecord["status"]) => {
+    if (!notice) return;
+    const text = (document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value || "Status changed by the NSTC admin team.";
+    setData((old) => ({
+      ...old,
+      lecturers: old.lecturers.map((l) => l.id === notice.id ? { ...l, status, notice: text } : l)
+    }));
+    setNotice(null);
+    toast.success(`${status} notice drafted for ${notice.email}.`);
+  };
+
+  return (
+    <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}>
+      <PageHeading eyebrow="People & permissions" title="Manage employees" body="Create employee accounts, record particulars and assign teaching courses where applicable."
+        actions={
+          <Button onClick={() => openEditor(blank)}>
+            <Plus className="h-4 w-4" /> Create employee</Button>
+        }
+      />
+      <div className="portal-card">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <p className="eyebrow">Employee directory</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Staff accounts</h3>
+          </div>
+          <input className="field mt-0 max-w-sm" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, profession or employee no." />
+        </div>
+        <div className="mt-6 overflow-x-auto">
+          <table className="data-table admin-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Profession</th>
+                <th>Type</th>
+                <th>Courses</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((l) =>
+                <tr key={l.id}>
+                  <td>
+                    <p className="font-semibold text-slate-950">{l.name}</p>
+                    <p className="text-xs text-slate-500">{l.employeeNo} · {l.email}<br />{l.phone}</p>
+                  </td>
+                  <td>{l.profession || "Not recorded"}</td>
+                  <td>{l.employeeType || "Permanent"}</td>
+                  <td>{l.courses.join(" · ") || "No teaching allocation"}</td>
+                  <td><Pill tone={l.status === "Active" ? "green" : "red"}>{l.status}</Pill></td>
+                  <td>
+                    <div className="flex flex-wrap gap-2">
+                      <button className="filter-chip" onClick={() => openEditor(l)}>Edit</button>
+                      <button className="filter-chip" onClick={() => setNotice(l)}>
+                        {l.status === "Active" ? "Disable / remove" : "Draft notice"}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {editing &&
+        <Modal title={draft.id ? "Edit employee account" : "Create employee account"} onClose={() => setEditing(null)}>
+          <div className="mt-5 flex gap-2 border-b border-slate-100 pb-4">
+            {["Demographics", "Account", "Courses"].map((label, index) =>
+              <button key={label} className={`filter-chip ${step === index ? "active" : ""}`} onClick={() => setStep(index)}>
+                {index + 1}. {label}
+              </button>
+            )}
+          </div>
+          <form onSubmit={save} className="mt-5">
+            <div className={step === 0 ? "grid gap-4 md:grid-cols-2" : "hidden"}>
+              <label>Full name
+                <input className="field" required value={draft.name} onChange={(e) => updateDraft("name", e.target.value)} />
+              </label>
+              <label>Employee number
+                <input className="field" required value={draft.employeeNo} onChange={(e) => updateDraft("employeeNo", e.target.value)} />
+              </label>
+              <label>Profession
+                <input className="field" required value={draft.profession || ""} onChange={(e) => updateDraft("profession", e.target.value)} placeholder="e.g. Lecturer, Finance Officer" />
+              </label>
+              <label>CV Doc
+                <input type="file" name="cv" className="field" required />
+              </label>
+            </div>
+            <div className={step === 1 ? "grid gap-4 md:grid-cols-2" : "hidden"}>
+              <label>Email address
+                <input className="field" type="email" required value={draft.email} onChange={(e) => updateDraft("email", e.target.value)} />
+              </label>
+              <label>Phone
+                <input className="field" required value={draft.phone} onChange={(e) => updateDraft("phone", e.target.value)} />
+              </label>
+              <label>Bank account
+                <input className="field" value={draft.bankAccount || ""} onChange={(e) => updateDraft("bankAccount", e.target.value)} placeholder="Account number / payroll reference" />
+              </label>
+              <div>
+                <span className="field-label">Employment type</span>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {["Contract", "Permanent", "Part-time"].map((type) =>
+                    <button type="button" key={type} className={`filter-chip ${draft.employeeType === type ? "active" : ""}`} onClick={() => updateDraft("employeeType", type)}>
+                      {type}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className={step === 2 ? "space-y-5" : "hidden"}>
+              <div>
+                <p className="field-label">Courses from the academic catalogue</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {courses.map((course) =>
+                    <label className="check-option" key={course.id}>
+                      <input type="checkbox" checked={courseSelections.includes(course.name)} onChange={(e) =>
+                        setCourseSelections((old) => e.target.checked
+                          ? [...old, course.name]
+                          : old.filter((v) => v !== course.name))
+                      }
+                      />
+                      {course.name}
+                    </label>
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="field-label">Subjects corresponding to selected courses</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {availableSubjects.map((subject) =>
+                    <label className="check-option" key={subject}>
+                      <input type="checkbox" checked={subjectSelections.includes(subject)} onChange={(e) => setSubjectSelections((old) => e.target.checked
+                        ? [...old, subject] : old.filter((v) => v !== subject))
+                      }
+                      />
+                      {subject}
+                    </label>
+                  )}
+                </div>
+                {!availableSubjects.length && <p className="mt-2 text-sm text-slate-500">Select at least one course to reveal its subjects.</p>}
+              </div>
+            </div>
+            <div className="mt-7 flex justify-between gap-3">
+              <Button variant="light" type="button" onClick={() => step === 0 ? setEditing(null) : setStep(step - 1)}>
+                {step === 0 ? "Cancel" : "Back"}
+              </Button>
+              {step === 2
+                ? <Button type={step >= 2 ? "submit" : "button"}><Check className="h-4 w-4" /> Create account</Button>
+                : <Button type="button" onClick={() => setStep(step + 1)}>Next <ArrowRight className="h-4 w-4" /></Button>
+              }
+            </div>
+          </form>
+        </Modal>
+      }
+      {temporaryPassword &&
+        <Modal title="Temporary password generated" onClose={() => setTemporaryPassword("")}>
+          <div className="mt-5 rounded-xl bg-slate-950 p-5 text-center">
+            <p className="text-xs uppercase tracking-wider text-white/50">Temporary password</p>
+            <p className="mt-3 font-mono text-2xl font-bold tracking-widest text-[#D4AF37]">
+              {temporaryPassword}
+            </p>
+          </div>
+          <p className="mt-5 text-sm leading-6 text-slate-600">Share this password securely with the employee. It must be reset when the account logs in for the first time.</p>
+          <div className="mt-5 flex justify-end">
+            <Button onClick={() => setTemporaryPassword("")}>Done</Button>
+          </div>
+        </Modal>
+      }
+      {notice &&
+        <Modal title={`Status notice · ${notice.name}`} onClose={() => setNotice(null)}>
+          <p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this employee. The notice will be addressed to
+            <strong>{notice.email}</strong> when connected to the email service.
+          </p>
+          <textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice || "Your account has been placed under review because..."} />
+          <div className="mt-5 flex flex-wrap justify-end gap-3">
+            <Button variant="light" onClick={() => setNotice(null)}>Cancel</Button>
+            <Button variant="light" onClick={() => updateStatus("Disabled")}>Disable</Button>
+            <Button onClick={() => updateStatus("Removed")}>Remove</Button>
+          </div>
+        </Modal>
+      }
+    </PortalShell>
+  );
 }
+
 function AdminPortal({ data, setData, path, navigate }: {
   data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>;
   path: string; navigate: (path: string) => void
@@ -4449,12 +4675,179 @@ function AdminDashboard({ data, setData, navigate }: {
 }
 
 function AdminStudents({ data, navigate }: { data: AppData; navigate: (path: string) => void }) {
-  const [query, setQuery] = useState(""); const [status, setStatus] = useState("All statuses"); const [startDate, setStartDate] = useState("All start dates"); const [course, setCourse] = useState("All courses"); const [profile, setProfile] = useState<Student | null>(null);
-  const coursesInData = Array.from(new Set(data.students.map((s) => s.course))); const dates = Array.from(new Set(data.students.map((s) => s.startDate))).sort();
-  const list = data.students.filter((s) => (status === "All statuses" || s.status === status) && (startDate === "All start dates" || s.startDate === startDate) && (course === "All courses" || s.course === course) && `${s.name} ${s.studentNo} ${s.course}`.toLowerCase().includes(query.toLowerCase()));
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("All statuses");
+  const [startDate, setStartDate] = useState("All start dates");
+  const [course, setCourse] = useState("All courses");
+  const [profile, setProfile] = useState<Student | null>(null);
+
+  const coursesInData = Array.from(new Set(data.students.map((s) => s.course)));
+  const dates = Array.from(new Set(data.students.map((s) => s.startDate))).sort();
+  const list = data.students.filter((s) =>
+    (status === "All statuses" || s.status === status)
+    && (startDate === "All start dates" || s.startDate === startDate)
+    && (course === "All courses" || s.course === course)
+    && `${s.name} ${s.studentNo} ${s.course}`.toLowerCase().includes(query.toLowerCase())
+  );
+
   const studentSubjects = profile?.courseSubjects?.[profile.course] || profile?.subjects || ["Subjects to be confirmed"];
-  return <PortalShell role="Admin" active="/admin/students" onNavigate={navigate}><PageHeading eyebrow="Student register" title="All learners" body={`${data.students.length} learner profiles in the local register.`} actions={<Button onClick={() => toast.success("Student import template downloaded.")}><Download className="h-4 w-4" /> Import template</Button>} /><div className="portal-card"><div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_1fr]"><label className="relative"><Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" /><input className="field mt-0 pl-10" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search learner or programme" /></label><select className="field mt-0" value={status} onChange={(e) => setStatus(e.target.value)}><option>All statuses</option>{["Active","Suspended","Completed","Alumni"].map((v)=><option key={v}>{v}</option>)}</select><select className="field mt-0" value={startDate} onChange={(e) => setStartDate(e.target.value)}><option>All start dates</option>{dates.map((v)=><option key={v}>{v}</option>)}</select><select className="field mt-0" value={course} onChange={(e) => setCourse(e.target.value)}><option>All courses</option>{coursesInData.map((v)=><option key={v}>{v}</option>)}</select></div><div className="mt-6 flex gap-2"><Pill tone="green">{list.length} matching</Pill><Pill tone="red">{list.filter((s)=>s.status==="Suspended").length} suspended</Pill></div><div className="mt-6 overflow-x-auto"><table className="data-table"><thead><tr><th>Learner</th><th>Programme</th><th>Campus</th><th>Start date</th><th>Status</th><th>Balance</th><th>Profile</th></tr></thead><tbody>{list.map((st)=><tr key={st.id}><td><div className="flex items-center gap-3"><div className="avatar-small">{st.initials}</div><div><p className="font-semibold text-slate-950">{st.name}</p><p className="text-xs text-slate-400">{st.studentNo} · {st.email}</p></div></div></td><td>{st.course}</td><td>{st.campus}</td><td>{st.startDate}</td><td><Pill tone={st.status === "Active" ? "green" : st.status === "Suspended" ? "red" : "slate"}>{st.status}</Pill></td><td className={st.balance ? "font-bold text-red-600" : "text-slate-500"}>{fee(st.balance)}</td><td><button className="filter-chip" onClick={()=>setProfile(st)}><ExternalLink className="mr-1 inline h-3.5 w-3.5"/> View profile</button></td></tr>)}</tbody></table>{!list.length&&<div className="empty-state"><Users/><h3>No matching learners</h3><p>Adjust the status, start date, course or search filters.</p></div>}</div></div>{profile&&<Modal title={`${profile.name} · Student profile`} onClose={()=>setProfile(null)}><div className="mt-5 grid gap-5 md:grid-cols-[110px_1fr]"><div className="h-28 w-28 overflow-hidden rounded-2xl bg-slate-100"><img src={profile.avatarUrl || "/assets/students-in-grad.jpg"} alt={`${profile.name} avatar`} className="h-full w-full object-cover"/><div className="-mt-9 ml-3 relative avatar-small">{profile.initials}</div></div><div><h3 className="font-display text-2xl text-slate-950">{profile.name}</h3><p className="mt-1 text-sm text-slate-500">{profile.studentNo} · {profile.status}</p><div className="mt-4 grid gap-3 sm:grid-cols-2"><p className="text-sm"><span className="block text-xs text-slate-400">Email</span><strong>{profile.email}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Phone</span><strong>{profile.phone}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Campus</span><strong>{profile.campus}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Start date</span><strong>{profile.startDate}</strong></p></div></div></div><div className="mt-6 grid gap-4 sm:grid-cols-2"><div className="rounded-xl bg-slate-50 p-4"><p className="eyebrow">Courses</p><p className="mt-2 text-sm font-semibold text-slate-950">{profile.course}</p><p className="mt-3 text-xs font-bold uppercase tracking-wider text-slate-400">Subjects in course</p><div className="mt-2 flex flex-wrap gap-2">{studentSubjects.map((subject)=><Pill key={subject} tone="slate">{subject}</Pill>)}</div></div><div className="rounded-xl bg-slate-50 p-4"><p className="eyebrow">Academic indicators</p><div className="mt-3 grid grid-cols-2 gap-4"><div><p className="text-xs text-slate-400">Aggregated attendance</p><p className="mt-1 font-display text-3xl text-slate-950">{profile.attendance}%</p></div><div><p className="text-xs text-slate-400">CA average</p><p className="mt-1 font-display text-3xl text-slate-950">{profile.termAverage}%</p></div></div><div className="mt-4"><ProgressBar value={profile.attendance}/><p className="mt-2 text-xs text-slate-500">Attendance across current academic sessions</p></div></div></div><div className="mt-5 rounded-xl border border-slate-100 p-4"><p className="eyebrow">Demographics</p><div className="mt-3 grid gap-3 sm:grid-cols-2"><p className="text-sm"><span className="block text-xs text-slate-400">Guardian</span><strong>{profile.guardian}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Next of kin</span><strong>{profile.nextOfKin?.name || profile.guardian}</strong></p></div><p className="mt-4 text-sm leading-6 text-slate-600">{profile.remarks}</p></div></Modal>}</PortalShell>;
+  return (
+    <PortalShell role="Admin" active="/admin/students" onNavigate={navigate}>
+      <PageHeading eyebrow="Student register" title="All learners" body={`${data.students.length} learner profiles in the local register.`}
+        actions={
+          <Button onClick={() => toast.success("Student import template downloaded.")}>
+            <Download className="h-4 w-4" /> Import template
+          </Button>
+        } />
+
+      <div className="portal-card">
+        <div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <label className="relative">
+            <Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" />
+            <input className="field mt-0 pl-10" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search learner or programme" />
+          </label>
+          <select className="field mt-0" value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option>All statuses</option>
+            {["Active", "Suspended", "Completed", "Alumni"].map((v) =>
+              <option key={v}>{v}</option>
+            )}
+          </select>
+          <select className="field mt-0" value={startDate} onChange={(e) => setStartDate(e.target.value)}>
+            <option>All start dates</option>
+            {dates.map((v) => <option key={v}>{v}</option>)}
+          </select>
+          <select className="field mt-0" value={course} onChange={(e) => setCourse(e.target.value)}>
+            <option>All courses</option>
+            {coursesInData.map((v) => <option key={v}>{v}</option>)}
+          </select>
+        </div>
+        <div className="mt-6 flex gap-2">
+          <Pill tone="green">{list.length} matching</Pill>
+          <Pill tone="red">
+            {list.filter((s) => s.status === "Suspended").length} suspended</Pill>
+        </div>
+        <div className="mt-6 overflow-x-auto">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Learner</th>
+                <th>Programme</th>
+                {/* <th>Campus</th> */}
+                <th>Start date</th>
+                <th>Status</th>
+                {/* <th>Balance</th> */}
+                <th>Profile</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((st) =>
+                <tr key={st.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar-small">{st.initials}</div>
+                      <div>
+                        <p className="font-semibold text-slate-950">{st.name}</p>
+                        <p className="text-xs text-slate-400">{st.studentNo} · {st.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{st.course}</td>
+                  {/* <td>{st.campus}</td> */}
+                  <td>{st.startDate}</td>
+                  <td>
+                    <Pill tone={st.status === "Active" ? "green" : st.status === "Suspended" ? "red" : "slate"}>{st.status}</Pill>
+                  </td>
+                  {/* <td className={st.balance ? "font-bold text-red-600" : "text-slate-500"}>{fee(st.balance)}</td> */}
+                  <td>
+                    <button className="filter-chip" onClick={() => setProfile(st)}>
+                      <ExternalLink className="mr-1 inline h-3.5 w-3.5" /> View profile
+                    </button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {!list.length && <div className="empty-state"><Users /><h3>No matching learners</h3><p>Adjust the status, start date, course or search filters.</p></div>}
+        </div>
+      </div>
+
+      {profile &&
+        <Modal title={`${profile.name} · Student profile`} onClose={() => setProfile(null)}>
+          <div className="mt-5 grid gap-5 md:grid-cols-[110px_1fr]">
+            <div className="h-28 w-28 overflow-hidden rounded-2xl bg-slate-100">
+              <img src={profile.avatarUrl || "/assets/students-in-grad.jpg"} alt={`${profile.name} avatar`} className="h-full w-full object-cover" />
+              <div className="-mt-9 ml-3 relative avatar-small">{profile.initials}</div>
+            </div>
+            <div>
+              <h3 className="font-display text-2xl text-slate-950">{profile.name}</h3>
+              <p className="mt-1 text-sm text-slate-500">{profile.studentNo} · {profile.status}</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <p className="text-sm">
+                  <span className="block text-xs text-slate-400">Email</span>
+                  <strong>{profile.email}</strong></p>
+                <p className="text-sm">
+                  <span className="block text-xs text-slate-400">Phone</span>
+                  <strong>{profile.phone}</strong>
+                </p>
+                <p className="text-sm">
+                  <span className="block text-xs text-slate-400">Campus</span>
+                  <strong>{profile.campus}</strong>
+                </p>
+                <p className="text-sm">
+                  <span className="block text-xs text-slate-400">Start date</span>
+                  <strong>{profile.startDate}</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="eyebrow">Courses</p>
+              <p className="mt-2 text-sm font-semibold text-slate-950">{profile.course}</p>
+              <p className="mt-3 text-xs font-bold uppercase tracking-wider text-slate-400">Subjects in course</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {studentSubjects.map((subject) => <Pill key={subject} tone="slate">{subject}</Pill>)}
+              </div>
+            </div>
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="eyebrow">Academic indicators</p>
+              <div className="mt-3 grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-slate-400">Aggregated attendance</p>
+                  <p className="mt-1 font-display text-3xl text-slate-950">{profile.attendance}%</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400">CA average</p>
+                  <p className="mt-1 font-display text-3xl text-slate-950">
+                    {profile.termAverage}%</p>
+                </div>
+              </div>
+              <div className="mt-4">
+                <ProgressBar value={profile.attendance} />
+                <p className="mt-2 text-xs text-slate-500">Attendance across current academic sessions</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 rounded-xl border border-slate-100 p-4">
+            <p className="eyebrow">Next Of Kin</p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <p className="text-sm">
+                <span className="block text-xs text-slate-400">Name</span>
+                <strong>{profile.guardian}</strong>
+              </p>
+              <p className="text-sm">
+                <span className="block text-xs text-slate-400">Contact</span>
+                <strong>{profile.nextOfKin?.phone || "N/A"}</strong>
+              </p>
+            </div>
+            <p className="mt-4 text-sm leading-6 text-slate-600">{profile.remarks}</p>
+          </div>
+        </Modal>
+      }
+    </PortalShell>
+  );
 }
+
 // function AdminAcademics({ data, setData, navigate }: {
 //   data: AppData;
 //   setData: React.Dispatch<React.SetStateAction<AppData>>;
@@ -4594,8 +4987,8 @@ function AdminStudents({ data, navigate }: { data: AppData; navigate: (path: str
 
 function AdminAttendance({ data, navigate }: { data: AppData; navigate: (path: string) => void }) {
   const [period, setPeriod] = useState("Today"); const [course, setCourse] = useState("All courses"); const [classFilter, setClassFilter] = useState("All lecturer classes");
-  const coursesInData = Array.from(new Set(data.students.map((s)=>s.course))); const active = data.students.filter((s)=>s.status === "Active"); const classes = data.lecturers.flatMap((l)=>l.courses.map((c)=>`${l.name} · ${c}`)); const selectedClassCourse = classFilter === "All lecturer classes" ? "All courses" : classFilter.split(" · ").slice(1).join(" · "); const filtered = active.filter((s)=>(course === "All courses" || s.course === course) && (selectedClassCourse === "All courses" || s.course === selectedClassCourse)); const aggregate = filtered.length ? Math.round(filtered.reduce((sum,s)=>sum+s.attendance,0)/filtered.length) : 0;
-  return <PortalShell role="Admin" active="/admin/attendance" onNavigate={navigate}><PageHeading eyebrow="Attendance analytics" title="Aggregated attendance" body="Review attendance performance by period, course and lecturer class. Individual registers remain with lecturers."/><div className="portal-card"><div className="grid gap-3 md:grid-cols-3"><select className="field mt-0" value={period} onChange={(e)=>setPeriod(e.target.value)}><option>Today</option><option>This week</option><option>This month</option>{period === "This week" && <option>Week 24 · 2026</option>}{period === "This month" && <option>June 2026</option>}</select><select className="field mt-0" value={course} onChange={(e)=>setCourse(e.target.value)}><option>All courses</option>{coursesInData.map((v)=><option key={v}>{v}</option>)}</select><select className="field mt-0" value={classFilter} onChange={(e)=>setClassFilter(e.target.value)}><option>All lecturer classes</option>{classes.map((v)=><option key={v}>{v}</option>)}</select></div></div><div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><MetricCard label="Selected period" value={period} detail="Reporting window" icon={CalendarDays}/><MetricCard label="Aggregate attendance" value={`${aggregate}%`} detail={`${filtered.length} active learners`} icon={TrendingUp} tone={aggregate < 80 ? "red" : "green"}/><MetricCard label="Above threshold" value={`${filtered.filter((s)=>s.attendance>=80).length}`} detail="Learners at 80% or higher" icon={Check} tone="green"/><MetricCard label="Classes included" value={classFilter === "All lecturer classes" ? classes.length : 1} detail="Lecturer class groups" icon={UserRound}/></div><div className="mt-6 portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Aggregated view</p><h3 className="mt-2 font-display text-2xl text-slate-950">Attendance by course</h3></div><Pill tone={aggregate < 80 ? "red" : "green"}>{aggregate >= 80 ? "On track" : "Needs intervention"}</Pill></div><div className="mt-6 space-y-4">{coursesInData.filter((c)=> (course === "All courses" || c === course) && (selectedClassCourse === "All courses" || c === selectedClassCourse)).map((c)=>{const rows=active.filter((st)=>st.course===c);const avg=rows.length?Math.round(rows.reduce((sum,st)=>sum+st.attendance,0)/rows.length):0;return <div key={c}><div className="flex justify-between text-sm"><span className="font-semibold text-slate-950">{c}</span><span className="font-bold">{avg}%</span></div><div className="mt-2"><ProgressBar value={avg}/></div><p className="mt-1 text-xs text-slate-400">{rows.length} active learners · {period}</p></div>})}</div></div></PortalShell>;
+  const coursesInData = Array.from(new Set(data.students.map((s) => s.course))); const active = data.students.filter((s) => s.status === "Active"); const classes = data.lecturers.flatMap((l) => l.courses.map((c) => `${l.name} · ${c}`)); const selectedClassCourse = classFilter === "All lecturer classes" ? "All courses" : classFilter.split(" · ").slice(1).join(" · "); const filtered = active.filter((s) => (course === "All courses" || s.course === course) && (selectedClassCourse === "All courses" || s.course === selectedClassCourse)); const aggregate = filtered.length ? Math.round(filtered.reduce((sum, s) => sum + s.attendance, 0) / filtered.length) : 0;
+  return <PortalShell role="Admin" active="/admin/attendance" onNavigate={navigate}><PageHeading eyebrow="Attendance analytics" title="Aggregated attendance" body="Review attendance performance by period, course and lecturer class. Individual registers remain with lecturers." /><div className="portal-card"><div className="grid gap-3 md:grid-cols-3"><select className="field mt-0" value={period} onChange={(e) => setPeriod(e.target.value)}><option>Today</option><option>This week</option><option>This month</option>{period === "This week" && <option>Week 24 · 2026</option>}{period === "This month" && <option>June 2026</option>}</select><select className="field mt-0" value={course} onChange={(e) => setCourse(e.target.value)}><option>All courses</option>{coursesInData.map((v) => <option key={v}>{v}</option>)}</select><select className="field mt-0" value={classFilter} onChange={(e) => setClassFilter(e.target.value)}><option>All lecturer classes</option>{classes.map((v) => <option key={v}>{v}</option>)}</select></div></div><div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><MetricCard label="Selected period" value={period} detail="Reporting window" icon={CalendarDays} /><MetricCard label="Aggregate attendance" value={`${aggregate}%`} detail={`${filtered.length} active learners`} icon={TrendingUp} tone={aggregate < 80 ? "red" : "green"} /><MetricCard label="Above threshold" value={`${filtered.filter((s) => s.attendance >= 80).length}`} detail="Learners at 80% or higher" icon={Check} tone="green" /><MetricCard label="Classes included" value={classFilter === "All lecturer classes" ? classes.length : 1} detail="Lecturer class groups" icon={UserRound} /></div><div className="mt-6 portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Aggregated view</p><h3 className="mt-2 font-display text-2xl text-slate-950">Attendance by course</h3></div><Pill tone={aggregate < 80 ? "red" : "green"}>{aggregate >= 80 ? "On track" : "Needs intervention"}</Pill></div><div className="mt-6 space-y-4">{coursesInData.filter((c) => (course === "All courses" || c === course) && (selectedClassCourse === "All courses" || c === selectedClassCourse)).map((c) => { const rows = active.filter((st) => st.course === c); const avg = rows.length ? Math.round(rows.reduce((sum, st) => sum + st.attendance, 0) / rows.length) : 0; return <div key={c}><div className="flex justify-between text-sm"><span className="font-semibold text-slate-950">{c}</span><span className="font-bold">{avg}%</span></div><div className="mt-2"><ProgressBar value={avg} /></div><p className="mt-1 text-xs text-slate-400">{rows.length} active learners · {period}</p></div> })}</div></div></PortalShell>;
 }
 function AdminFinance({ data, navigate }: {
   data: AppData;
