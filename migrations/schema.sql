@@ -452,3 +452,43 @@ create index if not exists occupational_college_idx on occupational_programmes(c
 create index if not exists payment_receipt_application_idx on application_payment_receipts(application_id);
 create index if not exists registration_documents_student_idx on registration_documents(student_id);
 create index if not exists registration_documents_trace_idx on registration_documents(application_trace_id);
+
+-- Lecturer administration and teaching operations additions
+create table if not exists lecturers (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid unique references users(id) on delete set null,
+  employee_number text not null unique,
+  full_name text not null,
+  email text not null unique,
+  phone text,
+  campus_id uuid references campuses(id) on delete set null,
+  status text not null default 'active' check (status in ('active', 'disabled', 'removed')),
+  status_notice text,
+  notice_drafted_at timestamptz,
+  notice_sent_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create table if not exists lecturer_course_assignments (
+  lecturer_id uuid not null references lecturers(id) on delete cascade,
+  course_id uuid not null references courses(id) on delete cascade,
+  assigned_at timestamptz not null default now(),
+  primary key (lecturer_id, course_id)
+);
+create table if not exists lecturer_subject_assignments (
+  lecturer_id uuid not null references lecturers(id) on delete cascade,
+  subject_id uuid not null references subjects(id) on delete cascade,
+  assigned_at timestamptz not null default now(),
+  primary key (lecturer_id, subject_id)
+);
+alter table assessments add column if not exists published_at timestamptz;
+alter table assessments add column if not exists closed_at timestamptz;
+alter table assessments add column if not exists submission_disabled boolean not null default false;
+alter table schedules add column if not exists subject_id uuid references subjects(id) on delete set null;
+alter table schedules add column if not exists removed_at timestamptz;
+alter table schedules add column if not exists removal_reason text;
+create index if not exists lecturers_status_idx on lecturers(status);
+create index if not exists lecturer_course_assignments_course_idx on lecturer_course_assignments(course_id);
+create index if not exists lecturer_subject_assignments_subject_idx on lecturer_subject_assignments(subject_id);
+create index if not exists assessments_due_at_idx on assessments(due_at);
+create index if not exists schedules_course_subject_idx on schedules(course_id, subject_id);

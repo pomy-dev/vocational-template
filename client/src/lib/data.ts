@@ -902,6 +902,10 @@ export const seedData: AppData = {
     { id: "ln3", title: "Resource published", body: "The learner guide is ready for review.", date: "2026-06-07", read: false },
     { id: "ln4", title: "Timetable updated", body: "The examination hall has been confirmed.", date: "2026-06-06", read: true }
   ],
+  lecturers: [
+    { id: "lec1", name: "Siyabonga Radebe", email: "siyabonga.radebe@nstc.example", phone: "+27 72 555 0188", employeeNo: "NSTC-L-001", campus: "Wynberg Johannesburg", courses: ["Electrical Engineering N1–N6", "Information Technology"], subjects: ["Engineering Science", "Electrical Trade Theory", "Networking"], status: "Active" },
+    { id: "lec2", name: "Mpho Nkosi", email: "mpho.nkosi@nstc.example", phone: "+27 79 222 9011", employeeNo: "NSTC-L-002", campus: "Middelburg", courses: ["Business Management N4–N6"], subjects: ["Financial Accounting", "Management Communication"], status: "Active" }
+  ],
   tutors: [
     { name: "Siyabonga Radebe", initials: "SR", email: "siyabonga.radebe@nstc.example", phone: "+27 72 555 0188", courses: ["Electrical Engineering N1–N6", "Engineering Science", "Electrical Trade Theory"] }
   ]

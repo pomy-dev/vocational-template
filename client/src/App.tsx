@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { MapView } from "./components/Map";
-import { Icon, Course, AppData, ApplicationDraft, ApprenticeshipPost, Schedule, Assignment, Student, RegistrationProgramme } from "./lib/types";
+import { Icon, Course, AppData, ApplicationDraft, ApprenticeshipPost, Schedule, Assignment, Student, RegistrationProgramme, LecturerRecord } from "./lib/types";
 import { fee } from "./const";
 import { initials } from "./const";
 import {
@@ -52,7 +52,8 @@ function loadData(): AppData {
         complaints: parsed.complaints ?? [],
         resources: parsed.resources ?? seedData.resources,
         lecturerNotifications: parsed.lecturerNotifications ?? seedData.lecturerNotifications,
-        tutors: parsed.tutors ?? seedData.tutors
+        tutors: parsed.tutors ?? seedData.tutors,
+        lecturers: parsed.lecturers ?? seedData.lecturers
       };
     } catch { return seedData; }
   }
@@ -1783,6 +1784,7 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
   role?: string
 }) {
   const [open, setOpen] = useState(false);
+  const onSignOut = () => { localStorage.removeItem("nstc-admin-session"); window.location.href = "/admin"; };
   const items = role === "Student"
     ? [
       { label: "Overview", icon: LayoutDashboard, path: "/portal" },
@@ -1796,6 +1798,7 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
     [
       { label: "Overview", icon: LayoutDashboard, path: "/admin" },
       { label: "Students", icon: Users, path: "/admin/students" },
+      { label: "Lecturers", icon: UserRound, path: "/admin/lecturers" },
       { label: "Academics", icon: BookOpen, path: "/admin/academics" },
       { label: "Attendance", icon: ClipboardCheck, path: "/admin/attendance" },
       { label: "Finance", icon: WalletCards, path: "/admin/finance" }
@@ -1829,7 +1832,8 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
               <p className="text-xs text-slate-500">{role} account</p>
             </div>
           </div>
-          <a href="/" className="mt-5 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950">
+          {role === "Admin" && <button className="mt-5 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950" onClick={onSignOut}><X className="h-3.5 w-3.5" /> Sign out</button>}
+          <a href="/" className={`${role === "Admin" ? "mt-3" : "mt-5"} flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950`}>
             <ExternalLink className="h-3.5 w-3.5" /> Public website
           </a>
         </div>
@@ -3821,147 +3825,14 @@ function LecturerStudents() {
 }
 
 function LecturerResources({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(""); const [sheet, setSheet] = useState(false); const [month, setMonth] = useState("All months"); const [date, setDate] = useState("All dates");
   const submitResource = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const form = new FormData(event.currentTarget); setData((old) => ({ ...old, resources: [{ id: crypto.randomUUID(), title: String(form.get("title") || "New learning resource"), course: String(form.get("course") || lecturerCourses[0]), subject: String(form.get("subject") || lecturerSubjects[0]), fileType: "PDF", published: form.get("publish") === "on", uploaded: "2026-06-08" }, ...old.resources] })); event.currentTarget.reset(); setMessage("Resource uploaded and saved to your teaching library."); };
-  return (
-    <>
-      <PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials, publish them to a class and track assignment progress." />
-      <div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
-        <div className="portal-card">
-          <p className="eyebrow">Upload & publish resource</p>
-          <form onSubmit={submitResource} className="mt-5 space-y-4">
-            <label>Resource title
-              <input name="title" className="field" required placeholder="e.g. Motor control workbook" />
-            </label>
-            <label>Course
-              <select name="course" className="field">
-                <option>{lecturerCourses[0]}</option>
-                <option>{lecturerCourses[1]}</option>
-              </select>
-            </label>
-            <label>Subject
-              <select name="subject" className="field">
-                {lecturerSubjects.map((item) =>
-                  <option key={item}>{item}</option>
-                )}
-              </select>
-            </label>
-            <label>File
-              <input className="field" type="file" required />
-            </label>
-            <label className="check-option">
-              <input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now
-            </label>
-            <Button type="submit">
-              <Upload className="h-4 w-4" /> Upload resource</Button>
-            {message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
-          </form>
-        </div>
-        <div className="portal-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="eyebrow">Published library</p>
-              <h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3>
-            </div>
-            <Pill>{data.resources.length} files</Pill>
-          </div>
-          <div className="mt-4 space-y-2">
-            {data.resources.map((resource) =>
-              <div className="resource-row" key={resource.id}>
-                <div className="file-icon"><FileText /></div>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">{resource.title}</p>
-                  <p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p>
-                </div>
-                <Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="mt-5 portal-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="eyebrow">Assignment activity</p>
-            <h3 className="mt-2 font-display text-2xl text-slate-950">Post and track coursework</h3>
-          </div>
-          <Button onClick={() => toast.success("Assignment creation form is ready for your next brief.")}><Plus className="h-4 w-4" /> New assignment</Button>
-        </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">{
-          [{ label: "Completed", value: "18", tone: "green" },
-          { label: "In progress", value: "7", tone: "gold" },
-          { label: "Not started", value: "4", tone: "slate" }
-          ].map((item) =>
-            <div className="rounded-xl bg-slate-50 p-4" key={item.label}>
-              <p className="text-xs text-slate-500">{item.label}</p>
-              <p className="mt-1 font-display text-3xl text-slate-950">{item.value}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
-  );
+  const dates = Array.from(new Set(data.assignments.map((a) => a.due))).sort(); const months = Array.from(new Set(data.assignments.map((a) => a.due.slice(0, 7)))).sort(); const expired = (due: string) => due < "2026-06-08";
+  const visible = data.assignments.filter((a) => (month === "All months" || a.due.startsWith(month)) && (date === "All dates" || a.due === date));
+  const createAssignment = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const f = new FormData(event.currentTarget); const due = String(f.get("due") || "2026-06-30"); setData((old) => ({ ...old, assignments: [{ id: crypto.randomUUID(), title: String(f.get("title") || "New assignment"), course: String(f.get("course") || lecturerCourses[0]), subject: String(f.get("subject") || lecturerSubjects[0]), due, status: "Published", instructions: String(f.get("instructions") || ""), createdAt: "2026-06-08" }, ...old.assignments] })); setSheet(false); toast.success("Assignment published to the selected class."); };
+  return <><PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials, publish coursework and track assignment deadlines." /><div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]"><div className="portal-card"><p className="eyebrow">Upload & publish resource</p><form onSubmit={submitResource} className="mt-5 space-y-4"><label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook" /></label><label>Course<select name="course" className="field"><option>{lecturerCourses[0]}</option><option>{lecturerCourses[1]}</option></select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>File<input className="field" type="file" required /></label><label className="check-option"><input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now</label><Button type="submit"><Upload className="h-4 w-4" /> Upload resource</Button>{message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}</form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published library</p><h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3></div><Pill>{data.resources.length} files</Pill></div><div className="mt-4 space-y-2">{data.resources.map((resource) => <div className="resource-row" key={resource.id}><div className="file-icon"><FileText /></div><div className="min-w-0"><p className="truncate text-sm font-semibold">{resource.title}</p><p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p></div><Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Assignment activity</p><h3 className="mt-2 font-display text-2xl text-slate-950">Post and track coursework</h3></div><Button onClick={() => setSheet(true)}><Plus className="h-4 w-4" /> New assignment</Button></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[["Completed","18"],["In progress","7"],["Not started","4"]].map(([label,value]) => <div className="rounded-xl bg-slate-50 p-4" key={label}><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-display text-3xl text-slate-950">{value}</p></div>)}</div><div className="mt-6 flex flex-wrap gap-3"><select className="field mt-0 max-w-[190px]" value={month} onChange={(e) => setMonth(e.target.value)}><option>All months</option>{months.map((m) => <option key={m}>{m}</option>)}</select><select className="field mt-0 max-w-[190px]" value={date} onChange={(e) => setDate(e.target.value)}><option>All dates</option>{dates.map((d) => <option key={d}>{d}</option>)}</select></div><div className="mt-4 space-y-2">{visible.map((a) => { const closed=expired(a.due); return <div className={`list-row ${closed ? "opacity-55" : ""}`} key={a.id}><div className="min-w-0"><p className="font-semibold text-slate-950">{a.title}</p><p className="mt-1 text-xs text-slate-500">{a.course} · {a.subject || "General"} · Due {a.due}</p></div><Pill tone={closed ? "red" : a.status === "Submitted" ? "green" : "gold"}>{closed ? "Closed" : a.status}</Pill><button className="filter-chip" disabled={closed}>{closed ? "Disabled" : "View"}</button></div>; })}</div></div>{sheet && <div className="sheet-backdrop" onClick={() => setSheet(false)}><div className="bottom-sheet" onClick={(e) => e.stopPropagation()}><div className="flex items-center justify-between"><div><p className="eyebrow">Coursework composer</p><h3 className="mt-2 font-display text-2xl text-slate-950">Add a new assignment</h3></div><button className="icon-btn" onClick={() => setSheet(false)}><X /></button></div><form onSubmit={createAssignment} className="mt-6 grid gap-4 md:grid-cols-2"><label className="md:col-span-2">Assignment title<input name="title" className="field" required /></label><label>Course<select name="course" className="field"><option>{lecturerCourses[0]}</option><option>{lecturerCourses[1]}</option></select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="due" className="field" type="date" min="2026-06-08" required /></label><label>Submission type<select name="type" className="field"><option>Online upload</option><option>In class</option><option>Practical demonstration</option></select></label><label className="md:col-span-2">Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label><div className="flex justify-end gap-3 md:col-span-2"><Button variant="light" type="button" onClick={() => setSheet(false)}>Cancel</Button><Button type="submit"><Check className="h-4 w-4" /> Publish assignment</Button></div></form></div></div>}</>;
 }
-
-function LecturerAttendance() {
-  const [subject, setSubject] = useState(lecturerSubjects[0]);
-  const [present, setPresent] = useState<Record<string, boolean>>({ s1: true, s2: true, s3: true, s4: false, s5: true });
-  const students = lecturerStudentRows.filter((student) => student.subject === subject || subject === lecturerSubjects[0]);
-  const markSaved = () => toast.success(`Attendance saved for ${subject}.`);
-  return (
-    <>
-      <PageHeading eyebrow="Class register" title="Attendance" body="Mark each subject at its scheduled time and keep the aggregate visible."
-        actions={
-          <Button onClick={markSaved}>Save attendance <Check className="h-4 w-4" /></Button>
-        }
-      />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <MetricCard label="Today’s class" value="09:00" detail="Engineering Science · Workshop 2" icon={Clock3} />
-        <MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail="Current register" icon={ClipboardCheck} tone="green" />
-        <MetricCard label="Aggregate attendance" value="94%" detail="Across the last two weeks" icon={TrendingUp} />
-      </div>
-      <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]">
-        <div className="portal-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="eyebrow">Mark attendance</p>
-              <h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · Engineering Science</h3>
-            </div>
-            <select className="field mt-0 max-w-[220px]" value={subject} onChange={(event) => setSubject(event.target.value)}>
-              {lecturerSubjects.map((item) =>
-                <option key={item}>{item}</option>
-              )}
-            </select>
-          </div>
-          <div className="mt-5">
-            {students.map((student) =>
-              <label className="attendance-row" key={student.id}>
-                <span className="flex items-center gap-3">
-                  <span className="avatar-small">{initials(student.name)}</span>
-                  <span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span>
-                </span>
-                <input type="checkbox" checked={Boolean(present[student.id])} onChange={(event) => setPresent((old) => ({ ...old, [student.id]: event.target.checked }))} /></label>
-            )}
-          </div>
-        </div>
-        <div className="portal-card">
-          <p className="eyebrow">Attendance trend</p>
-          <h3 className="mt-2 font-display text-2xl text-slate-950">Last two weeks</h3>
-          <div className="mt-6 flex h-48 items-end gap-2">
-            {[92, 96, 88, 100, 94, 90, 97, 100, 92, 96, 100, 94, 98, 94].map((value, index) =>
-              <div className="flex flex-1 flex-col items-center gap-2" key={index}>
-                <div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(20, value * 1.3)}px`, opacity: value < 90 ? .5 : 1 }} />
-                <span className="text-[9px] text-slate-400">{index + 1}</span>
-              </div>
-            )}
-          </div>
-          <p className="mt-4 text-xs text-slate-500">Aggregated by scheduled subject and attendance session.</p>
-        </div>
-      </div>
-    </>
-  );
-}
-
+function LecturerAttendance() { const courseMap: Record<string,string[]>={"Electrical Engineering N1–N6":["Engineering Science","Mathematics N2","Electrical Trade Theory","Logic Systems"],"Information Technology":["Networking","Database Fundamentals","Technical Support"]}; const [course,setCourse]=useState(lecturerCourses[0]); const subjects=courseMap[course]||[]; const [subject,setSubject]=useState(subjects[0]); const [present,setPresent]=useState<Record<string,boolean>>({s1:true,s2:true,s3:true,s4:false,s5:true}); useEffect(()=>setSubject(subjects[0]),[course]); const students=lecturerStudentRows.filter((st)=>st.course===course|| (course===lecturerCourses[0]&&st.id==="s1")); const trend=subjects.map((item,i)=>({item,value:78+((i+course.length)*7)%19})); return <><PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart." actions={<Button onClick={()=>toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Selected course" value={course===lecturerCourses[0]?"Electrical":"IT"} detail={`${subjects.length} subjects available`} icon={BookOpen}/><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green"/><MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp}/></div><div className="mt-6 portal-card"><div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">{lecturerCourses.map((item)=><button key={item} className={`filter-chip ${course===item?"active":""}`} onClick={()=>setCourse(item)}>{item}</button>)}</div><div className="mt-5 flex flex-wrap gap-2">{subjects.map((item)=><button key={item} className={`filter-chip ${subject===item?"active":""}`} onClick={()=>setSubject(item)}>{item}</button>)}</div></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3><div className="mt-5">{students.map((student)=><label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(e)=>setPresent((old)=>({...old,[student.id]:e.target.checked}))}/></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3><div className="mt-6 flex h-56 items-end gap-3">{trend.map(({item,value})=><div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}><span className="text-xs font-bold text-slate-700">{value}%</span><div className="w-full rounded-t-md bg-[#D4AF37]" style={{height:`${Math.max(28,value*1.7)}px`}}/><span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p></div></div></>; }
 function LecturerResults() {
   const [course, setCourse] = useState("All courses");
   const [subject, setSubject] = useState("All subjects");
@@ -4061,18 +3932,19 @@ function LecturerResults() {
 }
 
 function LecturerSubmissions() {
+  const [course, setCourse] = useState("All courses"); const [subject, setSubject] = useState("All subjects"); const rows = lecturerStudentRows.filter((student) => (course === "All courses" || student.course === course) && (subject === "All subjects" || student.subject === subject));
   const [scores, setScores] = useState<Record<string, string>>({ s1: "86", s2: "78", s3: "82", s4: "74" });
   return (
     <>
       <PageHeading eyebrow="Marking queue" title="Submissions & marks" body="Preview submitted files, download evidence and update marks for each assignment." />
       <div className="portal-card">
-        <div className="mb-5 flex items-center justify-between">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-4"><div className="flex flex-wrap gap-2"><select className="field mt-0 max-w-[220px]" value={course} onChange={(e)=>setCourse(e.target.value)}><option>All courses</option>{lecturerCourses.map((item)=><option key={item}>{item}</option>)}</select><select className="field mt-0 max-w-[220px]" value={subject} onChange={(e)=>setSubject(e.target.value)}><option>All subjects</option>{lecturerSubjects.map((item)=><option key={item}>{item}</option>)}</select></div><div>
           <div>
             <p className="eyebrow">Electrical installation rules</p>
             <h3 className="mt-2 font-display text-2xl text-slate-950">Submitted assignment files</h3>
           </div>
-          <Pill tone="green">4 submitted</Pill>
-        </div>
+          <Pill tone="green">{rows.length} submitted</Pill>
+        </div></div>
         <div className="overflow-x-auto">
           <table className="data-table">
             <thead>
@@ -4086,7 +3958,7 @@ function LecturerSubmissions() {
               </tr>
             </thead>
             <tbody>
-              {lecturerStudentRows.slice(0, 4).map((student) =>
+              {rows.map((student) =>
                 <tr key={student.id}>
                   <td className="font-semibold text-slate-950">{student.name}</td>
                   <td>08 Jun 2026 · 08:20</td>
@@ -4159,6 +4031,7 @@ function LecturerSchedules({ data, setData }: {
   setData: React.Dispatch<React.SetStateAction<AppData>>
 }) {
   const [editing, setEditing] = useState<Schedule | null>(null);
+  const [menu, setMenu] = useState<string | null>(null);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -4221,7 +4094,7 @@ function LecturerSchedules({ data, setData }: {
                   <p className="text-sm font-semibold text-slate-950">{item.title}</p>
                   <p className="mt-1 text-xs text-slate-500">{item.kind} · {item.time} · {item.location}</p>
                 </div>
-                <button className="icon-btn" onClick={() => setEditing(item)}><MoreHorizontal /></button>
+                <div className="relative"><button className="icon-btn" onClick={() => setMenu(menu === item.id ? null : item.id)}><MoreHorizontal /></button>{menu === item.id && <div className="absolute right-0 top-10 z-10 w-32 rounded-xl border border-slate-200 bg-white p-1 shadow-lg"><button className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold hover:bg-slate-50" onClick={() => { setEditing(item); setMenu(null); }}>Edit</button><button className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50" onClick={() => { setData((old) => ({...old, schedules: old.schedules.filter((s) => s.id !== item.id)})); setMenu(null); toast.success("Schedule removed."); }}>Remove</button></div>}</div>
               </div>
             )}
           </div>
@@ -4265,6 +4138,9 @@ function LecturerPortal({ data, setData, path, navigate }: {
   return (<LecturerShell active={active} onNavigate={navigate} onSignOut={() => { localStorage.removeItem("nstc-lecturer-session"); setLoggedIn(false); }}>{content}</LecturerShell>);
 }
 
+function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) { const [error,setError]=useState(""); const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=new FormData(e.currentTarget);if(f.get("email")==="admin@nstc.example"&&f.get("password")==="admin2026"){localStorage.setItem("nstc-admin-session","active");onAuthenticated();}else setError("For the demo, use admin@nstc.example / admin2026.");}; return <div className="registration-page"><div className="registration-top"><Logo light/><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">NSTC secure access</p><h1 className="mt-2 font-display text-4xl text-slate-950">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-slate-500">Manage learners, academics, finance and lecturer accounts.</p>{error&&<p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5"><label>Email address<input className="field" name="email" type="email" required placeholder="admin@nstc.example"/></label><label>Password<input className="field" name="password" type="password" required/></label><Button type="submit" className="w-full justify-center">Continue to admin dashboard <ArrowRight className="h-4 w-4"/></Button></form><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>admin@nstc.example / admin2026</strong></p><a href="/lecturer" className="mt-5 block text-center text-sm font-semibold text-slate-500">Lecturer login <ArrowRight className="ml-1 inline h-4 w-4"/></a></div></div>; }
+function AdminLecturers({ data, setData, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; navigate: (path:string)=>void }) { const [editing,setEditing]=useState<LecturerRecord|null>(null); const [notice,setNotice]=useState<LecturerRecord|null>(null); const [query,setQuery]=useState(""); const list=data.lecturers.filter((l)=>`${l.name} ${l.email} ${l.employeeNo}`.toLowerCase().includes(query.toLowerCase())); const save=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=new FormData(e.currentTarget);const next:LecturerRecord={id:editing?.id||crypto.randomUUID(),name:String(f.get("name")),employeeNo:String(f.get("employeeNo")),email:String(f.get("email")),phone:String(f.get("phone")),campus:String(f.get("campus")),courses:String(f.get("courses")||"").split(",").map((v)=>v.trim()).filter(Boolean),subjects:String(f.get("subjects")||"").split(",").map((v)=>v.trim()).filter(Boolean),status:editing?.status||"Active",notice:editing?.notice};setData((old)=>({...old,lecturers:editing?.id?old.lecturers.map((l)=>l.id===editing.id?next:l):[next,...old.lecturers]}));setEditing(null);toast.success("Lecturer account saved.");}; const updateStatus=(status:LecturerRecord["status"])=>{if(!notice)return;const text=(document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value||"Status changed by the NSTC admin team.";setData((old)=>({...old,lecturers:old.lecturers.map((l)=>l.id===notice.id?{...l,status,notice:text}:l)}));setNotice(null);toast.success(`${status} notice drafted for ${notice.email}.`);}; return <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}><PageHeading eyebrow="People & permissions" title="Manage lecturers" body="Create teaching accounts, assign course loads and record lecturer status." actions={<Button onClick={()=>setEditing({id:"",name:"",email:"",phone:"",employeeNo:"",campus:"Wynberg Johannesburg",courses:[],subjects:[],status:"Active"})}><Plus className="h-4 w-4"/> Create lecturer</Button>}/><div className="portal-card"><div className="flex flex-col justify-between gap-4 md:flex-row md:items-center"><div><p className="eyebrow">Lecturer directory</p><h3 className="mt-2 font-display text-2xl text-slate-950">Teaching accounts</h3></div><input className="field mt-0 max-w-sm" value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search name, email or employee no."/></div><div className="mt-6 overflow-x-auto"><table className="data-table"><thead><tr><th>Lecturer</th><th>Campus</th><th>Courses</th><th>Subjects</th><th>Status</th><th>Actions</th></tr></thead><tbody>{list.map((l)=><tr key={l.id}><td><p className="font-semibold text-slate-950">{l.name}</p><p className="text-xs text-slate-500">{l.employeeNo} · {l.email}<br/>{l.phone}</p></td><td>{l.campus}</td><td>{l.courses.join(" · ")||"Unassigned"}</td><td>{l.subjects.join(" · ")||"Unassigned"}</td><td><Pill tone={l.status==="Active"?"green":"red"}>{l.status}</Pill></td><td><div className="flex flex-wrap gap-2"><button className="filter-chip" onClick={()=>setEditing(l)}>Edit</button><button className="filter-chip" onClick={()=>setNotice(l)}>{l.status==="Active"?"Disable / remove":"Draft notice"}</button></div></td></tr>)}</tbody></table></div></div>{editing&&<Modal title={editing.id?"Edit lecturer account":"Create lecturer account"} onClose={()=>setEditing(null)}><form onSubmit={save} className="mt-5 grid gap-4 md:grid-cols-2"><label>Full name<input name="name" className="field" required defaultValue={editing.name}/></label><label>Employee no.<input name="employeeNo" className="field" required defaultValue={editing.employeeNo}/></label><label>Email<input name="email" type="email" className="field" required defaultValue={editing.email}/></label><label>Phone<input name="phone" className="field" required defaultValue={editing.phone}/></label><label>Campus<select name="campus" className="field" defaultValue={editing.campus}><option>Wynberg Johannesburg</option><option>Middelburg</option></select></label><label>Courses (comma separated)<input name="courses" className="field" defaultValue={editing.courses.join(", ")}/></label><label className="md:col-span-2">Subjects (comma separated)<input name="subjects" className="field" defaultValue={editing.subjects.join(", ")}/></label><Button type="submit" className="md:col-span-2 justify-center"><Check className="h-4 w-4"/> Save lecturer account</Button></form></Modal>}{notice&&<Modal title={`Status notice · ${notice.name}`} onClose={()=>setNotice(null)}><p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this lecturer. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p><textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice||"Your lecturer account has been placed under review because..."}/><div className="mt-5 flex flex-wrap justify-end gap-3"><Button variant="light" onClick={()=>setNotice(null)}>Cancel</Button><Button variant="light" onClick={()=>updateStatus("Disabled")}>Disable & prepare email</Button><Button onClick={()=>updateStatus("Removed")}>Remove & prepare email</Button></div></Modal>}</PortalShell>; }
+function AdminPortal({ data, setData, path, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; path:string; navigate:(path:string)=>void }) { const [loggedIn,setLoggedIn]=useState(()=>localStorage.getItem("nstc-admin-session")==="active"); if(!loggedIn)return <AdminAuth onAuthenticated={()=>setLoggedIn(true)}/>; if(path==="/admin/lecturers")return <AdminLecturers data={data} setData={setData} navigate={navigate}/>; if(path==="/admin/students")return <AdminStudents data={data} navigate={navigate}/>; if(path==="/admin/academics")return <AdminAcademics data={data} setData={setData} navigate={navigate}/>; if(path==="/admin/attendance")return <AdminAttendance data={data} navigate={navigate}/>; if(path==="/admin/finance")return <AdminFinance data={data} navigate={navigate}/>; return <AdminDashboard data={data} setData={setData} navigate={navigate}/>; }
 function AdminDashboard({ data, setData, navigate }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
@@ -4930,11 +4806,7 @@ function App() {
   else if (location.startsWith("/portal")) page = <StudentPortal data={data} setData={setData} path={location} navigate={go} />;
   else if (location === "/parent") page = <ParentPortal data={data} navigate={go} />;
   else if (location.startsWith("/lecturer")) page = <LecturerPortal data={data} setData={setData} path={location} navigate={go} />;
-  else if (location === "/admin/students") page = <AdminStudents data={data} navigate={go} />;
-  else if (location === "/admin/academics") page = <AdminAcademics data={data} setData={setData} navigate={go} />;
-  else if (location === "/admin/attendance") page = <AdminAttendance data={data} navigate={go} />;
-  else if (location === "/admin/finance") page = <AdminFinance data={data} navigate={go} />;
-  else if (location === "/admin") page = <AdminDashboard data={data} setData={setData} navigate={go} />;
+  else if (location.startsWith("/admin")) page = <AdminPortal data={data} setData={setData} path={location} navigate={go} />;
   else page = <Landing data={data} setData={setData} onApply={() => { go("/portal/apply") }} />;
 
   return (<><Toaster position="bottom-right" richColors />{page}{apply && null}</>);

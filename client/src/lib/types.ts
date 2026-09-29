@@ -112,7 +112,22 @@ export type Assignment = {
   course: string;
   due: string;
   status: string;
-  score?: number
+  score?: number;
+  subject?: string;
+  instructions?: string;
+  createdAt?: string;
+};
+export type LecturerRecord = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  employeeNo: string;
+  campus: string;
+  courses: string[];
+  subjects: string[];
+  status: "Active" | "Disabled" | "Removed";
+  notice?: string;
 };
 export type Schedule = {
   id: string;
@@ -149,6 +164,7 @@ export type AppData = {
   resources: LearningResource[];
   lecturerNotifications: LecturerNotification[];
   tutors: TutorProfile[];
+  lecturers: LecturerRecord[];
 };
 export type ApplicationDraft = {
   name: string;
