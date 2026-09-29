@@ -1800,7 +1800,7 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
       { label: "Overview", icon: LayoutDashboard, path: "/admin" },
       { label: "Students", icon: Users, path: "/admin/students" },
       { label: "Lecturers", icon: UserRound, path: "/admin/lecturers" },
-      { label: "Academics", icon: BookOpen, path: "/admin/academics" },
+      // { label: "Academics", icon: BookOpen, path: "/admin/academics" },
       { label: "Attendance", icon: ClipboardCheck, path: "/admin/attendance" },
       { label: "Finance", icon: WalletCards, path: "/admin/finance" }
     ];
@@ -3592,11 +3592,10 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
   const items = [
     { label: "Overview", icon: LayoutDashboard, path: "/lecturer" },
     { label: "Students", icon: Users, path: "/lecturer/students" },
-    { label: "Resources & assignments", icon: FileText, path: "/lecturer/resources" },
+    { label: "Academics", icon: FileText, path: "/lecturer/resources" },
     { label: "Attendance", icon: ClipboardCheck, path: "/lecturer/attendance" },
     { label: "Student results", icon: BarChart3, path: "/lecturer/results" },
-    { label: "Submissions & marks", icon: Upload, path: "/lecturer/submissions" },
-    // { label: "Announcements", icon: MessageCircle, path: "/lecturer/announcements" },
+    { label: "Submissions", icon: Upload, path: "/lecturer/submissions" },
     { label: "Schedules", icon: CalendarDays, path: "/lecturer/schedules" }
   ];
 
@@ -3767,7 +3766,11 @@ function LecturerStudents() {
   const [subject, setSubject] = useState("All subjects");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const filtered = lecturerStudentRows.filter((student) => (course === "All courses" || student.course === course) && (subject === "All subjects" || student.subject === subject) && `${student.name} ${student.email} ${student.course}`.toLowerCase().includes(search.toLowerCase()));
+  const filtered = lecturerStudentRows.filter(
+    (student) => (course === "All courses" || student.course === course)
+      && (subject === "All subjects" || student.subject === subject)
+      && `${student.name} ${student.email} ${student.course}`.toLowerCase().includes(search.toLowerCase())
+  );
   const pageRows = filtered.slice((page - 1) * 10, page * 10);
   return (
     <>
@@ -3922,7 +3925,8 @@ function LecturerResources({ data, setData }: { data: AppData; setData: React.Di
     </>
   );
 }
-function LecturerAttendance() { const courseMap: Record<string,string[]>={"Electrical Engineering N1–N6":["Engineering Science","Mathematics N2","Electrical Trade Theory","Logic Systems"],"Information Technology":["Networking","Database Fundamentals","Technical Support"]}; const [course,setCourse]=useState(lecturerCourses[0]); const subjects=courseMap[course]||[]; const [subject,setSubject]=useState(subjects[0]); const [present,setPresent]=useState<Record<string,boolean>>({s1:true,s2:true,s3:true,s4:false,s5:true}); useEffect(()=>setSubject(subjects[0]),[course]); const students=lecturerStudentRows.filter((st)=>st.course===course|| (course===lecturerCourses[0]&&st.id==="s1")); const trend=subjects.map((item,i)=>({item,value:78+((i+course.length)*7)%19})); return <><PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart." actions={<Button onClick={()=>toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Selected course" value={course===lecturerCourses[0]?"Electrical":"IT"} detail={`${subjects.length} subjects available`} icon={BookOpen}/><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green"/><MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp}/></div><div className="mt-6 portal-card"><div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">{lecturerCourses.map((item)=><button key={item} className={`filter-chip ${course===item?"active":""}`} onClick={()=>setCourse(item)}>{item}</button>)}</div><div className="mt-5 flex flex-wrap gap-2">{subjects.map((item)=><button key={item} className={`filter-chip ${subject===item?"active":""}`} onClick={()=>setSubject(item)}>{item}</button>)}</div></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3><div className="mt-5">{students.map((student)=><label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(e)=>setPresent((old)=>({...old,[student.id]:e.target.checked}))}/></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3><div className="mt-6 flex h-56 items-end gap-3">{trend.map(({item,value})=><div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}><span className="text-xs font-bold text-slate-700">{value}%</span><div className="w-full rounded-t-md bg-[#D4AF37]" style={{height:`${Math.max(28,value*1.7)}px`}}/><span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p></div></div></>; }
+function LecturerAttendance() { const courseMap: Record<string, string[]> = { "Electrical Engineering N1–N6": ["Engineering Science", "Mathematics N2", "Electrical Trade Theory", "Logic Systems"], "Information Technology": ["Networking", "Database Fundamentals", "Technical Support"] }; const [course, setCourse] = useState(lecturerCourses[0]); const subjects = courseMap[course] || []; const [subject, setSubject] = useState(subjects[0]); const [present, setPresent] = useState<Record<string, boolean>>({ s1: true, s2: true, s3: true, s4: false, s5: true }); useEffect(() => setSubject(subjects[0]), [course]); const students = lecturerStudentRows.filter((st) => st.course === course || (course === lecturerCourses[0] && st.id === "s1")); const trend = subjects.map((item, i) => ({ item, value: 78 + ((i + course.length) * 7) % 19 })); return <><PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart." actions={<Button onClick={() => toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Selected course" value={course === lecturerCourses[0] ? "Electrical" : "IT"} detail={`${subjects.length} subjects available`} icon={BookOpen} /><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green" /><MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp} /></div><div className="mt-6 portal-card"><div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">{lecturerCourses.map((item) => <button key={item} className={`filter-chip ${course === item ? "active" : ""}`} onClick={() => setCourse(item)}>{item}</button>)}</div><div className="mt-5 flex flex-wrap gap-2">{subjects.map((item) => <button key={item} className={`filter-chip ${subject === item ? "active" : ""}`} onClick={() => setSubject(item)}>{item}</button>)}</div></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3><div className="mt-5">{students.map((student) => <label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(e) => setPresent((old) => ({ ...old, [student.id]: e.target.checked }))} /></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3><div className="mt-6 flex h-56 items-end gap-3">{trend.map(({ item, value }) => <div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}><span className="text-xs font-bold text-slate-700">{value}%</span><div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(28, value * 1.7)}px` }} /><span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p></div></div></>; }
+
 function LecturerResults() {
   const [course, setCourse] = useState("All courses");
   const [subject, setSubject] = useState("All subjects");
@@ -4022,19 +4026,45 @@ function LecturerResults() {
 }
 
 function LecturerSubmissions() {
-  const [course, setCourse] = useState("All courses"); const [subject, setSubject] = useState("All subjects"); const rows = lecturerStudentRows.filter((student) => (course === "All courses" || student.course === course) && (subject === "All subjects" || student.subject === subject));
+  const [course, setCourse] = useState("All courses");
+  const [subject, setSubject] = useState("All subjects");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const rows = lecturerStudentRows.filter(
+    (student) => (course === "All courses" || student.course === course)
+      && (subject === "All subjects" || student.subject === subject)
+      && `${student.name} ${student.email} ${student.course}`.toLowerCase().includes(search.toLowerCase())
+  );
+  const pageRows = rows.slice((page - 1) * 10, page * 10);
   const [scores, setScores] = useState<Record<string, string>>({ s1: "86", s2: "78", s3: "82", s4: "74" });
   return (
     <>
       <PageHeading eyebrow="Marking queue" title="Submissions & marks" body="Preview submitted files, download evidence and update marks for each assignment." />
       <div className="portal-card">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-4"><div className="flex flex-wrap gap-2"><select className="field mt-0 max-w-[220px]" value={course} onChange={(e)=>setCourse(e.target.value)}><option>All courses</option>{lecturerCourses.map((item)=><option key={item}>{item}</option>)}</select><select className="field mt-0 max-w-[220px]" value={subject} onChange={(e)=>setSubject(e.target.value)}><option>All subjects</option>{lecturerSubjects.map((item)=><option key={item}>{item}</option>)}</select></div><div>
-          <div>
-            <p className="eyebrow">Electrical installation rules</p>
+        <div className="mb-5 items-start justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-start gap-6">
             <h3 className="mt-2 font-display text-2xl text-slate-950">Submitted assignment files</h3>
+            <Pill tone="green">{rows.length} submitted</Pill>
           </div>
-          <Pill tone="green">{rows.length} submitted</Pill>
-        </div></div>
+          <div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]">
+            <select className="field mt-0" value={course} onChange={(e) => setCourse(e.target.value)}>
+              <option>All courses</option>
+              {lecturerCourses.map((item) =>
+                <option key={item}>{item}</option>
+              )}
+            </select>
+            <select className="field mt-0" value={subject} onChange={(e) => setSubject(e.target.value)}>
+              <option>All subjects</option>
+              {lecturerSubjects.map((item) =>
+                <option key={item}>{item}</option>)
+              }
+            </select>
+            <label className="relative">
+              <Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" />
+              <input className="field mt-0 pl-10" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search name, email or course" />
+            </label>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <table className="data-table">
             <thead>
@@ -4048,7 +4078,7 @@ function LecturerSubmissions() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((student) =>
+              {pageRows.map((student) =>
                 <tr key={student.id}>
                   <td className="font-semibold text-slate-950">{student.name}</td>
                   <td>08 Jun 2026 · 08:20</td>
@@ -4065,6 +4095,15 @@ function LecturerSubmissions() {
               )}
             </tbody>
           </table>
+          {!pageRows.length && <div className="empty-state"><Users /><h3>No matching students</h3><p>Try a different course, subject or search term.</p></div>}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-500">
+          <span>Showing {pageRows.length} of {rows.length} records · 10 per page</span>
+          <div className="flex gap-2">
+            <button className="filter-chip" disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Previous</button>
+            <button className="filter-chip" disabled={page * 10 >= rows.length} onClick={() => setPage((value) => value + 1)}>Next</button>
+          </div>
         </div>
       </div>
     </>
@@ -4184,7 +4223,7 @@ function LecturerSchedules({ data, setData }: {
                   <p className="text-sm font-semibold text-slate-950">{item.title}</p>
                   <p className="mt-1 text-xs text-slate-500">{item.kind} · {item.time} · {item.location}</p>
                 </div>
-                <div className="relative"><button className="icon-btn" onClick={() => setMenu(menu === item.id ? null : item.id)}><MoreHorizontal /></button>{menu === item.id && <div className="absolute right-0 top-10 z-10 w-32 rounded-xl border border-slate-200 bg-white p-1 shadow-lg"><button className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold hover:bg-slate-50" onClick={() => { setEditing(item); setMenu(null); }}>Edit</button><button className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50" onClick={() => { setData((old) => ({...old, schedules: old.schedules.filter((s) => s.id !== item.id)})); setMenu(null); toast.success("Schedule removed."); }}>Remove</button></div>}</div>
+                <div className="relative"><button className="icon-btn" onClick={() => setMenu(menu === item.id ? null : item.id)}><MoreHorizontal /></button>{menu === item.id && <div className="absolute right-0 top-10 z-10 w-32 rounded-xl border border-slate-200 bg-white p-1 shadow-lg"><button className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold hover:bg-slate-50" onClick={() => { setEditing(item); setMenu(null); }}>Edit</button><button className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50" onClick={() => { setData((old) => ({ ...old, schedules: old.schedules.filter((s) => s.id !== item.id) })); setMenu(null); toast.success("Schedule removed."); }}>Remove</button></div>}</div>
               </div>
             )}
           </div>
@@ -4236,9 +4275,220 @@ function LecturerPortal({ data, setData, path, navigate }: {
   );
 }
 
-function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) { const [error,setError]=useState(""); const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=new FormData(e.currentTarget);if(f.get("email")==="admin@nstc.example"&&f.get("password")==="admin2026"){localStorage.setItem("nstc-admin-session","active");onAuthenticated();}else setError("For the demo, use admin@nstc.example / admin2026.");}; return <div className="registration-page"><div className="registration-top"><Logo light/><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">NSTC secure access</p><h1 className="mt-2 font-display text-4xl text-slate-950">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-slate-500">Manage learners, academics, finance and lecturer accounts.</p>{error&&<p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5"><label>Email address<input className="field" name="email" type="email" required placeholder="admin@nstc.example"/></label><label>Password<input className="field" name="password" type="password" required/></label><Button type="submit" className="w-full justify-center">Continue to admin dashboard <ArrowRight className="h-4 w-4"/></Button></form><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>admin@nstc.example / admin2026</strong></p><a href="/lecturer" className="mt-5 block text-center text-sm font-semibold text-slate-500">Lecturer login <ArrowRight className="ml-1 inline h-4 w-4"/></a></div></div>; }
-function AdminLecturers({ data, setData, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; navigate: (path:string)=>void }) { const [editing,setEditing]=useState<LecturerRecord|null>(null); const [notice,setNotice]=useState<LecturerRecord|null>(null); const [query,setQuery]=useState(""); const list=data.lecturers.filter((l)=>`${l.name} ${l.email} ${l.employeeNo}`.toLowerCase().includes(query.toLowerCase())); const save=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=new FormData(e.currentTarget);const next:LecturerRecord={id:editing?.id||crypto.randomUUID(),name:String(f.get("name")),employeeNo:String(f.get("employeeNo")),email:String(f.get("email")),phone:String(f.get("phone")),campus:String(f.get("campus")),courses:String(f.get("courses")||"").split(",").map((v)=>v.trim()).filter(Boolean),subjects:String(f.get("subjects")||"").split(",").map((v)=>v.trim()).filter(Boolean),status:editing?.status||"Active",notice:editing?.notice};setData((old)=>({...old,lecturers:editing?.id?old.lecturers.map((l)=>l.id===editing.id?next:l):[next,...old.lecturers]}));setEditing(null);toast.success("Lecturer account saved.");}; const updateStatus=(status:LecturerRecord["status"])=>{if(!notice)return;const text=(document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value||"Status changed by the NSTC admin team.";setData((old)=>({...old,lecturers:old.lecturers.map((l)=>l.id===notice.id?{...l,status,notice:text}:l)}));setNotice(null);toast.success(`${status} notice drafted for ${notice.email}.`);}; return <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}><PageHeading eyebrow="People & permissions" title="Manage lecturers" body="Create teaching accounts, assign course loads and record lecturer status." actions={<Button onClick={()=>setEditing({id:"",name:"",email:"",phone:"",employeeNo:"",campus:"Wynberg Johannesburg",courses:[],subjects:[],status:"Active"})}><Plus className="h-4 w-4"/> Create lecturer</Button>}/><div className="portal-card"><div className="flex flex-col justify-between gap-4 md:flex-row md:items-center"><div><p className="eyebrow">Lecturer directory</p><h3 className="mt-2 font-display text-2xl text-slate-950">Teaching accounts</h3></div><input className="field mt-0 max-w-sm" value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search name, email or employee no."/></div><div className="mt-6 overflow-x-auto"><table className="data-table"><thead><tr><th>Lecturer</th><th>Campus</th><th>Courses</th><th>Subjects</th><th>Status</th><th>Actions</th></tr></thead><tbody>{list.map((l)=><tr key={l.id}><td><p className="font-semibold text-slate-950">{l.name}</p><p className="text-xs text-slate-500">{l.employeeNo} · {l.email}<br/>{l.phone}</p></td><td>{l.campus}</td><td>{l.courses.join(" · ")||"Unassigned"}</td><td>{l.subjects.join(" · ")||"Unassigned"}</td><td><Pill tone={l.status==="Active"?"green":"red"}>{l.status}</Pill></td><td><div className="flex flex-wrap gap-2"><button className="filter-chip" onClick={()=>setEditing(l)}>Edit</button><button className="filter-chip" onClick={()=>setNotice(l)}>{l.status==="Active"?"Disable / remove":"Draft notice"}</button></div></td></tr>)}</tbody></table></div></div>{editing&&<Modal title={editing.id?"Edit lecturer account":"Create lecturer account"} onClose={()=>setEditing(null)}><form onSubmit={save} className="mt-5 grid gap-4 md:grid-cols-2"><label>Full name<input name="name" className="field" required defaultValue={editing.name}/></label><label>Employee no.<input name="employeeNo" className="field" required defaultValue={editing.employeeNo}/></label><label>Email<input name="email" type="email" className="field" required defaultValue={editing.email}/></label><label>Phone<input name="phone" className="field" required defaultValue={editing.phone}/></label><label>Campus<select name="campus" className="field" defaultValue={editing.campus}><option>Wynberg Johannesburg</option><option>Middelburg</option></select></label><label>Courses (comma separated)<input name="courses" className="field" defaultValue={editing.courses.join(", ")}/></label><label className="md:col-span-2">Subjects (comma separated)<input name="subjects" className="field" defaultValue={editing.subjects.join(", ")}/></label><Button type="submit" className="md:col-span-2 justify-center"><Check className="h-4 w-4"/> Save lecturer account</Button></form></Modal>}{notice&&<Modal title={`Status notice · ${notice.name}`} onClose={()=>setNotice(null)}><p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this lecturer. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p><textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice||"Your lecturer account has been placed under review because..."}/><div className="mt-5 flex flex-wrap justify-end gap-3"><Button variant="light" onClick={()=>setNotice(null)}>Cancel</Button><Button variant="light" onClick={()=>updateStatus("Disabled")}>Disable & prepare email</Button><Button onClick={()=>updateStatus("Removed")}>Remove & prepare email</Button></div></Modal>}</PortalShell>; }
-function AdminPortal({ data, setData, path, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; path:string; navigate:(path:string)=>void }) { const [loggedIn,setLoggedIn]=useState(()=>localStorage.getItem("nstc-admin-session")==="active"); if(!loggedIn)return <AdminAuth onAuthenticated={()=>setLoggedIn(true)}/>; if(path==="/admin/lecturers")return <AdminLecturers data={data} setData={setData} navigate={navigate}/>; if(path==="/admin/students")return <AdminStudents data={data} navigate={navigate}/>; if(path==="/admin/academics")return <AdminAcademics data={data} setData={setData} navigate={navigate}/>; if(path==="/admin/attendance")return <AdminAttendance data={data} navigate={navigate}/>; if(path==="/admin/finance")return <AdminFinance data={data} navigate={navigate}/>; return <AdminDashboard data={data} setData={setData} navigate={navigate}/>; }
+function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
+  const [error, setError] = useState("");
+
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    if (f.get("email") === "admin@nstc.example" && f.get("password") === "admin2026") {
+      localStorage.setItem("nstc-admin-session", "active");
+      onAuthenticated();
+    } else setError("For the demo, use admin@nstc.example / admin2026.");
+  };
+
+  return (
+    <div className="registration-page">
+      <div className="registration-top"><Logo light />
+        <a href="/" className="text-sm font-semibold text-white/60">Back to website</a>
+      </div>
+      <div className="registration-card max-w-[520px]">
+        <p className="eyebrow">NSTC secure access</p>
+        <h1 className="mt-2 font-display text-4xl text-slate-950">Admin sign in</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-500">Manage learners, academics, finance and lecturer accounts.</p>
+        {error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <form onSubmit={submit} className="mt-7 space-y-5">
+          <label>Email address
+            <input className="field" name="email" type="email" required placeholder="admin@nstc.example" />
+          </label>
+          <label>Password
+            <input className="field" name="password" type="password" required />
+          </label>
+          <Button type="submit" className="w-full justify-center mt-6">Continue to admin dashboard <ArrowRight className="h-4 w-4" /></Button>
+        </form>
+        <p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>admin@nstc.example / admin2026</strong></p>
+        {/* <a href="/lecturer" className="mt-5 block text-center text-sm font-semibold text-slate-500">Lecturer login <ArrowRight className="ml-1 inline h-4 w-4" /></a> */}
+      </div>
+    </div>
+  );
+}
+
+function AdminLecturers({ data, setData, navigate }: {
+  data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>;
+  navigate: (path: string) => void
+}) {
+  const [editing, setEditing] = useState<LecturerRecord | null>(null);
+  const [notice, setNotice] = useState<LecturerRecord | null>(null);
+  const [query, setQuery] = useState("");
+  const list = data.lecturers.filter((l) => `${l.name} ${l.email} ${l.employeeNo}`.toLowerCase().includes(query.toLowerCase()));
+
+  const save = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const next: LecturerRecord = {
+      id: editing?.id || crypto.randomUUID(),
+      name: String(f.get("name")),
+      employeeNo: String(f.get("employeeNo")),
+      email: String(f.get("email")),
+      phone: String(f.get("phone")),
+      // campus: String(f.get("campus")),
+      campus: "Middelburg",
+      courses: String(f.get("courses") || "").split(",").map((v) => v.trim()).filter(Boolean),
+      subjects: String(f.get("subjects") || "").split(",").map((v) => v.trim()).filter(Boolean),
+      status: editing?.status || "Active",
+      notice: editing?.notice
+    };
+    setData((old) => ({
+      ...old, lecturers: editing?.id
+        ? old.lecturers.map((l) => l.id === editing.id ? next : l)
+        : [next, ...old.lecturers]
+    }));
+    setEditing(null);
+    toast.success("Lecturer account saved.");
+  };
+
+  const updateStatus = (status: LecturerRecord["status"]) => {
+    if (!notice) return;
+    const text = (document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value || "Status changed by the NSTC admin team.";
+    setData((old) => ({
+      ...old,
+      lecturers: old.lecturers.map((l) => l.id === notice.id ? { ...l, status, notice: text } : l)
+    }));
+    setNotice(null);
+    toast.success(`${status} notice drafted for ${notice.email}.`);
+  };
+
+  return (
+    <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}>
+      <PageHeading eyebrow="People & permissions" title="Manage lecturers" body="Create teaching accounts, assign course loads and record lecturer status."
+        actions={
+          <Button onClick={() =>
+            setEditing({
+              id: "",
+              name: "",
+              email: "",
+              phone: "",
+              employeeNo: "",
+              campus: "Wynberg Johannesburg",
+              courses: [],
+              subjects: [],
+              status: "Active"
+            })}
+          >
+            <Plus className="h-4 w-4" /> Create lecturer
+          </Button>
+        } />
+      <div className="portal-card">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <p className="eyebrow">Lecturer directory</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Teaching accounts</h3>
+          </div>
+          <input className="field mt-0 max-w-sm" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email or employee no." />
+        </div>
+        <div className="mt-6 overflow-x-auto">
+          <table className="data-table admin-table">
+            <thead>
+              <tr>
+                <th>Lecturer</th>
+                {/* <th>Campus</th> */}
+                <th>Courses</th>
+                <th>Subjects</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((l) =>
+                <tr key={l.id}>
+                  <td>
+                    <p className="font-semibold text-slate-950">{l.name}</p>
+                    <p className="text-xs text-slate-500">{l.employeeNo} · {l.email}<br />{l.phone}</p>
+                  </td>
+                  {/* <td>{l.campus}</td> */}
+                  <td>{l.courses.join(" · ") || "Unassigned"}</td>
+                  <td>{l.subjects.join(" · ") || "Unassigned"}</td>
+                  <td><Pill tone={l.status === "Active" ? "green" : "red"}>{l.status}</Pill></td>
+                  <td>
+                    <div className="flex flex-wrap gap-2">
+                      <button className="filter-chip" onClick={() => setEditing(l)}>Edit</button>
+                      <button className="filter-chip" onClick={() => setNotice(l)}>{l.status === "Active" ? "Disable / remove" : "Draft notice"}</button>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {editing &&
+        <Modal title={editing.id ? "Edit lecturer account" : "Create lecturer account"}
+          onClose={() => setEditing(null)}
+        >
+          <form onSubmit={save} className="mt-5 grid gap-4 md:grid-cols-2">
+            <label>Full name
+              <input name="name" className="field" required defaultValue={editing.name} />
+            </label>
+            <label>Employee no.
+              <input name="employeeNo" className="field" required defaultValue={editing.employeeNo} />
+            </label>
+            <label>Email
+              <input name="email" type="email" className="field" required defaultValue={editing.email} />
+            </label>
+            <label>Phone
+              <input name="phone" className="field" required defaultValue={editing.phone} />
+            </label>
+            {/* <label>Campus
+              <select name="campus" className="field" defaultValue={editing.campus}>
+                <option>Wynberg Johannesburg</option>
+                <option>Middelburg</option>
+              </select>
+            </label> */}
+            <label className="md:col-span-2">Courses (comma separated)
+              <input name="courses" className="field" defaultValue={editing.courses.join(", ")} />
+            </label>
+            <label className="md:col-span-2">Subjects (comma separated)
+              <input name="subjects" className="field" defaultValue={editing.subjects.join(", ")} />
+            </label>
+            <Button type="submit" className="md:col-span-2 justify-center">
+              <Check className="h-4 w-4" /> Save lecturer account
+            </Button>
+          </form>
+        </Modal>
+      }
+      {notice &&
+        <Modal title={`Status notice · ${notice.name}`} onClose={() => setNotice(null)}>
+          <p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this lecturer. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p>
+          <textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice || "Your lecturer account has been placed under review because..."} />
+          <div className="mt-5 flex flex-wrap justify-end gap-3">
+            <Button variant="light" onClick={() => setNotice(null)}>Cancel</Button>
+            <Button variant="light" onClick={() => updateStatus("Disabled")}>Disable & prepare email</Button>
+            <Button onClick={() => updateStatus("Removed")}>Remove & prepare email</Button>
+          </div>
+        </Modal>
+      }
+    </PortalShell>
+  );
+}
+
+function AdminPortal({ data, setData, path, navigate }: {
+  data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>;
+  path: string; navigate: (path: string) => void
+}) {
+  const [loggedIn, setLoggedIn] = useState(() => localStorage.getItem("nstc-admin-session") === "active");
+
+  if (!loggedIn) return <AdminAuth onAuthenticated={() => setLoggedIn(true)} />;
+  if (path === "/admin/lecturers") return <AdminLecturers data={data} setData={setData} navigate={navigate} />;
+  if (path === "/admin/students") return <AdminStudents data={data} navigate={navigate} />;
+  // if (path === "/admin/academics") return <AdminAcademics data={data} setData={setData} navigate={navigate} />;
+  if (path === "/admin/attendance") return <AdminAttendance data={data} navigate={navigate} />;
+  if (path === "/admin/finance") return <AdminFinance data={data} navigate={navigate} />;
+
+  return <AdminDashboard data={data} setData={setData} navigate={navigate} />;
+}
+
 function AdminDashboard({ data, setData, navigate }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
@@ -4436,7 +4686,10 @@ function AdminStudents({ data, navigate }: {
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div className="relative max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input className="field mt-0 pl-10" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search learners, student numbers or programmes" />
+            <input className="field mt-0 pl-10" value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search learners, student numbers or programmes"
+            />
           </div>
           <div className="flex gap-2">
             <Pill tone="green">{data.students.filter((s) => s.status === "Active").length} active</Pill>
@@ -4488,142 +4741,142 @@ function AdminStudents({ data, navigate }: {
   );
 }
 
-function AdminAcademics({ data, setData, navigate }: {
-  data: AppData;
-  setData: React.Dispatch<React.SetStateAction<AppData>>;
-  navigate: (path: string) => void
-}) {
-  const [tab, setTab] = useState("Schedules");
-  const [modal, setModal] = useState(false);
-  const tabs = ["Schedules", "Assignments", "Exams", "Announcements"];
-  return (
-    <PortalShell role="Admin" active="/admin/academics" onNavigate={navigate}>
-      <PageHeading eyebrow="Academic operations" title="Plan the learning cycle" body="Create, publish and maintain the academic calendar."
-        actions={
-          <Button onClick={() => setModal(true)}><Plus className="h-4 w-4" /> Create {tab.slice(0, -1)}</Button>
-        }
-      />
-      <div className="portal-card">
-        <div className="flex flex-wrap gap-2 border-b border-slate-100 pb-4">
-          {tabs.map((item) => <button key={item} className={`filter-chip ${tab === item ? "active" : ""}`} onClick={() => setTab(item)}>{item}</button>)}</div>
-        <div className="mt-5 overflow-x-auto">
-          {tab === "Schedules" &&
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Activity</th>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Location</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.schedules.map((s) =>
-                  <tr key={s.id}>
-                    <td className="font-semibold">{s.title}</td>
-                    <td>
-                      <Pill tone={s.kind === "Exam" ? "red" : "slate"}>{s.kind}</Pill>
-                    </td>
-                    <td>{s.date}</td>
-                    <td>{s.time}</td>
-                    <td>{s.location}</td>
-                    <td>
-                      <button className="icon-btn" onClick={() => toast.success("Schedule edit mode opened.")}><MoreHorizontal /></button>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          }
-          {tab === "Assignments" &&
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Assignment</th>
-                  <th>Course</th>
-                  <th>Due date</th>
-                  <th>Submissions</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.assignments.map((a) =>
-                  <tr key={a.id}>
-                    <td className="font-semibold">{a.title}</td>
-                    <td>{a.course}</td>
-                    <td>{a.due}</td>
-                    <td>18 / 24</td>
-                    <td>
-                      <Pill tone="green">Published</Pill>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          }
-          {tab === "Exams" &&
-            <div className="empty-state">
-              <FileText />
-              <h3>No additional exam papers yet</h3>
-              <p>Create a published exam schedule to make it visible to learners.</p>
-              <Button onClick={() => setModal(true)}>Create exam</Button>
-            </div>
-          }
-          {tab === "Announcements" &&
-            <div className="space-y-3">
-              {data.announcements.map((a) =>
-                <div className="list-row" key={a.id}>
-                  <div>
-                    <p className="font-semibold text-slate-950">{a.title}</p>
-                    <p className="mt-1 text-xs text-slate-500">{a.date} · {a.audience}</p>
-                  </div>
-                  <button className="icon-btn" onClick={() => toast.success("Announcement edit mode opened.")}>
-                    <MoreHorizontal />
-                  </button>
-                </div>
-              )}
-            </div>
-          }
-        </div>
-      </div>
-      {modal &&
-        <Modal title={`Create ${tab.slice(0, -1).toLowerCase()}`} onClose={() => setModal(false)}>
-          <form className="mt-5 space-y-4" onSubmit={(e) => {
-            e.preventDefault();
-            if (tab === "Schedules")
-              setData((old) => ({
-                ...old,
-                schedules: [{
-                  id: crypto.randomUUID(),
-                  title: "New academic activity",
-                  kind: "Class",
-                  date: "2026-07-01",
-                  time: "09:00 – 11:00",
-                  location: "Room 1 · Wynberg"
-                },
-                ...old.schedules]
-              }));
-            setModal(false);
-            toast.success(`${tab.slice(0, -1)} created and saved locally.`);
-          }}>
-            <label>Title
-              <input className="field" defaultValue="New academic activity" required />
-            </label>
-            <label>Date
-              <input className="field" type="date" defaultValue="2026-07-01" required />
-            </label>
-            <label>Notes
-              <textarea className="field min-h-[100px] py-3" defaultValue="Add details for learners and teaching staff." />
-            </label>
-            <Button type="submit" className="w-full justify-center">Save and publish <Check className="h-4 w-4" /></Button>
-          </form>
-        </Modal>
-      }
-    </PortalShell>
-  );
-}
+// function AdminAcademics({ data, setData, navigate }: {
+//   data: AppData;
+//   setData: React.Dispatch<React.SetStateAction<AppData>>;
+//   navigate: (path: string) => void
+// }) {
+//   const [tab, setTab] = useState("Schedules");
+//   const [modal, setModal] = useState(false);
+//   const tabs = ["Schedules", "Assignments", "Exams", "Announcements"];
+//   return (
+//     <PortalShell role="Admin" active="/admin/academics" onNavigate={navigate}>
+//       <PageHeading eyebrow="Academic operations" title="Plan the learning cycle" body="Create, publish and maintain the academic calendar."
+//         actions={
+//           <Button onClick={() => setModal(true)}><Plus className="h-4 w-4" /> Create {tab.slice(0, -1)}</Button>
+//         }
+//       />
+//       <div className="portal-card">
+//         <div className="flex flex-wrap gap-2 border-b border-slate-100 pb-4">
+//           {tabs.map((item) => <button key={item} className={`filter-chip ${tab === item ? "active" : ""}`} onClick={() => setTab(item)}>{item}</button>)}</div>
+//         <div className="mt-5 overflow-x-auto">
+//           {tab === "Schedules" &&
+//             <table className="data-table">
+//               <thead>
+//                 <tr>
+//                   <th>Activity</th>
+//                   <th>Type</th>
+//                   <th>Date</th>
+//                   <th>Time</th>
+//                   <th>Location</th>
+//                   <th>Actions</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {data.schedules.map((s) =>
+//                   <tr key={s.id}>
+//                     <td className="font-semibold">{s.title}</td>
+//                     <td>
+//                       <Pill tone={s.kind === "Exam" ? "red" : "slate"}>{s.kind}</Pill>
+//                     </td>
+//                     <td>{s.date}</td>
+//                     <td>{s.time}</td>
+//                     <td>{s.location}</td>
+//                     <td>
+//                       <button className="icon-btn" onClick={() => toast.success("Schedule edit mode opened.")}><MoreHorizontal /></button>
+//                     </td>
+//                   </tr>
+//                 )}
+//               </tbody>
+//             </table>
+//           }
+//           {tab === "Assignments" &&
+//             <table className="data-table">
+//               <thead>
+//                 <tr>
+//                   <th>Assignment</th>
+//                   <th>Course</th>
+//                   <th>Due date</th>
+//                   <th>Submissions</th>
+//                   <th>Status</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {data.assignments.map((a) =>
+//                   <tr key={a.id}>
+//                     <td className="font-semibold">{a.title}</td>
+//                     <td>{a.course}</td>
+//                     <td>{a.due}</td>
+//                     <td>18 / 24</td>
+//                     <td>
+//                       <Pill tone="green">Published</Pill>
+//                     </td>
+//                   </tr>
+//                 )}
+//               </tbody>
+//             </table>
+//           }
+//           {tab === "Exams" &&
+//             <div className="empty-state">
+//               <FileText />
+//               <h3>No additional exam papers yet</h3>
+//               <p>Create a published exam schedule to make it visible to learners.</p>
+//               <Button onClick={() => setModal(true)}>Create exam</Button>
+//             </div>
+//           }
+//           {tab === "Announcements" &&
+//             <div className="space-y-3">
+//               {data.announcements.map((a) =>
+//                 <div className="list-row" key={a.id}>
+//                   <div>
+//                     <p className="font-semibold text-slate-950">{a.title}</p>
+//                     <p className="mt-1 text-xs text-slate-500">{a.date} · {a.audience}</p>
+//                   </div>
+//                   <button className="icon-btn" onClick={() => toast.success("Announcement edit mode opened.")}>
+//                     <MoreHorizontal />
+//                   </button>
+//                 </div>
+//               )}
+//             </div>
+//           }
+//         </div>
+//       </div>
+//       {modal &&
+//         <Modal title={`Create ${tab.slice(0, -1).toLowerCase()}`} onClose={() => setModal(false)}>
+//           <form className="mt-5 space-y-4" onSubmit={(e) => {
+//             e.preventDefault();
+//             if (tab === "Schedules")
+//               setData((old) => ({
+//                 ...old,
+//                 schedules: [{
+//                   id: crypto.randomUUID(),
+//                   title: "New academic activity",
+//                   kind: "Class",
+//                   date: "2026-07-01",
+//                   time: "09:00 – 11:00",
+//                   location: "Room 1 · Wynberg"
+//                 },
+//                 ...old.schedules]
+//               }));
+//             setModal(false);
+//             toast.success(`${tab.slice(0, -1)} created and saved locally.`);
+//           }}>
+//             <label>Title
+//               <input className="field" defaultValue="New academic activity" required />
+//             </label>
+//             <label>Date
+//               <input className="field" type="date" defaultValue="2026-07-01" required />
+//             </label>
+//             <label>Notes
+//               <textarea className="field min-h-[100px] py-3" defaultValue="Add details for learners and teaching staff." />
+//             </label>
+//             <Button type="submit" className="w-full justify-center">Save and publish <Check className="h-4 w-4" /></Button>
+//           </form>
+//         </Modal>
+//       }
+//     </PortalShell>
+//   );
+// }
 
 function AdminAttendance({ data, navigate }: {
   data: AppData;
