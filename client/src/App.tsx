@@ -165,7 +165,8 @@ function Pill({ children, tone = "gold" }: {
   children: ReactNode;
   tone?: "gold" | "green" | "red" | "slate"
 }) {
-  return (<span className={`pill pill-${tone}`}>{children}</span>);
+  return (
+    <span className={`pill pill-${tone}`}>{children}</span>);
 }
 
 // Custome Section Title Component
@@ -3019,10 +3020,6 @@ function Registration({ onComplete }: {
       setError("Select a programme before adding it.");
       return false;
     }
-    // if (isMainCourse && (!programme.subjects.length || programme.subjects.some((subject) => !subject.level))) {
-    //   setError("Select at least one subject and a level for every selected subject.");
-    //   return false;
-    // }
     if (programmes.some((item) => item.course === programme.course && item.category === programme.category)) {
       if (allowExisting) return true;
       setError("That programme has already been added. Choose another programme.");
@@ -3552,6 +3549,7 @@ function StudentPortal({ data, setData, path, navigate }: {
 
 function LecturerAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [error, setError] = useState("");
+
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -3562,7 +3560,26 @@ function LecturerAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
       onAuthenticated();
     } else setError("Demo login: lecturer@nstc.example · lecturer2026");
   };
-  return <div className="registration-page"><div className="registration-top"><Logo light /><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">Lecturer & tutor access</p><h1 className="mt-2 font-display text-4xl text-slate-950">Lead learning with clarity.</h1><p className="mt-3 text-sm leading-6 text-slate-500">Sign in to manage classes, resources, attendance, assessments and student progress.</p>{error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5"><label>Email address<input className="field" name="email" type="email" required placeholder="lecturer@nstc.example" /></label><label>Password<input className="field" name="password" type="password" required placeholder="Your password" /></label><Button type="submit" className="w-full justify-center">Sign in to lecturer portal <ArrowRight className="h-4 w-4" /></Button></form><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>lecturer@nstc.example</strong> with password <strong>lecturer2026</strong>.</p><div className="mt-5 text-center text-sm font-semibold text-slate-500"><a href="/portal">Student portal</a><span className="mx-2 text-slate-300">·</span><a href="/admin">Admin access</a></div></div></div>;
+
+  return (
+    <div className="registration-page">
+      <div className="registration-top">
+        <Logo light /><a href="/" className="text-sm font-semibold text-white/60">Back to website</a>
+      </div>
+      <div className="registration-card max-w-[520px]">
+        <p className="eyebrow">Lecturer & tutor access</p>
+        <h1 className="mt-2 font-display text-4xl text-slate-950">Lead learning with clarity.</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-500">Sign in to manage classes, resources, attendance, assessments and student progress.</p>
+        {error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <form onSubmit={submit} className="mt-7 space-y-5">
+          <label>Email address<input className="field" name="email" type="email" required placeholder="lecturer@nstc.example" /></label>
+          <label>Password<input className="field" name="password" type="password" required placeholder="Your password" /></label>
+          <Button type="submit" className="w-full justify-center mt-6">Sign in to lecturer portal <ArrowRight className="h-4 w-4" /></Button>
+        </form>
+        <p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>lecturer@nstc.example</strong> with password <strong>lecturer2026</strong>.</p>
+      </div>
+    </div>
+  );
 }
 
 function LecturerShell({ children, active, onNavigate, onSignOut }: {
@@ -3579,9 +3596,10 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
     { label: "Attendance", icon: ClipboardCheck, path: "/lecturer/attendance" },
     { label: "Student results", icon: BarChart3, path: "/lecturer/results" },
     { label: "Submissions & marks", icon: Upload, path: "/lecturer/submissions" },
-    { label: "Announcements", icon: MessageCircle, path: "/lecturer/announcements" },
+    // { label: "Announcements", icon: MessageCircle, path: "/lecturer/announcements" },
     { label: "Schedules", icon: CalendarDays, path: "/lecturer/schedules" }
   ];
+
   return (
     <div className="portal-shell lecturer-shell">
       <aside className={`portal-sidebar ${open ? "open" : ""}`}>
@@ -3591,23 +3609,19 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
             <div className="mt-3 space-y-1">
               {items.map((item) => {
                 const I = item.icon;
-                return <button key={item.path} className={`side-link ${active === item.path ? "active" : ""}`} onClick={() => { onNavigate(item.path); setOpen(false); }}>
-                  <I className="h-4 w-4" />{item.label}{active === item.path && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />}
-                </button>;
+                return (
+                  <button key={item.path} className={`side-link ${active === item.path ? "active" : ""}`} onClick={() => { onNavigate(item.path); setOpen(false); }}>
+                    <I className="h-4 w-4" />{item.label}{active === item.path && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />}
+                  </button>
+                );
               })}
             </div>
           </div>
         </div>
         <div className="mt-auto border-t border-slate-200 p-6">
-          <div className="flex items-center gap-3">
-            <div className="avatar-small">SR</div>
-            <div>
-              <p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p>
-              <p className="text-xs text-slate-500">Lecturer account</p>
-            </div>
-          </div>
-          <button className="mt-5 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950" onClick={onSignOut}>
-            <X className="h-3.5 w-3.5" /> Sign out</button>
+          <button className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950" onClick={onSignOut}>
+            <X className="h-3.5 w-3.5" /> Sign out
+          </button>
           <a href="/" className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950">
             <ExternalLink className="h-3.5 w-3.5" /> Public website
           </a>
@@ -3621,10 +3635,12 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
             <p className="hidden text-sm font-semibold text-slate-950 sm:block">Make every class count.</p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="notification-badge">
+
+            <button className="notification-badge" onClick={() => { onNavigate("/lecturer/announcements"); setOpen(false); }}>
               <MessageCircle className="h-4 w-4" />
               <span>3</span>
-            </div>
+            </button>
+
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p>
               <p className="text-xs text-slate-500">Engineering faculty</p>
@@ -3827,10 +3843,84 @@ function LecturerStudents() {
 function LecturerResources({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
   const [message, setMessage] = useState(""); const [sheet, setSheet] = useState(false); const [month, setMonth] = useState("All months"); const [date, setDate] = useState("All dates");
   const submitResource = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const form = new FormData(event.currentTarget); setData((old) => ({ ...old, resources: [{ id: crypto.randomUUID(), title: String(form.get("title") || "New learning resource"), course: String(form.get("course") || lecturerCourses[0]), subject: String(form.get("subject") || lecturerSubjects[0]), fileType: "PDF", published: form.get("publish") === "on", uploaded: "2026-06-08" }, ...old.resources] })); event.currentTarget.reset(); setMessage("Resource uploaded and saved to your teaching library."); };
-  const dates = Array.from(new Set(data.assignments.map((a) => a.due))).sort(); const months = Array.from(new Set(data.assignments.map((a) => a.due.slice(0, 7)))).sort(); const expired = (due: string) => due < "2026-06-08";
-  const visible = data.assignments.filter((a) => (month === "All months" || a.due.startsWith(month)) && (date === "All dates" || a.due === date));
-  const createAssignment = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const f = new FormData(event.currentTarget); const due = String(f.get("due") || "2026-06-30"); setData((old) => ({ ...old, assignments: [{ id: crypto.randomUUID(), title: String(f.get("title") || "New assignment"), course: String(f.get("course") || lecturerCourses[0]), subject: String(f.get("subject") || lecturerSubjects[0]), due, status: "Published", instructions: String(f.get("instructions") || ""), createdAt: "2026-06-08" }, ...old.assignments] })); setSheet(false); toast.success("Assignment published to the selected class."); };
-  return <><PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials, publish coursework and track assignment deadlines." /><div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]"><div className="portal-card"><p className="eyebrow">Upload & publish resource</p><form onSubmit={submitResource} className="mt-5 space-y-4"><label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook" /></label><label>Course<select name="course" className="field"><option>{lecturerCourses[0]}</option><option>{lecturerCourses[1]}</option></select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>File<input className="field" type="file" required /></label><label className="check-option"><input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now</label><Button type="submit"><Upload className="h-4 w-4" /> Upload resource</Button>{message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}</form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published library</p><h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3></div><Pill>{data.resources.length} files</Pill></div><div className="mt-4 space-y-2">{data.resources.map((resource) => <div className="resource-row" key={resource.id}><div className="file-icon"><FileText /></div><div className="min-w-0"><p className="truncate text-sm font-semibold">{resource.title}</p><p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p></div><Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Assignment activity</p><h3 className="mt-2 font-display text-2xl text-slate-950">Post and track coursework</h3></div><Button onClick={() => setSheet(true)}><Plus className="h-4 w-4" /> New assignment</Button></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[["Completed","18"],["In progress","7"],["Not started","4"]].map(([label,value]) => <div className="rounded-xl bg-slate-50 p-4" key={label}><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-display text-3xl text-slate-950">{value}</p></div>)}</div><div className="mt-6 flex flex-wrap gap-3"><select className="field mt-0 max-w-[190px]" value={month} onChange={(e) => setMonth(e.target.value)}><option>All months</option>{months.map((m) => <option key={m}>{m}</option>)}</select><select className="field mt-0 max-w-[190px]" value={date} onChange={(e) => setDate(e.target.value)}><option>All dates</option>{dates.map((d) => <option key={d}>{d}</option>)}</select></div><div className="mt-4 space-y-2">{visible.map((a) => { const closed=expired(a.due); return <div className={`list-row ${closed ? "opacity-55" : ""}`} key={a.id}><div className="min-w-0"><p className="font-semibold text-slate-950">{a.title}</p><p className="mt-1 text-xs text-slate-500">{a.course} · {a.subject || "General"} · Due {a.due}</p></div><Pill tone={closed ? "red" : a.status === "Submitted" ? "green" : "gold"}>{closed ? "Closed" : a.status}</Pill><button className="filter-chip" disabled={closed}>{closed ? "Disabled" : "View"}</button></div>; })}</div></div>{sheet && <div className="sheet-backdrop" onClick={() => setSheet(false)}><div className="bottom-sheet" onClick={(e) => e.stopPropagation()}><div className="flex items-center justify-between"><div><p className="eyebrow">Coursework composer</p><h3 className="mt-2 font-display text-2xl text-slate-950">Add a new assignment</h3></div><button className="icon-btn" onClick={() => setSheet(false)}><X /></button></div><form onSubmit={createAssignment} className="mt-6 grid gap-4 md:grid-cols-2"><label className="md:col-span-2">Assignment title<input name="title" className="field" required /></label><label>Course<select name="course" className="field"><option>{lecturerCourses[0]}</option><option>{lecturerCourses[1]}</option></select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="due" className="field" type="date" min="2026-06-08" required /></label><label>Submission type<select name="type" className="field"><option>Online upload</option><option>In class</option><option>Practical demonstration</option></select></label><label className="md:col-span-2">Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label><div className="flex justify-end gap-3 md:col-span-2"><Button variant="light" type="button" onClick={() => setSheet(false)}>Cancel</Button><Button type="submit"><Check className="h-4 w-4" /> Publish assignment</Button></div></form></div></div>}</>;
+  return (
+    <>
+      <PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials, publish them to a class and track assignment progress." />
+      <div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
+        <div className="portal-card">
+          <p className="eyebrow">Upload & publish resource</p>
+          <form onSubmit={submitResource} className="mt-5 space-y-4">
+            <label>Resource title
+              <input name="title" className="field" required placeholder="e.g. Motor control workbook" />
+            </label>
+            <label>Course
+              <select name="course" className="field">
+                <option>{lecturerCourses[0]}</option>
+                <option>{lecturerCourses[1]}</option>
+              </select>
+            </label>
+            <label>Subject
+              <select name="subject" className="field">
+                {lecturerSubjects.map((item) =>
+                  <option key={item}>{item}</option>
+                )}
+              </select>
+            </label>
+            <label>File
+              <input className="field" type="file" required />
+            </label>
+            <label className="check-option mt-3">
+              <input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now
+            </label>
+            <Button type="submit">
+              <Upload className="h-4 w-4" /> Upload resource</Button>
+            {message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
+          </form>
+        </div>
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">Published library</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3>
+            </div>
+            <Pill>{data.resources.length} files</Pill>
+          </div>
+          <div className="mt-4 space-y-2">
+            {data.resources.map((resource) =>
+              <div className="resource-row" key={resource.id}>
+                <div className="file-icon"><FileText /></div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{resource.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p>
+                </div>
+                <Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="mt-5 portal-card">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="eyebrow">Assignment activity</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Post and track coursework</h3>
+          </div>
+          <Button onClick={() => toast.success("Assignment creation form is ready for your next brief.")}><Plus className="h-4 w-4" /> New assignment</Button>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">{
+          [{ label: "Completed", value: "18", tone: "green" },
+          { label: "In progress", value: "7", tone: "gold" },
+          { label: "Not started", value: "4", tone: "slate" }
+          ].map((item) =>
+            <div className="rounded-xl bg-slate-50 p-4" key={item.label}>
+              <p className="text-xs text-slate-500">{item.label}</p>
+              <p className="mt-1 font-display text-3xl text-slate-950">{item.value}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
 function LecturerAttendance() { const courseMap: Record<string,string[]>={"Electrical Engineering N1–N6":["Engineering Science","Mathematics N2","Electrical Trade Theory","Logic Systems"],"Information Technology":["Networking","Database Fundamentals","Technical Support"]}; const [course,setCourse]=useState(lecturerCourses[0]); const subjects=courseMap[course]||[]; const [subject,setSubject]=useState(subjects[0]); const [present,setPresent]=useState<Record<string,boolean>>({s1:true,s2:true,s3:true,s4:false,s5:true}); useEffect(()=>setSubject(subjects[0]),[course]); const students=lecturerStudentRows.filter((st)=>st.course===course|| (course===lecturerCourses[0]&&st.id==="s1")); const trend=subjects.map((item,i)=>({item,value:78+((i+course.length)*7)%19})); return <><PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart." actions={<Button onClick={()=>toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Selected course" value={course===lecturerCourses[0]?"Electrical":"IT"} detail={`${subjects.length} subjects available`} icon={BookOpen}/><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green"/><MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp}/></div><div className="mt-6 portal-card"><div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">{lecturerCourses.map((item)=><button key={item} className={`filter-chip ${course===item?"active":""}`} onClick={()=>setCourse(item)}>{item}</button>)}</div><div className="mt-5 flex flex-wrap gap-2">{subjects.map((item)=><button key={item} className={`filter-chip ${subject===item?"active":""}`} onClick={()=>setSubject(item)}>{item}</button>)}</div></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3><div className="mt-5">{students.map((student)=><label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(e)=>setPresent((old)=>({...old,[student.id]:e.target.checked}))}/></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3><div className="mt-6 flex h-56 items-end gap-3">{trend.map(({item,value})=><div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}><span className="text-xs font-bold text-slate-700">{value}%</span><div className="w-full rounded-t-md bg-[#D4AF37]" style={{height:`${Math.max(28,value*1.7)}px`}}/><span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p></div></div></>; }
 function LecturerResults() {
@@ -3992,10 +4082,10 @@ function LecturerAnnouncements({ data, setData }: {
   return (
     <>
       <PageHeading eyebrow="Communication centre" title="Announcements & notifications" body="Review every teaching update and mark items as read once actioned."
-        actions={
-          <Button onClick={() => toast.success("Announcement composer opened.")}>
-            <Plus className="h-4 w-4" /> New announcement</Button>
-        }
+      // actions={
+      //   <Button onClick={() => toast.success("Announcement composer opened.")}>
+      //     <Plus className="h-4 w-4" /> New announcement</Button>
+      // }
       />
       <div className="portal-card">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -4069,7 +4159,7 @@ function LecturerSchedules({ data, setData }: {
             <label>Date<input name="date" className="field" type="date" required defaultValue={editing?.date || "2026-06-10"} /></label>
             <label>Time<input name="time" className="field" required defaultValue={editing?.time || "09:00 – 11:00"} /></label>
             <label>Location<input name="location" className="field" required defaultValue={editing?.location || "Workshop 2 · Wynberg"} /></label>
-            <div className="flex gap-3">
+            <div className="flex gap-3 mt-6">
               <Button type="submit">{editing ? "Save changes" : "Publish schedule"} <Check className="h-4 w-4" /></Button>
               {editing && <Button variant="light" onClick={() => setEditing(null)}>Cancel</Button>}
             </div>
@@ -4135,7 +4225,15 @@ function LecturerPortal({ data, setData, path, navigate }: {
                 ? <LecturerAnnouncements data={data} setData={setData} />
                 : <LecturerSchedules data={data} setData={setData} />;
 
-  return (<LecturerShell active={active} onNavigate={navigate} onSignOut={() => { localStorage.removeItem("nstc-lecturer-session"); setLoggedIn(false); }}>{content}</LecturerShell>);
+  return (
+    <LecturerShell active={active} onNavigate={navigate}
+      onSignOut={() => {
+        localStorage.removeItem("nstc-lecturer-session");
+        setLoggedIn(false);
+      }}>
+      {content}
+    </LecturerShell>
+  );
 }
 
 function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) { const [error,setError]=useState(""); const submit=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=new FormData(e.currentTarget);if(f.get("email")==="admin@nstc.example"&&f.get("password")==="admin2026"){localStorage.setItem("nstc-admin-session","active");onAuthenticated();}else setError("For the demo, use admin@nstc.example / admin2026.");}; return <div className="registration-page"><div className="registration-top"><Logo light/><a href="/" className="text-sm font-semibold text-white/60">Back to website</a></div><div className="registration-card max-w-[520px]"><p className="eyebrow">NSTC secure access</p><h1 className="mt-2 font-display text-4xl text-slate-950">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-slate-500">Manage learners, academics, finance and lecturer accounts.</p>{error&&<p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={submit} className="mt-7 space-y-5"><label>Email address<input className="field" name="email" type="email" required placeholder="admin@nstc.example"/></label><label>Password<input className="field" name="password" type="password" required/></label><Button type="submit" className="w-full justify-center">Continue to admin dashboard <ArrowRight className="h-4 w-4"/></Button></form><p className="mt-7 rounded-xl bg-slate-50 p-4 text-xs leading-5 text-slate-500">Demo credentials: <strong>admin@nstc.example / admin2026</strong></p><a href="/lecturer" className="mt-5 block text-center text-sm font-semibold text-slate-500">Lecturer login <ArrowRight className="ml-1 inline h-4 w-4"/></a></div></div>; }
@@ -4179,7 +4277,7 @@ function AdminDashboard({ data, setData, navigate }: {
         <MetricCard label="Owing" value={data.students.filter((s) => s.balance > 0).length} detail="Needs finance follow-up" icon={WalletCards} tone="red" />
         <MetricCard label="Alumni" value={counts.alumni} detail="In graduate network" icon={Award} />
       </div>
-      <div className="mt-6 grid gap-5 xl:grid-cols-[1.3fr_.7fr]">
+      <div className="mt-6 grid gap-5 xl:grid-cols-[1.3fr_.99fr]">
         <div className="portal-card">
           <div className="flex items-center justify-between">
             <div>

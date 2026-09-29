@@ -813,9 +813,9 @@ textarea.field {
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid #e4e5e7;
+  /* border: 1px solid #e4e5e7;
   border-radius: 9px;
-  padding: 12px;
+  padding: 12px; */
   font-size: 12px;
   font-weight: 600;
 }
@@ -852,6 +852,7 @@ textarea.field {
 
 .portal-sidebar {
   position: fixed;
+  /* overflow-y: auto; */
   inset: 0 auto 0 0;
   z-index: 30;
   display: flex;
