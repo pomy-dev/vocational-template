@@ -3588,11 +3588,13 @@ function LecturerAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   );
 }
 
-function LecturerShell({ children, active, onNavigate, onSignOut }: {
+function unreadNotificationCount(data: AppData) { return data.lecturerNotifications.filter((item) => !item.read).length; }
+function LecturerShell({ children, active, onNavigate, onSignOut, data }: {
   children: ReactNode;
   active: string;
   onNavigate: (path: string) => void;
-  onSignOut: () => void
+  onSignOut: () => void;
+  data: AppData
 }) {
   const [open, setOpen] = useState(false);
   const items = [
@@ -3602,7 +3604,8 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
     { label: "Attendance", icon: ClipboardCheck, path: "/lecturer/attendance" },
     { label: "Student results", icon: BarChart3, path: "/lecturer/results" },
     { label: "Submissions", icon: Upload, path: "/lecturer/submissions" },
-    { label: "Schedules", icon: CalendarDays, path: "/lecturer/schedules" }
+    { label: "Schedules", icon: CalendarDays, path: "/lecturer/schedules" },
+    { label: "Complaints", icon: MessageCircle, path: "/lecturer/complaints" }
   ];
 
   return (
@@ -3643,8 +3646,9 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
 
             <button className="notification-badge" onClick={() => { onNavigate("/lecturer/announcements"); setOpen(false); }}>
               <MessageCircle className="h-4 w-4" />
-              <span>3</span>
+              <span>{unreadNotificationCount(data)}</span>
             </button>
+            <button className="icon-btn border border-[#D4AF37] text-[#916e0a]" title="Push a complaint" onClick={() => { onNavigate("/lecturer/complaints"); setOpen(false); }}><Plus className="h-4 w-4" /></button>
 
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold text-slate-950">Siyabonga Radebe</p>
@@ -3662,11 +3666,11 @@ function LecturerShell({ children, active, onNavigate, onSignOut }: {
 const lecturerSubjects = ["Engineering Science", "Mathematics N2", "Electrical Trade Theory", "Logic Systems"];
 const lecturerCourses = ["Electrical Engineering N1–N6", "Information Technology"];
 const lecturerStudentRows = [
-  { id: "s1", name: "Thabo Mokoena", email: "thabo.mokoena@example.com", phone: "+27 71 234 8821", course: "Electrical Engineering N1–N6", subject: "Engineering Science", status: "Active", attendance: 78, kin: "Lerato Mokoena · +27 71 333 0198" },
-  { id: "s2", name: "Naledi Dlamini", email: "naledi.dlamini@example.com", phone: "+27 82 441 6072", course: "Business Management N4–N6", subject: "Financial Accounting", status: "Active", attendance: 60, kin: "Mandla Dlamini · +27 82 111 8034" },
-  { id: "s3", name: "Kagiso Ndlovu", email: "kagiso.ndlovu@example.com", phone: "+27 79 884 1260", course: "Occupational Certificate: Bricklayer", subject: "Practical Skills", status: "Active", attendance: 45, kin: "Mpho Ndlovu · +27 79 711 4021" },
-  { id: "s4", name: "Ayanda Khumalo", email: "ayanda.khumalo@example.com", phone: "+27 76 510 4318", course: "Health & Safety Officer", subject: "Risk Assessment", status: "Active", attendance: 95, kin: "Sibusiso Khumalo · +27 76 222 2401" },
-  { id: "s5", name: "Bongani Maseko", email: "bongani.maseko@example.com", phone: "+27 73 119 5524", course: "Information Technology", subject: "Networking", status: "Suspended", attendance: 90, kin: "Zanele Maseko · +27 73 110 0022" }
+  { id: "s1", avatarUrl: "/assets/students-in-grad.jpg", campus: "Wynberg Johannesburg", startDate: "2026-02-03", attendance: 91, termAverage: 78, allSubjects: ["Engineering Science", "Electrical Trade Theory", "Mathematics N2"], name: "Thabo Mokoena", email: "thabo.mokoena@example.com", phone: "+27 71 234 8821", course: "Electrical Engineering N1–N6", subject: "Engineering Science", status: "Active", kin: "Lerato Mokoena · +27 71 333 0198" },
+  { id: "s2", avatarUrl: "/assets/students-in-grad.jpg", campus: "Wynberg Johannesburg", startDate: "2026-02-03", attendance: 88, termAverage: 82, allSubjects: ["Financial Accounting", "Business Management", "Mathematics N4"], name: "Naledi Dlamini", email: "naledi.dlamini@example.com", phone: "+27 82 441 6072", course: "Business Management N4–N6", subject: "Financial Accounting", status: "Active", kin: "Mandla Dlamini · +27 82 111 8034" },
+  { id: "s3", avatarUrl: "/assets/students-in-grad.jpg", campus: "Wynberg Johannesburg", startDate: "2026-02-03", attendance: 84, termAverage: 71, allSubjects: ["Practical Skills", "Health & Safety", "Trade Theory"], name: "Kagiso Ndlovu", email: "kagiso.ndlovu@example.com", phone: "+27 79 884 1260", course: "Occupational Certificate: Bricklayer", subject: "Practical Skills", status: "Active", kin: "Mpho Ndlovu · +27 79 711 4021" },
+  { id: "s4", avatarUrl: "/assets/students-in-grad.jpg", campus: "Wynberg Johannesburg", startDate: "2026-02-03", attendance: 76, termAverage: 69, allSubjects: ["Risk Assessment", "Occupational Health", "Compliance"], name: "Ayanda Khumalo", email: "ayanda.khumalo@example.com", phone: "+27 76 510 4318", course: "Health & Safety Officer", subject: "Risk Assessment", status: "Active", kin: "Sibusiso Khumalo · +27 76 222 2401" },
+  { id: "s5", avatarUrl: "/assets/students-in-grad.jpg", campus: "Wynberg Johannesburg", startDate: "2026-02-03", attendance: 73, termAverage: 64, allSubjects: ["Networking", "Database Fundamentals", "Technical Support"], name: "Bongani Maseko", email: "bongani.maseko@example.com", phone: "+27 73 119 5524", course: "Information Technology", subject: "Networking", status: "Suspended", kin: "Zanele Maseko · +27 73 110 0022" }
 ];
 
 function LecturerOverview({ data, onNavigate }: {
@@ -3774,85 +3778,10 @@ function LecturerOverview({ data, onNavigate }: {
 }
 
 function LecturerStudents() {
-  const [course, setCourse] = useState("All courses");
-  const [subject, setSubject] = useState("All subjects");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const filtered = lecturerStudentRows.filter(
-    (student) => (course === "All courses" || student.course === course)
-      && (subject === "All subjects" || student.subject === subject)
-      && `${student.name} ${student.email} ${student.course}`.toLowerCase().includes(search.toLowerCase())
-  );
-  const pageRows = filtered.slice((page - 1) * 10, page * 10);
-  return (
-    <>
-      <PageHeading eyebrow="Learner directory" title="Students" body="Filter your assigned learners by course and subject, then reach the right person quickly." />
-      <div className="portal-card">
-        <div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]">
-          <select className="field mt-0" value={course} onChange={(event) => { setCourse(event.target.value); setPage(1); }}>
-            <option>All courses</option>
-            {lecturerCourses.map((item) =>
-              <option key={item}>{item}</option>
-            )}
-          </select>
-          <select className="field mt-0" value={subject} onChange={(event) => { setSubject(event.target.value); setPage(1); }}>
-            <option>All subjects</option>
-            {lecturerSubjects.map((item) => <option key={item}>{item}</option>)}
-          </select>
-          <label className="relative">
-            <Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400" />
-            <input className="field mt-0 pl-10" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search name, email or course" />
-          </label>
-        </div>
-        <div className="mt-6 overflow-x-auto">
-          <table className="data-table lecturer-table">
-            <thead>
-              <tr>
-                <th>Full name & contacts</th>
-                <th>Course</th>
-                <th>Subject</th>
-                <th>Status</th>
-                <th>Next of kin</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pageRows.map((student) =>
-                <tr key={student.id}>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar-small">{initials(student.name)}</div>
-                      <div>
-                        <p className="font-semibold text-slate-950">{student.name}</p>
-                        <p className="mt-1 text-xs text-slate-500">{student.email}<br />{student.phone}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{student.course}</td>
-                  <td>
-                    <button className="text-left font-semibold text-slate-700" onClick={() => toast.info(`${student.subject} selected for ${student.name}.`)}>{student.subject} <ChevronDown className="ml-1 inline h-3 w-3" /></button>
-                  </td>
-                  <td>
-                    <Pill tone={student.status === "Suspended" ? "red" : "green"}>{student.status}</Pill>
-                  </td>
-                  <td>{student.kin}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          {!pageRows.length && <div className="empty-state"><Users /><h3>No matching students</h3><p>Try a different course, subject or search term.</p></div>}
-        </div>
-
-        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-500">
-          <span>Showing {pageRows.length} of {filtered.length} records · 10 per page</span>
-          <div className="flex gap-2">
-            <button className="filter-chip" disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Previous</button>
-            <button className="filter-chip" disabled={page * 10 >= filtered.length} onClick={() => setPage((value) => value + 1)}>Next</button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+  const [course, setCourse] = useState("All courses"); const [subject, setSubject] = useState("All subjects"); const [search, setSearch] = useState(""); const [page, setPage] = useState(1); const [profile, setProfile] = useState<typeof lecturerStudentRows[number] | null>(null); const [subjectsOpen, setSubjectsOpen] = useState<string | null>(null);
+  const filtered = lecturerStudentRows.filter((student) => (course === "All courses" || student.course === course) && (subject === "All subjects" || student.allSubjects.includes(subject)) && `${student.name} ${student.email} ${student.course}`.toLowerCase().includes(search.toLowerCase())); const pageRows = filtered.slice((page - 1) * 10, page * 10);
+  const courseAssignments = (courseName: string) => { const total = courseName === "Electrical Engineering N1–N6" ? 3 : 2; const written = courseName === "Electrical Engineering N1–N6" ? 2 : 1; return `${written}/${total}`; };
+  return <><PageHeading eyebrow="Learner directory" title="Students" body="Filter assigned learners, inspect every subject and open the same academic profile used by administration." /><div className="portal-card"><div className="grid gap-3 md:grid-cols-[1fr_1fr_1.4fr]"><select className="field mt-0" value={course} onChange={(e)=>{setCourse(e.target.value);setPage(1)}}><option>All courses</option>{lecturerCourses.map((item)=><option key={item}>{item}</option>)}</select><select className="field mt-0" value={subject} onChange={(e)=>{setSubject(e.target.value);setPage(1)}}><option>All subjects</option>{Array.from(new Set(lecturerStudentRows.flatMap((student)=>student.allSubjects))).map((item)=><option key={item}>{item}</option>)}</select><label className="relative"><Search className="absolute left-3 top-[21px] h-4 w-4 text-slate-400"/><input className="field mt-0 pl-10" value={search} onChange={(e)=>{setSearch(e.target.value);setPage(1)}} placeholder="Search name, email or course"/></label></div><div className="mt-6 overflow-x-auto"><table className="data-table lecturer-table"><thead><tr><th>Full name & contacts</th><th>Course</th><th>Subject</th><th>Profile</th><th>Status</th><th>Next of kin</th></tr></thead><tbody>{pageRows.map((student)=><tr key={student.id}><td><div className="flex items-center gap-3"><div className="avatar-small">{initials(student.name)}</div><div><p className="font-semibold text-slate-950">{student.name}</p><p className="mt-1 text-xs text-slate-500">{student.email}<br/>{student.phone}</p></div></div></td><td><p>{student.course}</p><p className="mt-1 text-xs font-semibold text-[#916e0a]">Assignments written: {courseAssignments(student.course)}</p></td><td><div className="relative"><button className="filter-chip" onClick={()=>setSubjectsOpen(subjectsOpen===student.id?null:student.id)}>{student.subject} <ChevronDown className="ml-1 inline h-3 w-3"/></button>{subjectsOpen===student.id&&<div className="absolute left-0 top-10 z-20 min-w-[220px] rounded-xl border border-slate-200 bg-white p-3 shadow-xl"><p className="text-xs font-bold uppercase tracking-wider text-slate-400">All subjects</p><div className="mt-2 space-y-1">{student.allSubjects.map((item)=><button className="block w-full rounded-lg px-2 py-1 text-left text-sm hover:bg-slate-50" key={item} onClick={()=>{setSubject(item);setSubjectsOpen(null)}}>{item}</button>)}</div></div>}</div></td><td><button className="filter-chip" onClick={()=>setProfile(student)}><ExternalLink className="mr-1 inline h-3.5 w-3.5"/>View profile</button></td><td><Pill tone={student.status==="Suspended"?"red":"green"}>{student.status}</Pill></td><td>{student.kin}</td></tr>)}</tbody></table>{!pageRows.length&&<div className="empty-state"><Users/><h3>No matching students</h3><p>Try a different course, subject or search term.</p></div>}</div><div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-500"><span>Showing {pageRows.length} of {filtered.length} records · 10 per page</span><div className="flex gap-2"><button className="filter-chip" disabled={page===1} onClick={()=>setPage((v)=>Math.max(1,v-1))}>Previous</button><button className="filter-chip" disabled={page*10>=filtered.length} onClick={()=>setPage((v)=>v+1)}>Next</button></div></div></div>{profile&&<Modal title={`${profile.name} · Student profile`} onClose={()=>setProfile(null)}><div className="mt-5 grid gap-5 md:grid-cols-[110px_1fr]"><img src={profile.avatarUrl} alt={`${profile.name} avatar`} className="h-28 w-28 rounded-2xl object-cover"/><div><h3 className="font-display text-2xl text-slate-950">{profile.name}</h3><p className="mt-1 text-sm text-slate-500">{profile.id.toUpperCase()} · {profile.status}</p><div className="mt-4 grid gap-3 sm:grid-cols-2"><p className="text-sm"><span className="block text-xs text-slate-400">Email</span><strong>{profile.email}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Phone</span><strong>{profile.phone}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Campus</span><strong>{profile.campus}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Start date</span><strong>{profile.startDate}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Attendance</span><strong>{profile.attendance}%</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">CA average</span><strong>{profile.termAverage}%</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Next of kin</span><strong>{profile.kin}</strong></p></div></div></div><div className="mt-6 grid gap-4 sm:grid-cols-2"><div className="rounded-xl bg-slate-50 p-4"><p className="eyebrow">Course & subjects</p><p className="mt-2 font-semibold text-slate-950">{profile.course}</p><div className="mt-3 flex flex-wrap gap-2">{profile.allSubjects.map((item)=><Pill key={item}>{item}</Pill>)}</div></div><div className="rounded-xl bg-slate-50 p-4"><p className="eyebrow">Assignments written</p><div className="mt-3 space-y-3">{lecturerCourses.map((item)=><div key={item}><div className="flex justify-between text-sm"><span className="font-semibold">{item}</span><strong>{courseAssignments(item)}</strong></div><ProgressBar value={item===profile.course?67:50}/></div>)}</div></div></div><div className="mt-5 flex justify-end"><Button onClick={()=>setProfile(null)}>Close</Button></div></Modal>}</>;
 }
 
 function LecturerResources({ data, setData }: {
@@ -3922,6 +3851,7 @@ function LecturerResources({ data, setData }: {
   const createAssignment = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const f = new FormData(event.currentTarget);
+    const document = f.get("document");
     const assignment: Assignment = {
       id: crypto.randomUUID(),
       title: String(f.get("title") || "New assignment"),
@@ -3930,6 +3860,8 @@ function LecturerResources({ data, setData }: {
       due: String(f.get("due") || "2026-06-30"),
       status: "Published",
       instructions: String(f.get("instructions") || ""),
+      documentName: document instanceof File && document.name ? document.name : undefined,
+      documentType: document instanceof File && document.name ? document.type || "application/octet-stream" : undefined,
       createdAt: "2026-06-08"
     };
     setMockAssignments((old) => [assignment, ...old]);
@@ -4046,7 +3978,7 @@ function LecturerResources({ data, setData }: {
                 </select>
               </label>
               <label>Due date<input name="due" className="field" type="date" required /></label>
-              <label>Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label>
+              <label>Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label><label>Assignment document<span className="mt-1 block text-xs text-slate-400">Upload the brief or assessment document.</span><input name="document" className="field" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" /></label>
               <div className="flex justify-end gap-3 md:col-span-2">
                 <Button variant="light" type="button" onClick={() => setSheet(false)}>Cancel</Button>
                 <Button type="submit"><Check className="h-4 w-4" /> Publish assignment</Button>
@@ -4317,6 +4249,11 @@ function LecturerSubmissions() {
   );
 }
 
+function LecturerComplaints({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
+  const [compose,setCompose]=useState(false); const [selected,setSelected]=useState<Complaint|null>(null); const complaints=data.complaints.filter((c)=>c.source==="Lecturer" && !c.deleted);
+  const submit=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();const f=new FormData(event.currentTarget);setData((old)=>({...old,complaints:[{id:crypto.randomUUID(),source:"Lecturer",subject:String(f.get("subject")||"Lecturer complaint"),category:"Lecturer complaint",message:String(f.get("message")||""),status:"Open",date:new Date().toISOString().slice(0,10),time:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}),name:"Siyabonga Radebe",email:"lecturer@nstc.example",phone:"+27 71 000 0000"},...old.complaints]}));setCompose(false);toast.success("Complaint pushed to the admin complaints queue.");};
+  return <><PageHeading eyebrow="Staff support channel" title="My complaints" body="Push a complaint to administration and track whether it has been addressed or acted upon." actions={<Button onClick={()=>setCompose(true)}><Plus className="h-4 w-4"/> Push complaint</Button>}/><div className="portal-card"><p className="eyebrow">Complaint tracking</p><div className="mt-5 space-y-3">{complaints.map((c)=><button key={c.id} className="list-row w-full text-left" onClick={()=>setSelected(c)}><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-slate-950">{c.subject}</p><Pill tone={c.status==="Resolved"?"green":c.status==="Acted upon"?"gold":"slate"}>{c.status}</Pill></div><p className="mt-1 truncate text-sm text-slate-600">{c.message}</p><p className="mt-1 text-xs text-slate-400">{c.date} · {c.time||"Time not recorded"}{c.reply?` · Reply from ${c.repliedBy||"Admin"}`:" · Awaiting admin action"}</p></div><ArrowRight className="shrink-0 text-slate-400"/></button>)}{!complaints.length&&<div className="empty-state"><MessageCircle/><h3>No lecturer complaints yet</h3><p>Use Push complaint to send a concern to the admin team.</p></div>}</div></div>{compose&&<Modal title="Push a lecturer complaint" onClose={()=>setCompose(false)}><form onSubmit={submit} className="mt-5 space-y-4"><label>Subject<input className="field" name="subject" required placeholder="Short complaint title"/></label><label>Details<textarea className="field min-h-[150px] py-3" name="message" required placeholder="Describe the issue, impact and requested action."/></label><div className="flex justify-end gap-3"><Button variant="light" type="button" onClick={()=>setCompose(false)}>Cancel</Button><Button type="submit">Push complaint <ArrowRight className="h-4 w-4"/></Button></div></form></Modal>}{selected&&<Modal title={`Complaint · ${selected.subject}`} onClose={()=>setSelected(null)}><div className="mt-5 grid gap-4 sm:grid-cols-2"><p className="text-sm"><span className="block text-xs text-slate-400">Status</span><Pill tone={selected.status==="Resolved"?"green":"gold"}>{selected.status}</Pill></p><p className="text-sm"><span className="block text-xs text-slate-400">Submitted</span><strong>{selected.date} · {selected.time}</strong></p></div><div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{selected.message}</div>{selected.reply&&<div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4"><p className="text-xs font-bold uppercase tracking-wider text-emerald-700">Response · {selected.repliedBy}</p><p className="mt-2 text-sm leading-6 text-emerald-900">{selected.reply}</p></div>}<div className="mt-5 flex justify-end gap-3">{(selected.status==="Resolved"||selected.status==="Acted upon")&&<Button variant="light" onClick={()=>{setData((old)=>({...old,complaints:old.complaints.map((c)=>c.id===selected.id?{...c,deleted:true}:c)}));setSelected(null);toast.success("Addressed complaint archived from your tracking list.");}}>Delete / archive</Button>}<Button onClick={()=>setSelected(null)}>Close</Button></div></Modal>}</>;
+}
 function LecturerAnnouncements({ data, setData }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>
@@ -4453,7 +4390,7 @@ function LecturerPortal({ data, setData, path, navigate }: {
 
   const active = path === "/lecturer"
     ? "/lecturer"
-    : ["students", "resources", "attendance", "results", "submissions", "announcements", "schedules"].map((item) => `/lecturer/${item}`).find((item) => path.startsWith(item)) || "/lecturer";
+    : ["students", "resources", "attendance", "results", "submissions", "announcements", "schedules", "complaints"].map((item) => `/lecturer/${item}`).find((item) => path.startsWith(item)) || "/lecturer";
 
   const content = active === "/lecturer"
     ? <LecturerOverview data={data} onNavigate={navigate} />
@@ -4469,10 +4406,12 @@ function LecturerPortal({ data, setData, path, navigate }: {
               ? <LecturerSubmissions />
               : active === "/lecturer/announcements"
                 ? <LecturerAnnouncements data={data} setData={setData} />
-                : <LecturerSchedules data={data} setData={setData} />;
+                : active === "/lecturer/complaints"
+                  ? <LecturerComplaints data={data} setData={setData} />
+                  : <LecturerSchedules data={data} setData={setData} />;
 
   return (
-    <LecturerShell active={active} onNavigate={navigate}
+    <LecturerShell active={active} data={data} onNavigate={navigate}
       onSignOut={() => {
         localStorage.removeItem("nstc-lecturer-session");
         setLoggedIn(false);
@@ -4732,79 +4671,9 @@ function AdminLecturers({ data, setData, navigate }: { data: AppData; setData: R
     </PortalShell>
   );
 }
-
-function AdminComplaints({ data, navigate }: { data: AppData; navigate: (path: string) => void }) {
-  const [status, setStatus] = useState("All statuses");
-  const [selected, setSelected] = useState<Complaint | null>(null);
-  const list = data.complaints.filter((c) => (status === "All statuses" || c.status === status));
-
-  return (
-    <PortalShell role="Admin" active="/admin/complaints" onNavigate={navigate}>
-      <PageHeading eyebrow="Student success desk" title="Complaints submitted" body="Review submitted complaints and support requests, including anonymous reports." />
-      <div className="portal-card">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="eyebrow">Case queue</p>
-            <h3 className="mt-2 font-display text-2xl text-slate-950">{list.length} submitted cases</h3>
-          </div>
-          <select className="field mt-0 max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option>All statuses</option>
-            {Array.from(new Set(data.complaints.map((c) => c.status))).map((v) => <option key={v}>{v}</option>)}
-          </select>
-        </div>
-        <div className="mt-6 space-y-3">
-          {list.map((c) =>
-            <button className="list-row w-full text-left" key={c.id} onClick={() => setSelected(c)}>
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-semibold text-slate-950">{c.subject}</p>
-                  <Pill tone={c.status === "Open" ? "gold" : c.status === "Resolved" ? "green" : "slate"}>{c.status}</Pill>
-                </div>
-                <p className="mt-1 truncate text-sm text-slate-600">{c.message}</p>
-                <p className="mt-1 text-xs text-slate-400">{c.date} · {c.time || "Time not recorded"} · {c.anonymous ? "Anonymous" : c.name || "Name not recorded"}</p>
-              </div>
-              <ArrowRight className="shrink-0 text-slate-400" />
-            </button>
-          )}
-          {!list.length &&
-            <div className="empty-state">
-              <MessageCircle /><h3>No complaints submitted</h3>
-              <p>New complaints will appear here when students submit support requests.</p>
-            </div>
-          }
-        </div>
-      </div>
-      {selected &&
-        <Modal title={`Complaint · ${selected.subject}`} onClose={() => setSelected(null)}>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <p className="text-sm">
-              <span className="block text-xs text-slate-400">Submitted</span>
-              <strong>{selected.date} · {selected.time || "Time not recorded"}</strong>
-            </p>
-            <p className="text-sm">
-              <span className="block text-xs text-slate-400">Status</span>
-              <Pill tone={selected.status === "Open" ? "gold" : "green"}>{selected.status}</Pill>
-            </p>
-            <p className="text-sm">
-              <span className="block text-xs text-slate-400">Name</span>
-              <strong>{selected.anonymous ? "Anonymous" : selected.name || "Not recorded"}</strong>
-            </p>
-            <p className="text-sm">
-              <span className="block text-xs text-slate-400">Email / phone</span>
-              <strong>{selected.anonymous ? "Withheld" : [selected.email, selected.phone].filter(Boolean).join(" · ") || "Not recorded"}</strong>
-            </p>
-          </div>
-          <div className="mt-5 rounded-xl bg-slate-50 p-4">
-            <p className="eyebrow">Complaint</p>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">{selected.message}</p>
-          </div>
-          <div className="mt-5 flex justify-end">
-            <Button onClick={() => setSelected(null)}>Close</Button>
-          </div>
-        </Modal>
-      }
-    </PortalShell>
-  );
+function AdminComplaints({ data, setData, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; navigate: (path: string) => void }) {
+  const [status,setStatus]=useState("All statuses"); const [selected,setSelected]=useState<Complaint|null>(null); const list=data.complaints.filter((c)=>(status==="All statuses"||c.status===status)&&!c.deleted); const saveReply=(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();if(!selected)return;const f=new FormData(event.currentTarget);const nextStatus=String(f.get("status")||"Acted upon");const reply=String(f.get("reply")||"");setData((old)=>({...old,complaints:old.complaints.map((c)=>c.id===selected.id?{...c,status:nextStatus,reply,repliedBy:"Admin · Nomsa Dlamini",repliedAt:new Date().toISOString()}:c)}));setSelected({...selected,status:nextStatus,reply,repliedBy:"Admin · Nomsa Dlamini"});toast.success("Complaint response saved.");};
+  return <PortalShell role="Admin" active="/admin/complaints" onNavigate={navigate}><PageHeading eyebrow="Student success desk" title="Complaints submitted" body="Review complaints, reply to the submitter and record the action taken."/><div className="portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Case queue</p><h3 className="mt-2 font-display text-2xl text-slate-950">{list.length} submitted cases</h3></div><select className="field mt-0 max-w-xs" value={status} onChange={(e)=>setStatus(e.target.value)}><option>All statuses</option>{["Open","Investigating","Acted upon","Resolved"].map((v)=><option key={v}>{v}</option>)}</select></div><div className="mt-6 space-y-3">{list.map((c)=><button className="list-row w-full text-left" key={c.id} onClick={()=>setSelected(c)}><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-slate-950">{c.subject}</p><Pill tone={c.status==="Resolved"?"green":c.status==="Acted upon"?"gold":"slate"}>{c.status}</Pill></div><p className="mt-1 truncate text-sm text-slate-600">{c.message}</p><p className="mt-1 text-xs text-slate-400">{c.date} · {c.time||"Time not recorded"} · {c.source||"Student"}{c.repliedBy?` · Reply by ${c.repliedBy}`:" · No response yet"}</p></div><ArrowRight className="shrink-0 text-slate-400"/></button>)}{!list.length&&<div className="empty-state"><MessageCircle/><h3>No complaints submitted</h3><p>New complaints will appear here when students or lecturers submit support requests.</p></div>}</div></div>{selected&&<Modal title={`Respond · ${selected.subject}`} onClose={()=>setSelected(null)}><div className="mt-5 rounded-xl bg-slate-50 p-4"><p className="eyebrow">Original complaint</p><p className="mt-2 text-sm leading-6 text-slate-700">{selected.message}</p><p className="mt-3 text-xs text-slate-400">{selected.anonymous?"Anonymous":selected.name||"Name not recorded"} · {selected.email||selected.phone||"Contact withheld"}</p></div><form onSubmit={saveReply} className="mt-5 space-y-4"><label>Update status<select className="field" name="status" defaultValue={selected.status}><option>Open</option><option>Investigating</option><option>Acted upon</option><option>Resolved</option></select></label><label>Reply<textarea className="field min-h-[130px] py-3" name="reply" required defaultValue={selected.reply||""} placeholder="Write the response and action taken."/></label><p className="text-xs text-slate-500">The response will show as <strong>Admin · Nomsa Dlamini</strong> in the lecturer tracking view.</p><div className="flex justify-end gap-3"><Button variant="light" type="button" onClick={()=>setSelected(null)}>Cancel</Button><Button type="submit">Save reply & status <Check className="h-4 w-4"/></Button></div></form></Modal>}</PortalShell>;
 }
 
 function AdminPortal({ data, setData, path, navigate }: {
@@ -4818,7 +4687,7 @@ function AdminPortal({ data, setData, path, navigate }: {
   if (path === "/admin/students") return <AdminStudents data={data} setData={setData} navigate={navigate} />;
   // if (path === "/admin/academics") return <AdminAcademics data={data} setData={setData} navigate={navigate} />;
   if (path === "/admin/attendance") return <AdminAttendance data={data} navigate={navigate} />;
-  if (path === "/admin/complaints") return <AdminComplaints data={data} navigate={navigate} />;
+  if (path === "/admin/complaints") return <AdminComplaints data={data} setData={setData} navigate={navigate} />;
   if (path === "/admin/finance") return <AdminFinance data={data} navigate={navigate} />;
 
   return <AdminDashboard data={data} setData={setData} navigate={navigate} />;
