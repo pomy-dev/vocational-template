@@ -890,7 +890,11 @@ export const seedData: AppData = {
     { id: "ap3", title: "IT Support Intern", employer: "CivicTech South Africa", location: "Hybrid · Gauteng", type: "Internship · 12 months", closing: "24 Jul 2026", description: "Support internal users, document systems and build real-world technical confidence." }
   ],
 
-  complaints: [],
+  complaints: [
+    { id: "cmp1", subject: "Workshop access concern", category: "Complaint", message: "The practical workshop was locked during the scheduled session.", status: "Open", date: "2026-06-08", time: "09:15", name: "Thabo Mokoena", email: "thabo.mokoena@example.com", phone: "+27 71 234 8821" },
+    { id: "cmp2", subject: "Anonymous finance concern", category: "Finance support", message: "I need clarification on a payment allocation and prefer not to disclose my identity.", status: "Investigating", date: "2026-06-07", time: "14:40", anonymous: true },
+    { id: "cmp3", subject: "Certificate collection query", category: "Query", message: "Please confirm when the completed certificate will be available for collection.", status: "Resolved", date: "2026-06-05", time: "11:05", name: "Kagiso Ndlovu", email: "kagiso.ndlovu@example.com", phone: "+27 79 884 1260" }
+  ],
   resources: [
     { id: "res1", title: "Electrical installation rules", course: "Electrical Engineering N1–N6", subject: "Engineering Science", fileType: "PDF", published: true, uploaded: "2026-06-02" },
     { id: "res2", title: "Workshop safety checklist", course: "Electrical Engineering N1–N6", subject: "Electrical Trade Theory", fileType: "PDF", published: true, uploaded: "2026-05-28" },

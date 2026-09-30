@@ -2394,3 +2394,15 @@ textarea.field {
     padding: 22px 18px;
   }
 }
+.employee-card {
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 1rem;
+  background: #fff;
+  padding: 1rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.045);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.employee-card:hover { border-color: rgba(212, 175, 55, 0.55); box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08); transform: translateY(-1px); }
+.employee-card summary::-webkit-details-marker { display: none; }
+.employee-card summary::after { content: "+"; color: #916e0a; font-size: 1.25rem; line-height: 1; }
+.employee-card[open] summary::after { content: "–"; }

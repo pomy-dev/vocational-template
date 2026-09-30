@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { FormEvent, ReactNode } from "react";
+import type { ChangeEvent, FormEvent, ReactNode } from "react";
 import { useLocation } from "wouter";
 import {
   ArrowRight, ArrowUpRight, Award, BarChart3, BookOpen, BriefcaseBusiness, Building2, CalendarDays,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { MapView } from "./components/Map";
-import { Icon, Course, AppData, ApplicationDraft, ApprenticeshipPost, Schedule, Assignment, Student, RegistrationProgramme, LecturerRecord } from "./lib/types";
+import { Icon, Course, AppData, ApplicationDraft, ApprenticeshipPost, Schedule, Assignment, Student, RegistrationProgramme, LecturerRecord, Complaint } from "./lib/types";
 import { fee } from "./const";
 import { initials } from "./const";
 import {
@@ -29,6 +29,7 @@ import {
 } from "./lib/data";
 
 import PaystackPop from '@paystack/inline-js'
+import * as XLSX from 'xlsx'
 
 // ============================ Static Images =============================== //
 import StudentGrad from "/assets/students-in-grad.jpg";
@@ -1652,7 +1653,11 @@ function StudentSupport({ data, setData }: {
         message: String(f.get("message") || ""),
         evidence: evidenceFile instanceof File && evidenceFile.name ? evidenceFile.name : "",
         status: "Open",
-        date: new Date().toISOString().slice(0, 10)
+        date: new Date().toISOString().slice(0, 10),
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        name: "Thabo Mokoena",
+        email: "thabo.mokoena@example.com",
+        phone: "+27 71 234 8821"
       }]
     }));
 
@@ -1802,6 +1807,7 @@ function PortalShell({ children, active, onNavigate, role = "Student" }: {
       { label: "Lecturers", icon: UserRound, path: "/admin/lecturers" },
       // { label: "Academics", icon: BookOpen, path: "/admin/academics" },
       { label: "Attendance", icon: ClipboardCheck, path: "/admin/attendance" },
+      { label: "Complaints", icon: MessageCircle, path: "/admin/complaints" },
       { label: "Finance", icon: WalletCards, path: "/admin/finance" }
     ];
 
@@ -3667,6 +3673,8 @@ function LecturerOverview({ data, onNavigate }: {
   data: AppData; onNavigate: (path: string) => void
 }) {
   const unread = data.lecturerNotifications.filter((item) => !item.read);
+  const assignedStudents = lecturerStudentRows.filter((student) => lecturerCourses.includes(student.course));
+  const assignedAttendance = assignedStudents.length ? Math.round(assignedStudents.reduce((sum, student) => sum + (student.attendance || 0), 0) / assignedStudents.length) : 0;
   return (
     <>
       <PageHeading eyebrow="Monday, 08 June 2026" title="Good morning, Siyabonga." body="Your teaching workspace for classes, learners and assessments."
@@ -3677,7 +3685,8 @@ function LecturerOverview({ data, onNavigate }: {
       <div className="grid gap-4 sm:grid-cols-3">
         <MetricCard label="Courses + subjects" value="2 + 4" detail="Across your teaching load" icon={BookOpen} />
         <MetricCard label="Assignments created" value={data.assignments.length + 4} detail="2 awaiting review" icon={FileText} />
-        <MetricCard label="Total students" value="24" detail="5 require attention" icon={Users} tone="green" />
+        <MetricCard label="Total students" value={assignedStudents.length} detail={`${assignedStudents.filter((student) => student.status === "Suspended").length} require attention`} icon={Users} tone="green" />
+        <MetricCard label="My student attendance" value={`${assignedAttendance}%`} detail="Aggregated assigned classes" icon={ClipboardCheck} tone={assignedAttendance >= 80 ? "green" : "red"} />
       </div>
       <div className="mt-6 grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
         <div className="portal-card">
@@ -3751,7 +3760,7 @@ function LecturerOverview({ data, onNavigate }: {
           <Users /><div><strong>5</strong><small>students to follow up</small></div>
         </div>
         <div className="dark-mini-card">
-          <ClipboardCheck /><div><strong>94%</strong><small>aggregated attendance</small>
+          <ClipboardCheck /><div><strong>{assignedAttendance}%</strong><small>aggregated attendance</small>
           </div>
         </div>
 
@@ -4239,242 +4248,21 @@ function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
   );
 }
 
-function AdminLecturers({ data, setData, navigate }: {
-  data: AppData;
-  setData: React.Dispatch<React.SetStateAction<AppData>>;
-  navigate: (path: string) => void
-}) {
-
-  const blank: LecturerRecord = {
-    id: "", name: "", email: "", phone: "", employeeNo: "",
-    campus: "Middleburg", courses: [], subjects: [],
-    status: "Active", employeeType: "Permanent", profession: "",
-    bankAccount: ""
-  };
-
-  const [editing, setEditing] = useState<LecturerRecord | null>(null);
-  const [step, setStep] = useState(0);
-  const [notice, setNotice] = useState<LecturerRecord | null>(null);
-  const [temporaryPassword, setTemporaryPassword] = useState("");
-  const [query, setQuery] = useState("");
-  const [draft, setDraft] = useState<LecturerRecord>(blank);
-  const [courseSelections, setCourseSelections] = useState<string[]>([]);
-  const [subjectSelections, setSubjectSelections] = useState<string[]>([]);
-
-  const list = data.lecturers.filter((l) => `${l.name} ${l.email} ${l.employeeNo} ${l.profession || ""}`.toLowerCase().includes(query.toLowerCase()));
-  const selectedCourseObjects = courses.filter((c) => courseSelections.includes(c.name));
-  const availableSubjects = Array.from(new Set(selectedCourseObjects.flatMap((c) => c.subjects.map((sub) => sub.name))));
-  const openEditor = (record: LecturerRecord) => { setDraft(record); setCourseSelections(record.courses); setSubjectSelections(record.subjects); setStep(0); setEditing(record); };
-  const updateDraft = (key: keyof LecturerRecord, value: string) => setDraft((old) => ({ ...old, [key]: value }));
-
-  const save = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const f = new FormData(e.currentTarget)
-    const cvDoc = f.get("cv")
-    const password = `NSTC-${Math.random().toString(36).slice(2, 8).toUpperCase()}!`;
-    const next: LecturerRecord = {
-      ...draft, id: draft.id || crypto.randomUUID(),
-      courses: courseSelections,
-      cv: cvDoc instanceof File ? cvDoc : undefined,
-      subjects: subjectSelections,
-      temporaryPassword: password
-    };
-    setData((old) => ({
-      ...old,
-      lecturers: draft.id
-        ? old.lecturers.map((l) => l.id === draft.id ? next : l)
-        : [next, ...old.lecturers]
-    }));
-    setEditing(null);
-    setTemporaryPassword(password);
-    toast.success("Employee account created with a temporary password.");
-  };
-
-  const updateStatus = (status: LecturerRecord["status"]) => {
-    if (!notice) return;
-    const text = (document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value || "Status changed by the NSTC admin team.";
-    setData((old) => ({
-      ...old,
-      lecturers: old.lecturers.map((l) => l.id === notice.id ? { ...l, status, notice: text } : l)
-    }));
-    setNotice(null);
-    toast.success(`${status} notice drafted for ${notice.email}.`);
-  };
-
-  return (
-    <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}>
-      <PageHeading eyebrow="People & permissions" title="Manage employees" body="Create employee accounts, record particulars and assign teaching courses where applicable."
-        actions={
-          <Button onClick={() => openEditor(blank)}>
-            <Plus className="h-4 w-4" /> Create employee</Button>
-        }
-      />
-      <div className="portal-card">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-          <div>
-            <p className="eyebrow">Employee directory</p>
-            <h3 className="mt-2 font-display text-2xl text-slate-950">Staff accounts</h3>
-          </div>
-          <input className="field mt-0 max-w-sm" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, profession or employee no." />
-        </div>
-        <div className="mt-6 overflow-x-auto">
-          <table className="data-table admin-table">
-            <thead>
-              <tr>
-                <th>Employee</th>
-                <th>Profession</th>
-                <th>Type</th>
-                <th>Courses</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((l) =>
-                <tr key={l.id}>
-                  <td>
-                    <p className="font-semibold text-slate-950">{l.name}</p>
-                    <p className="text-xs text-slate-500">{l.employeeNo} · {l.email}<br />{l.phone}</p>
-                  </td>
-                  <td>{l.profession || "Not recorded"}</td>
-                  <td>{l.employeeType || "Permanent"}</td>
-                  <td>{l.courses.join(" · ") || "No teaching allocation"}</td>
-                  <td><Pill tone={l.status === "Active" ? "green" : "red"}>{l.status}</Pill></td>
-                  <td>
-                    <div className="flex flex-wrap gap-2">
-                      <button className="filter-chip" onClick={() => openEditor(l)}>Edit</button>
-                      <button className="filter-chip" onClick={() => setNotice(l)}>
-                        {l.status === "Active" ? "Disable / remove" : "Draft notice"}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      {editing &&
-        <Modal title={draft.id ? "Edit employee account" : "Create employee account"} onClose={() => setEditing(null)}>
-          <div className="mt-5 flex gap-2 border-b border-slate-100 pb-4">
-            {["Demographics", "Account", "Courses"].map((label, index) =>
-              <button key={label} className={`filter-chip ${step === index ? "active" : ""}`} onClick={() => setStep(index)}>
-                {index + 1}. {label}
-              </button>
-            )}
-          </div>
-          <form onSubmit={save} className="mt-5">
-            <div className={step === 0 ? "grid gap-4 md:grid-cols-2" : "hidden"}>
-              <label>Full name
-                <input className="field" required value={draft.name} onChange={(e) => updateDraft("name", e.target.value)} />
-              </label>
-              <label>Employee number
-                <input className="field" required value={draft.employeeNo} onChange={(e) => updateDraft("employeeNo", e.target.value)} />
-              </label>
-              <label>Profession
-                <input className="field" required value={draft.profession || ""} onChange={(e) => updateDraft("profession", e.target.value)} placeholder="e.g. Lecturer, Finance Officer" />
-              </label>
-              <label>CV Doc
-                <input type="file" name="cv" className="field" required />
-              </label>
-            </div>
-            <div className={step === 1 ? "grid gap-4 md:grid-cols-2" : "hidden"}>
-              <label>Email address
-                <input className="field" type="email" required value={draft.email} onChange={(e) => updateDraft("email", e.target.value)} />
-              </label>
-              <label>Phone
-                <input className="field" required value={draft.phone} onChange={(e) => updateDraft("phone", e.target.value)} />
-              </label>
-              <label>Bank account
-                <input className="field" value={draft.bankAccount || ""} onChange={(e) => updateDraft("bankAccount", e.target.value)} placeholder="Account number / payroll reference" />
-              </label>
-              <div>
-                <span className="field-label">Employment type</span>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {["Contract", "Permanent", "Part-time"].map((type) =>
-                    <button type="button" key={type} className={`filter-chip ${draft.employeeType === type ? "active" : ""}`} onClick={() => updateDraft("employeeType", type)}>
-                      {type}
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className={step === 2 ? "space-y-5" : "hidden"}>
-              <div>
-                <p className="field-label">Courses from the academic catalogue</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  {courses.map((course) =>
-                    <label className="check-option" key={course.id}>
-                      <input type="checkbox" checked={courseSelections.includes(course.name)} onChange={(e) =>
-                        setCourseSelections((old) => e.target.checked
-                          ? [...old, course.name]
-                          : old.filter((v) => v !== course.name))
-                      }
-                      />
-                      {course.name}
-                    </label>
-                  )}
-                </div>
-              </div>
-              <div>
-                <p className="field-label">Subjects corresponding to selected courses</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  {availableSubjects.map((subject) =>
-                    <label className="check-option" key={subject}>
-                      <input type="checkbox" checked={subjectSelections.includes(subject)} onChange={(e) => setSubjectSelections((old) => e.target.checked
-                        ? [...old, subject] : old.filter((v) => v !== subject))
-                      }
-                      />
-                      {subject}
-                    </label>
-                  )}
-                </div>
-                {!availableSubjects.length && <p className="mt-2 text-sm text-slate-500">Select at least one course to reveal its subjects.</p>}
-              </div>
-            </div>
-            <div className="mt-7 flex justify-between gap-3">
-              <Button variant="light" type="button" onClick={() => step === 0 ? setEditing(null) : setStep(step - 1)}>
-                {step === 0 ? "Cancel" : "Back"}
-              </Button>
-              {step === 2
-                ? <Button type={step >= 2 ? "submit" : "button"}><Check className="h-4 w-4" /> Create account</Button>
-                : <Button type="button" onClick={() => setStep(step + 1)}>Next <ArrowRight className="h-4 w-4" /></Button>
-              }
-            </div>
-          </form>
-        </Modal>
-      }
-      {temporaryPassword &&
-        <Modal title="Temporary password generated" onClose={() => setTemporaryPassword("")}>
-          <div className="mt-5 rounded-xl bg-slate-950 p-5 text-center">
-            <p className="text-xs uppercase tracking-wider text-white/50">Temporary password</p>
-            <p className="mt-3 font-mono text-2xl font-bold tracking-widest text-[#D4AF37]">
-              {temporaryPassword}
-            </p>
-          </div>
-          <p className="mt-5 text-sm leading-6 text-slate-600">Share this password securely with the employee. It must be reset when the account logs in for the first time.</p>
-          <div className="mt-5 flex justify-end">
-            <Button onClick={() => setTemporaryPassword("")}>Done</Button>
-          </div>
-        </Modal>
-      }
-      {notice &&
-        <Modal title={`Status notice · ${notice.name}`} onClose={() => setNotice(null)}>
-          <p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this employee. The notice will be addressed to
-            <strong>{notice.email}</strong> when connected to the email service.
-          </p>
-          <textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice || "Your account has been placed under review because..."} />
-          <div className="mt-5 flex flex-wrap justify-end gap-3">
-            <Button variant="light" onClick={() => setNotice(null)}>Cancel</Button>
-            <Button variant="light" onClick={() => updateStatus("Disabled")}>Disable</Button>
-            <Button onClick={() => updateStatus("Removed")}>Remove</Button>
-          </div>
-        </Modal>
-      }
-    </PortalShell>
-  );
+function AdminLecturers({ data, setData, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; navigate: (path: string) => void }) {
+  const blank: LecturerRecord = { id:"", name:"", email:"", phone:"", employeeNo:"", campus:"Middelburg", courses:[], subjects:[], status:"Active", employeeType:"Permanent", profession:"", bankAccount:"" };
+  const [editing,setEditing]=useState<LecturerRecord|null>(null); const [step,setStep]=useState(0); const [errors,setErrors]=useState<string[]>([]); const [notice,setNotice]=useState<LecturerRecord|null>(null); const [temporaryPassword,setTemporaryPassword]=useState(""); const [query,setQuery]=useState(""); const [draft,setDraft]=useState<LecturerRecord>(blank); const [courseSelections,setCourseSelections]=useState<string[]>([]); const [subjectSelections,setSubjectSelections]=useState<string[]>([]); const formRef=useRef<HTMLFormElement>(null);
+  const list=data.lecturers.filter((l)=>`${l.name} ${l.email} ${l.employeeNo} ${l.profession||""}`.toLowerCase().includes(query.toLowerCase())); const selectedCourseObjects=courses.filter((c)=>courseSelections.includes(c.name)); const availableSubjects=Array.from(new Set(selectedCourseObjects.flatMap((c)=>c.subjects.map((sub)=>sub.name))));
+  const openEditor=(record:LecturerRecord)=>{setDraft(record);setCourseSelections(record.courses);setSubjectSelections(record.subjects);setStep(0);setErrors([]);setEditing(record);}; const updateDraft=(key:keyof LecturerRecord,value:string)=>setDraft((old)=>({...old,[key]:value}));
+  const validateStep=(index:number)=>{const next:string[]=[];if(index===0){if(!draft.name.trim())next.push("Full name is required.");if(!draft.employeeNo.trim())next.push("Employee number is required.");if(!draft.profession?.trim())next.push("Profession is required.");const file=formRef.current?.elements.namedItem("cv") as HTMLInputElement|null;if(!draft.id&&!file?.files?.length)next.push("Upload a CV document before continuing.");}if(index===1){if(!draft.email.trim()||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(draft.email))next.push("Enter a valid employee email address.");if(!draft.phone.trim())next.push("Phone number is required.");if(!draft.employeeType)next.push("Choose an employment type.");}if(index===2){if(courseSelections.length&&!subjectSelections.length)next.push("Select at least one subject for the selected course(s).");}setErrors(next);return next.length===0;};
+  const nextStep=()=>{if(validateStep(step))setStep((value)=>Math.min(2,value+1));};
+  const save=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();if(step!==2||!validateStep(0)||!validateStep(1)||!validateStep(2))return;const f=new FormData(e.currentTarget);const cvDoc=f.get("cv");const password=`NSTC-${Math.random().toString(36).slice(2,8).toUpperCase()}!`;const next:LecturerRecord={...draft,id:draft.id||crypto.randomUUID(),courses:courseSelections,cv:cvDoc instanceof File&&cvDoc.name?cvDoc: draft.cv,subjects:subjectSelections,temporaryPassword:password};setData((old)=>({...old,lecturers:draft.id?old.lecturers.map((l)=>l.id===draft.id?next:l):[next,...old.lecturers]}));setEditing(null);setErrors([]);setTemporaryPassword(password);toast.success("Employee account created with a temporary password.");};
+  const updateStatus=(status:LecturerRecord["status"])=>{if(!notice)return;const text=(document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value||"Status changed by the NSTC admin team.";setData((old)=>({...old,lecturers:old.lecturers.map((l)=>l.id===notice.id?{...l,status,notice:text}:l)}));setNotice(null);toast.success(`${status} notice drafted for ${notice.email}.`);};
+  return <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}><PageHeading eyebrow="People & permissions" title="Manage employees" body="Create employee accounts, record particulars and assign teaching courses where applicable." actions={<Button onClick={()=>openEditor(blank)}><Plus className="h-4 w-4"/> Create employee</Button>}/><div className="portal-card"><div className="flex flex-col justify-between gap-4 md:flex-row md:items-center"><div><p className="eyebrow">Employee directory</p><h3 className="mt-2 font-display text-2xl text-slate-950">Staff accounts</h3></div><input className="field mt-0 max-w-sm" value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search name, email, profession or employee no."/></div><div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{list.map((l)=><details className="employee-card" key={l.id}><summary className="flex cursor-pointer list-none items-start justify-between gap-3"><div className="min-w-0"><div className="flex items-center gap-3"><div className="avatar-small">{initials(l.name)}</div><div><p className="font-semibold text-slate-950">{l.name}</p><p className="text-xs text-slate-500">{l.employeeNo} · {l.profession||"Employee"}</p></div></div></div><Pill tone={l.status==="Active"?"green":"red"}>{l.status}</Pill></summary><div className="mt-5 border-t border-slate-100 pt-4"><div className="grid gap-3 text-sm sm:grid-cols-2"><p><span className="block text-xs text-slate-400">Email</span><strong>{l.email}</strong></p><p><span className="block text-xs text-slate-400">Phone</span><strong>{l.phone}</strong></p><p><span className="block text-xs text-slate-400">Campus</span><strong>{l.campus}</strong></p><p><span className="block text-xs text-slate-400">Employment</span><strong>{l.employeeType||"Permanent"}</strong></p></div><p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Courses</p><p className="mt-1 text-sm text-slate-700">{l.courses.join(" · ")||"No teaching allocation"}</p><p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Subjects</p><p className="mt-1 text-sm text-slate-700">{l.subjects.join(" · ")||"No subjects assigned"}</p><div className="mt-5 flex flex-wrap gap-2"><button className="filter-chip" onClick={()=>openEditor(l)}>Edit</button><button className="filter-chip" onClick={()=>setNotice(l)}>{l.status==="Active"?"Disable / remove":"Draft notice"}</button></div></div></details>)}</div>{!list.length&&<div className="empty-state"><Users/><h3>No employees found</h3><p>Try a different search term.</p></div>}</div>{editing&&<Modal title={draft.id?"Edit employee account":"Create employee account"} onClose={()=>setEditing(null)}><div className="mt-5 flex gap-2 border-b border-slate-100 pb-4">{["Demographics","Account","Courses & subjects"].map((label,index)=><button type="button" key={label} className={`filter-chip ${step===index?"active":""}`} onClick={()=>index<=step&&setStep(index)}>{index+1}. {label}</button>)}</div><form ref={formRef} onSubmit={save} className="mt-5"><div className={step===0?"grid gap-4 md:grid-cols-2":"hidden"}><label>Full name<input className="field" value={draft.name} onChange={(e)=>updateDraft("name",e.target.value)} /></label><label>Employee number<input className="field" value={draft.employeeNo} onChange={(e)=>updateDraft("employeeNo",e.target.value)} /></label><label>Profession<input className="field" value={draft.profession||""} onChange={(e)=>updateDraft("profession",e.target.value)} placeholder="e.g. Lecturer, Finance Officer" /></label><label>CV document<input type="file" name="cv" className="field" accept=".pdf,.doc,.docx" /></label></div><div className={step===1?"grid gap-4 md:grid-cols-2":"hidden"}><label>Email address<input className="field" type="email" value={draft.email} onChange={(e)=>updateDraft("email",e.target.value)} /></label><label>Phone<input className="field" value={draft.phone} onChange={(e)=>updateDraft("phone",e.target.value)} /></label><label>Bank account<input className="field" value={draft.bankAccount||""} onChange={(e)=>updateDraft("bankAccount",e.target.value)} placeholder="Account number / payroll reference" /></label><div><span className="field-label">Employment type</span><div className="mt-2 flex flex-wrap gap-2">{["Contract","Permanent","Part-time"].map((type)=><button type="button" key={type} className={`filter-chip ${draft.employeeType===type?"active":""}`} onClick={()=>updateDraft("employeeType",type)}>{type}</button>)}</div></div></div><div className={step===2?"space-y-5":"hidden"}><div><p className="field-label">Courses from the academic catalogue</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{courses.map((course)=><label className="check-option" key={course.id}><input type="checkbox" checked={courseSelections.includes(course.name)} onChange={(e)=>setCourseSelections((old)=>e.target.checked?[...old,course.name]:old.filter((v)=>v!==course.name))}/>{course.name}</label>)}</div></div><div><p className="field-label">Subjects corresponding to selected courses</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{availableSubjects.map((subject)=><label className="check-option" key={subject}><input type="checkbox" checked={subjectSelections.includes(subject)} onChange={(e)=>setSubjectSelections((old)=>e.target.checked?[...old,subject]:old.filter((v)=>v!==subject))}/>{subject}</label>)}</div>{!availableSubjects.length&&<p className="mt-2 text-sm text-slate-500">Select at least one course to reveal its subjects.</p>}</div></div>{errors.length>0&&<div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><p className="font-bold">Please correct the following:</p><ul className="mt-2 list-disc pl-5">{errors.map((error)=><li key={error}>{error}</li>)}</ul></div>}<div className="mt-7 flex justify-between gap-3"><Button variant="light" type="button" onClick={()=>step===0?setEditing(null):setStep(step-1)}>{step===0?"Cancel":"Back"}</Button>{step<2?<Button type="button" onClick={nextStep}>Validate & continue <ArrowRight className="h-4 w-4"/></Button>:<Button type="submit"><Check className="h-4 w-4"/> Submit account</Button>}</div></form></Modal>}{temporaryPassword&&<Modal title="Temporary password generated" onClose={()=>setTemporaryPassword("")}><div className="mt-5 rounded-xl bg-slate-950 p-5 text-center"><p className="text-xs uppercase tracking-wider text-white/50">Temporary password</p><p className="mt-3 font-mono text-2xl font-bold tracking-widest text-[#D4AF37]">{temporaryPassword}</p></div><p className="mt-5 text-sm leading-6 text-slate-600">Share this password securely with the employee. It must be reset when the account logs in for the first time.</p><div className="mt-5 flex justify-end"><Button onClick={()=>setTemporaryPassword("")}>Done</Button></div></Modal>}{notice&&<Modal title={`Status notice · ${notice.name}`} onClose={()=>setNotice(null)}><p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this employee. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p><textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice||"Your account has been placed under review because..."}/><div className="mt-5 flex flex-wrap justify-end gap-3"><Button variant="light" onClick={()=>setNotice(null)}>Cancel</Button><Button variant="light" onClick={()=>updateStatus("Disabled")}>Disable</Button><Button onClick={()=>updateStatus("Removed")}>Remove</Button></div></Modal>}</PortalShell>;
 }
-
+function AdminComplaints({ data, navigate }: { data: AppData; navigate: (path: string) => void }) {
+  const [status,setStatus]=useState("All statuses"); const [selected,setSelected]=useState<Complaint|null>(null); const list=data.complaints.filter((c)=>(status==="All statuses"||c.status===status));
+  return <PortalShell role="Admin" active="/admin/complaints" onNavigate={navigate}><PageHeading eyebrow="Student success desk" title="Complaints submitted" body="Review submitted complaints and support requests, including anonymous reports."/><div className="portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Case queue</p><h3 className="mt-2 font-display text-2xl text-slate-950">{list.length} submitted cases</h3></div><select className="field mt-0 max-w-xs" value={status} onChange={(e)=>setStatus(e.target.value)}><option>All statuses</option>{Array.from(new Set(data.complaints.map((c)=>c.status))).map((v)=><option key={v}>{v}</option>)}</select></div><div className="mt-6 space-y-3">{list.map((c)=><button className="list-row w-full text-left" key={c.id} onClick={()=>setSelected(c)}><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-slate-950">{c.subject}</p><Pill tone={c.status==="Open"?"gold":c.status==="Resolved"?"green":"slate"}>{c.status}</Pill></div><p className="mt-1 truncate text-sm text-slate-600">{c.message}</p><p className="mt-1 text-xs text-slate-400">{c.date} · {c.time||"Time not recorded"} · {c.anonymous?"Anonymous":c.name||"Name not recorded"}</p></div><ArrowRight className="shrink-0 text-slate-400"/></button>)}{!list.length&&<div className="empty-state"><MessageCircle/><h3>No complaints submitted</h3><p>New complaints will appear here when students submit support requests.</p></div>}</div></div>{selected&&<Modal title={`Complaint · ${selected.subject}`} onClose={()=>setSelected(null)}><div className="mt-5 grid gap-4 sm:grid-cols-2"><p className="text-sm"><span className="block text-xs text-slate-400">Submitted</span><strong>{selected.date} · {selected.time||"Time not recorded"}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Status</span><Pill tone={selected.status==="Open"?"gold":"green"}>{selected.status}</Pill></p><p className="text-sm"><span className="block text-xs text-slate-400">Name</span><strong>{selected.anonymous?"Anonymous":selected.name||"Not recorded"}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Email / phone</span><strong>{selected.anonymous?"Withheld":[selected.email,selected.phone].filter(Boolean).join(" · ")||"Not recorded"}</strong></p></div><div className="mt-5 rounded-xl bg-slate-50 p-4"><p className="eyebrow">Complaint</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">{selected.message}</p></div><div className="mt-5 flex justify-end"><Button onClick={()=>setSelected(null)}>Close</Button></div></Modal>}</PortalShell>;
+}
 function AdminPortal({ data, setData, path, navigate }: {
   data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>;
   path: string; navigate: (path: string) => void
@@ -4486,6 +4274,7 @@ function AdminPortal({ data, setData, path, navigate }: {
   if (path === "/admin/students") return <AdminStudents data={data} navigate={navigate} />;
   // if (path === "/admin/academics") return <AdminAcademics data={data} setData={setData} navigate={navigate} />;
   if (path === "/admin/attendance") return <AdminAttendance data={data} navigate={navigate} />;
+  if (path === "/admin/complaints") return <AdminComplaints data={data} navigate={navigate} />;
   if (path === "/admin/finance") return <AdminFinance data={data} navigate={navigate} />;
 
   return <AdminDashboard data={data} setData={setData} navigate={navigate} />;
@@ -4506,6 +4295,10 @@ function AdminDashboard({ data, setData, navigate }: {
     alumni: data.students.filter((s) => s.status === "Alumni").length
   };
   const absent = data.students.filter((s) => s.attendance < 80);
+  const overallAttendance = data.students.length ? Math.round(data.students.reduce((sum, student) => sum + student.attendance, 0) / data.students.length) : 0;
+  const courseCounts = Array.from(new Set(data.students.map((student) => student.course))).map((course) => ({ course, count: data.students.filter((student) => student.course === course).length }));
+  const maxCourseCount = Math.max(...courseCounts.map((item) => item.count), 1);
+  const pieTotal = Math.max(counts.active + counts.alumni, 1); const activeShare = Math.round((counts.active / pieTotal) * 100);
 
   const remove = () => {
     if (!confirm) return;
@@ -4523,11 +4316,12 @@ function AdminDashboard({ data, setData, navigate }: {
           <Button onClick={() => setAnnouncementOpen(true)}><Plus className="h-4 w-4" /> New announcement</Button>
         }
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <MetricCard label="Total learners" value={data.students.length} detail="Across 2 campuses" icon={Users} />
         <MetricCard label="Active" value={counts.active} detail="Currently enrolled" icon={TrendingUp} tone="green" />
         <MetricCard label="Owing" value={data.students.filter((s) => s.balance > 0).length} detail="Needs finance follow-up" icon={WalletCards} tone="red" />
         <MetricCard label="Alumni" value={counts.alumni} detail="In graduate network" icon={Award} />
+        <MetricCard label="Attendance · past 2 weeks" value={`${overallAttendance}%`} detail="All courses and students" icon={ClipboardCheck} tone={overallAttendance >= 80 ? "green" : "red"} />
       </div>
       <div className="mt-6 grid gap-5 xl:grid-cols-[1.3fr_.99fr]">
         <div className="portal-card">
@@ -4639,6 +4433,7 @@ function AdminDashboard({ data, setData, navigate }: {
           <span><strong>{data.lecturers.filter((l) => l.status === "Active").length}</strong><small>Active lecturers</small></span>
         </div>
       </div>
+      <div className="mt-6 grid gap-5 xl:grid-cols-[1.3fr_.7fr]"><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Programme mix</p><h3 className="mt-2 font-display text-2xl text-slate-950">Students by course</h3></div><BarChart3 className="text-[#916e0a]" /></div><div className="mt-6 space-y-4">{courseCounts.map((item)=><div key={item.course}><div className="flex justify-between gap-3 text-sm"><span className="truncate font-semibold text-slate-950">{item.course}</span><strong>{item.count}</strong></div><div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-[#D4AF37] transition-all" style={{width:`${(item.count/maxCourseCount)*100}%`}} /></div></div>)}</div></div><div className="portal-card"><p className="eyebrow">Student lifecycle</p><h3 className="mt-2 font-display text-2xl text-slate-950">Active vs alumni</h3><div className="mt-6 flex items-center gap-6"><div className="h-36 w-36 shrink-0 rounded-full" style={{background:`conic-gradient(#D4AF37 0 ${activeShare}%, #172033 ${activeShare}% 100%)`}} /><div className="space-y-3 text-sm"><p><span className="mr-2 inline-block h-3 w-3 rounded-full bg-[#D4AF37]" />Active <strong className="ml-2">{counts.active}</strong></p><p><span className="mr-2 inline-block h-3 w-3 rounded-full bg-[#172033]" />Alumni <strong className="ml-2">{counts.alumni}</strong></p><p className="text-xs text-slate-500">{activeShare}% of active/alumni records are active.</p></div></div></div></div>
       {confirm &&
         <Confirm title="Remove learner from register?" body={`This will remove ${confirm.name} from the local demo register. This action cannot be undone.`} onCancel={() => setConfirm(null)} onConfirm={remove} loading={loading} />
       }
@@ -4680,6 +4475,11 @@ function AdminStudents({ data, navigate }: { data: AppData; navigate: (path: str
   const [startDate, setStartDate] = useState("All start dates");
   const [course, setCourse] = useState("All courses");
   const [profile, setProfile] = useState<Student | null>(null);
+  const [importing, setImporting] = useState(false); const [importErrors, setImportErrors] = useState<string[]>([]); const [importSummary, setImportSummary] = useState("");
+  const handleBulkImport = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; if (!file) return; setImporting(true); setImportErrors([]); setImportSummary("");
+    try { await delay(700); const workbook = XLSX.read(await file.arrayBuffer(), { type: "array" }); const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(workbook.Sheets[workbook.SheetNames[0]], { defval: "" }); const required = ["name","email","phone","studentNo","campus","course","startDate","status"]; const errors: string[] = []; const accepted: Student[] = []; rows.forEach((row, index) => { const missing = required.filter((key) => !String(row[key] ?? "").trim()); const statusValue = String(row.status || "Active"); if (missing.length) { errors.push(`Row ${index + 2}: missing ${missing.join(", ")}.`); return; } if (!["Active","Suspended","Completed","Alumni"].includes(statusValue)) { errors.push(`Row ${index + 2}: status must be Active, Suspended, Completed or Alumni.`); return; } accepted.push({ id: crypto.randomUUID(), name: String(row.name), email: String(row.email), phone: String(row.phone), studentNo: String(row.studentNo), campus: String(row.campus), course: String(row.course), startDate: String(row.startDate), status: statusValue as Student["status"], attendance: Number(row.attendance) || 0, balance: Number(row.balance) || 0, termAverage: Number(row.termAverage) || 0, initials: initials(String(row.name)), guardian: String(row.guardian || "Not recorded"), remarks: String(row.remarks || "Imported in bulk") }); }); setData((old) => ({ ...old, students: [...accepted, ...old.students] })); setImportErrors(errors); setImportSummary(`${accepted.length} record${accepted.length===1?"":"s"} imported successfully${errors.length ? `; ${errors.length} failed validation` : ""}.`); } catch { setImportErrors(["The file could not be read. Upload a valid .csv, .xls or .xlsx file."]); } finally { setImporting(false); event.target.value = ""; }
+  };
 
   const coursesInData = Array.from(new Set(data.students.map((s) => s.course)));
   const dates = Array.from(new Set(data.students.map((s) => s.startDate))).sort();
@@ -4694,12 +4494,9 @@ function AdminStudents({ data, navigate }: { data: AppData; navigate: (path: str
   return (
     <PortalShell role="Admin" active="/admin/students" onNavigate={navigate}>
       <PageHeading eyebrow="Student register" title="All learners" body={`${data.students.length} learner profiles in the local register.`}
-        actions={
-          <Button onClick={() => toast.success("Student import template downloaded.")}>
-            <Download className="h-4 w-4" /> Import template
-          </Button>
-        } />
+        actions={<div className="flex flex-wrap gap-2"><button className="btn btn-light" type="button" onClick={() => toast.success("Template structure: name, email, phone, studentNo, campus, course, startDate, status, attendance, balance, termAverage, guardian, remarks.")}><Download className="h-4 w-4" /> Template structure</button><label className={`btn btn-gold cursor-pointer ${importing ? "pointer-events-none opacity-60" : ""}`}>{importing ? <Spinner label="Importing..." /> : <><Upload className="h-4 w-4" /> Import CSV / Excel</>}<input className="hidden" type="file" accept=".csv,.xls,.xlsx" onChange={handleBulkImport} disabled={importing} /></label></div>} />
 
+      <div className="mb-5 grid gap-5 lg:grid-cols-[1fr_1.2fr]"><div className="rounded-2xl border border-dashed border-[#D4AF37] bg-[#fffaf0] p-5"><p className="eyebrow">Bulk upload structure</p><h3 className="mt-2 font-display text-xl text-slate-950">One row per learner</h3><p className="mt-2 text-sm leading-6 text-slate-600">Accepted columns are <strong>name, email, phone, studentNo, campus, course, startDate, status</strong>. Optional columns are attendance, balance, termAverage, guardian and remarks.</p><p className="mt-3 text-xs text-slate-500">Use CSV, XLS or XLSX. Status must be Active, Suspended, Completed or Alumni.</p></div><div className="rounded-2xl border border-slate-200 bg-white p-5"><p className="eyebrow">Import result</p>{importing ? <div className="mt-4"><Spinner label="Validating learner records..." /></div> : importSummary ? <p className="mt-4 text-sm font-semibold text-emerald-700">{importSummary}</p> : <p className="mt-4 text-sm text-slate-500">Choose a file to validate and import learner records.</p>}{importErrors.length>0&&<div className="mt-4 max-h-32 overflow-auto rounded-xl bg-red-50 p-3 text-xs text-red-700"><p className="font-bold">Rows not imported</p><ul className="mt-1 list-disc pl-4">{importErrors.map((error)=><li key={error}>{error}</li>)}</ul></div>}</div></div>
       <div className="portal-card">
         <div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <label className="relative">
