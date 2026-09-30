@@ -3855,15 +3855,284 @@ function LecturerStudents() {
   );
 }
 
-function LecturerResources({ data, setData }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>> }) {
-  const [message, setMessage] = useState(""); const [sheet, setSheet] = useState(false); const [month, setMonth] = useState("All months"); const [date, setDate] = useState("All dates"); const [mockAssignments, setMockAssignments] = useState<Assignment[]>([{ id: "mock-as-1", title: "Electrical installation rules case study", course: "Electrical Engineering N1–N6", subject: "Electrical Trade Theory", due: "2026-06-12", status: "Published", createdAt: "2026-06-02" }, { id: "mock-as-2", title: "Workshop risk assessment", course: "Electrical Engineering N1–N6", subject: "Engineering Science", due: "2026-06-20", status: "Published", createdAt: "2026-06-05" }, { id: "mock-as-3", title: "Networking fundamentals quiz", course: "Information Technology", subject: "Networking", due: "2026-07-04", status: "Draft", createdAt: "2026-06-08" }]);
-  const submitResource = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const f = new FormData(event.currentTarget); setData((old) => ({ ...old, resources: [{ id: crypto.randomUUID(), title: String(f.get("title") || "New learning resource"), course: String(f.get("course") || lecturerCourses[0]), subject: String(f.get("subject") || lecturerSubjects[0]), fileType: "PDF", published: f.get("publish") === "on", uploaded: "2026-06-08" }, ...old.resources] })); event.currentTarget.reset(); setMessage("Resource uploaded and saved to your teaching library."); };
-  const assignments = [...mockAssignments, ...data.assignments]; const months = Array.from(new Set(assignments.map((a) => a.due.slice(0, 7)))); const dates = Array.from(new Set(assignments.map((a) => a.due))); const visible = assignments.filter((a) => (month === "All months" || a.due.startsWith(month)) && (date === "All dates" || a.due === date));
-  const createAssignment = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const f = new FormData(event.currentTarget); const assignment: Assignment = { id: crypto.randomUUID(), title: String(f.get("title") || "New assignment"), course: String(f.get("course") || lecturerCourses[0]), subject: String(f.get("subject") || lecturerSubjects[0]), due: String(f.get("due") || "2026-06-30"), status: "Published", instructions: String(f.get("instructions") || ""), createdAt: "2026-06-08" }; setMockAssignments((old) => [assignment, ...old]); setSheet(false); toast.success("Assignment added to the mock lecturer workspace."); };
-  return <>
-    <PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials and manage coursework in one place." /><div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]"><div className="portal-card"><p className="eyebrow">Upload & publish resource</p><form onSubmit={submitResource} className="mt-5 space-y-4"><label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook" /></label><label>Course<select name="course" className="field">{lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>File<input className="field" type="file" required /></label><label className="check-option"><input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now</label><Button type="submit"><Upload className="h-4 w-4" /> Upload resource</Button>{message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}</form></div><div className="portal-card"><div className="flex items-center justify-between"><div><p className="eyebrow">Published library</p><h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3></div><Pill>{data.resources.length} files</Pill></div><div className="mt-4 space-y-2">{data.resources.map((resource) => <div className="resource-row" key={resource.id}><div className="file-icon"><FileText /></div><div className="min-w-0"><p className="truncate text-sm font-semibold">{resource.title}</p><p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p></div><Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill></div>)}</div></div></div><div className="mt-5 portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Assignment activity</p><h3 className="mt-2 font-display text-2xl text-slate-950">Assignments</h3></div><Button onClick={() => setSheet(true)}><Plus className="h-4 w-4" /> New assignment</Button></div><div className="mt-4 grid gap-3 md:grid-cols-3">{[["Published", assignments.filter((a) => a.status === "Published").length], ["Drafts", assignments.filter((a) => a.status === "Draft").length], ["Due this month", assignments.filter((a) => a.due.startsWith("2026-06")).length]].map(([label, value]) => <div className="rounded-xl bg-slate-50 p-4" key={String(label)}><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-display text-3xl text-slate-950">{value}</p></div>)}</div><div className="mt-6 flex flex-wrap gap-3"><select className="field mt-0 max-w-[190px]" value={month} onChange={(e) => setMonth(e.target.value)}><option>All months</option>{months.map((m) => <option key={m}>{m}</option>)}</select><select className="field mt-0 max-w-[190px]" value={date} onChange={(e) => setDate(e.target.value)}><option>All dates</option>{dates.map((d) => <option key={d}>{d}</option>)}</select></div><div className="mt-4 space-y-2">{visible.map((a) => <div className="list-row" key={a.id}><div className="min-w-0"><p className="font-semibold text-slate-950">{a.title}</p><p className="mt-1 text-xs text-slate-500">{a.course} · {a.subject || "General"} · Due {a.due}</p></div><Pill tone={a.status === "Published" ? "green" : "slate"}>{a.status}</Pill></div>)}</div></div>{sheet && <div className="sheet-backdrop" onClick={() => setSheet(false)}><div className="bottom-sheet" onClick={(e) => e.stopPropagation()}><div className="flex items-center justify-between"><div><p className="eyebrow">Coursework composer</p><h3 className="mt-2 font-display text-2xl text-slate-950">Add a new assignment</h3></div><button className="icon-btn" onClick={() => setSheet(false)}><X /></button></div><form onSubmit={createAssignment} className="mt-6 grid gap-4 md:grid-cols-2"><label className="md:col-span-2">Assignment title<input name="title" className="field" required /></label><label>Course<select name="course" className="field">{lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select></label><label>Subject<select name="subject" className="field">{lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>Due date<input name="due" className="field" type="date" required /></label><label>Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label><div className="flex justify-end gap-3 md:col-span-2"><Button variant="light" type="button" onClick={() => setSheet(false)}>Cancel</Button><Button type="submit"><Check className="h-4 w-4" /> Publish assignment</Button></div></form></div></div>}</>;
+function LecturerResources({ data, setData }: {
+  data: AppData;
+  setData: React.Dispatch<React.SetStateAction<AppData>>
+}) {
+  const [message, setMessage] = useState("");
+  const [sheet, setSheet] = useState(false);
+  const [month, setMonth] = useState("All months");
+  const [date, setDate] = useState("All dates");
+  const [mockAssignments, setMockAssignments] = useState<Assignment[]>(
+    [{
+      id: "mock-as-1",
+      title: "Electrical installation rules case study",
+      course: "Electrical Engineering N1–N6",
+      subject: "Electrical Trade Theory",
+      due: "2026-06-12",
+      status: "Published",
+      createdAt: "2026-06-02"
+    },
+    {
+      id: "mock-as-2",
+      title: "Workshop risk assessment",
+      course: "Electrical Engineering N1–N6",
+      subject: "Engineering Science",
+      due: "2026-06-20",
+      status: "Published",
+      createdAt: "2026-06-05"
+    },
+    {
+      id: "mock-as-3",
+      title: "Networking fundamentals quiz",
+      course: "Information Technology",
+      subject: "Networking",
+      due: "2026-07-04",
+      status: "Draft",
+      createdAt: "2026-06-08"
+    }
+    ]);
+
+  const submitResource = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const f = new FormData(event.currentTarget);
+    setData((old) => ({
+      ...old,
+      resources: [
+        {
+          id: crypto.randomUUID(),
+          title: String(f.get("title") || "New learning resource"),
+          course: String(f.get("course") || lecturerCourses[0]),
+          subject: String(f.get("subject") || lecturerSubjects[0]),
+          fileType: "PDF",
+          published: f.get("publish") === "on",
+          uploaded: "2026-06-08"
+        },
+        ...old.resources
+      ]
+    }));
+    event.currentTarget.reset();
+    setMessage("Resource uploaded and saved to your teaching library.");
+  };
+  const assignments = [...mockAssignments, ...data.assignments];
+  const months = Array.from(new Set(assignments.map((a) => a.due.slice(0, 7))));
+  const dates = Array.from(new Set(assignments.map((a) => a.due)));
+  const visible = assignments.filter((a) => (month === "All months" || a.due.startsWith(month)) && (date === "All dates" || a.due === date));
+
+  const createAssignment = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const f = new FormData(event.currentTarget);
+    const assignment: Assignment = {
+      id: crypto.randomUUID(),
+      title: String(f.get("title") || "New assignment"),
+      course: String(f.get("course") || lecturerCourses[0]),
+      subject: String(f.get("subject") || lecturerSubjects[0]),
+      due: String(f.get("due") || "2026-06-30"),
+      status: "Published",
+      instructions: String(f.get("instructions") || ""),
+      createdAt: "2026-06-08"
+    };
+    setMockAssignments((old) => [assignment, ...old]);
+    setSheet(false);
+    toast.success("Assignment added to the mock lecturer workspace.");
+  };
+  
+  return (
+    <>
+      <PageHeading eyebrow="Teaching library" title="Resources & assignments" body="Upload learning materials and manage coursework in one place." />
+      <div className="grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
+        <div className="portal-card">
+          <p className="eyebrow">Upload & publish resource</p>
+          <form onSubmit={submitResource} className="mt-5 space-y-4">
+            <label>Resource title<input name="title" className="field" required placeholder="e.g. Motor control workbook" /></label>
+            <label>Course<select name="course" className="field">
+              {lecturerCourses.map((item) => <option key={item}>{item}</option>)}
+            </select>
+            </label>
+            <label>Subject
+              <select name="subject" className="field">
+                {lecturerSubjects.map((item) => <option key={item}>{item}</option>)}</select>
+            </label>
+            <label>File<input className="field" type="file" required />
+            </label>
+            <label className="check-option">
+              <input name="publish" type="checkbox" defaultChecked /> Publish to enrolled students now</label>
+            <Button type="submit"><Upload className="h-4 w-4" /> Upload resource</Button>
+            {message && <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
+          </form>
+        </div>
+        <div className="portal-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="eyebrow">Published library</p>
+              <h3 className="mt-2 font-display text-2xl text-slate-950">Learning resources</h3>
+            </div>
+            <Pill>{data.resources.length} files</Pill>
+          </div>
+          <div className="mt-4 space-y-2">
+            {data.resources.map((resource) =>
+              <div className="resource-row" key={resource.id}>
+                <div className="file-icon"><FileText /></div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{resource.title}</p>
+                  <p className="mt-1 text-xs text-slate-500">{resource.course} · {resource.subject} · {resource.uploaded}</p>
+                </div>
+                <Pill tone={resource.published ? "green" : "slate"}>{resource.published ? "Published" : "Draft"}</Pill>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="mt-5 portal-card">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="eyebrow">Assignment activity</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Assignments</h3>
+          </div>
+          <Button onClick={() => setSheet(true)}><Plus className="h-4 w-4" /> New assignment</Button>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">{[
+          ["Published", assignments.filter((a) => a.status === "Published").length],
+          ["Drafts", assignments.filter((a) => a.status === "Draft").length],
+          ["Due this month", assignments.filter((a) => a.due.startsWith("2026-06")).length]
+        ].map(([label, value]) =>
+          <div className="rounded-xl bg-slate-50 p-4" key={String(label)}>
+            <p className="text-xs text-slate-500">{label}</p>
+            <p className="mt-1 font-display text-3xl text-slate-950">{value}</p>
+          </div>
+        )}
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <select className="field mt-0 max-w-[190px]" value={month} onChange={(e) => setMonth(e.target.value)}>
+            <option>All months</option>
+            {months.map((m) => <option key={m}>{m}</option>)}
+          </select>
+          <select className="field mt-0 max-w-[190px]" value={date} onChange={(e) => setDate(e.target.value)}>
+            <option>All dates</option>
+            {dates.map((d) => <option key={d}>{d}</option>)}
+          </select>
+        </div>
+        <div className="mt-4 space-y-2">
+          {visible.map((a) =>
+            <div className="list-row" key={a.id}>
+              <div className="min-w-0">
+                <p className="font-semibold text-slate-950">{a.title}</p>
+                <p className="mt-1 text-xs text-slate-500">{a.course} · {a.subject || "General"} · Due {a.due}</p>
+              </div>
+              <Pill tone={a.status === "Published" ? "green" : "slate"}>{a.status}</Pill>
+            </div>
+          )}
+        </div>
+      </div>
+      {sheet &&
+        <div className="sheet-backdrop" onClick={() => setSheet(false)}>
+          <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="eyebrow">Coursework composer</p>
+                <h3 className="mt-2 font-display text-2xl text-slate-950">Add a new assignment</h3>
+              </div>
+              <button className="icon-btn" onClick={() => setSheet(false)}><X /></button>
+            </div>
+            <form onSubmit={createAssignment} className="mt-6 grid gap-4 md:grid-cols-2">
+              <label className="md:col-span-2">Assignment title<input name="title" className="field" required /></label>
+              <label>Course
+                <select name="course" className="field">
+                  {lecturerCourses.map((item) => <option key={item}>{item}</option>)}</select>
+              </label>
+              <label>Subject
+                <select name="subject" className="field">
+                  {lecturerSubjects.map((item) => <option key={item}>{item}</option>)}
+                </select>
+              </label>
+              <label>Due date<input name="due" className="field" type="date" required /></label>
+              <label>Instructions<textarea name="instructions" className="field min-h-[110px] py-3" /></label>
+              <div className="flex justify-end gap-3 md:col-span-2">
+                <Button variant="light" type="button" onClick={() => setSheet(false)}>Cancel</Button>
+                <Button type="submit"><Check className="h-4 w-4" /> Publish assignment</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+    </>
+  );
 }
-function LecturerAttendance() { const courseMap: Record<string, string[]> = { "Electrical Engineering N1–N6": ["Engineering Science", "Mathematics N2", "Electrical Trade Theory", "Logic Systems"], "Information Technology": ["Networking", "Database Fundamentals", "Technical Support"] }; const [course, setCourse] = useState(lecturerCourses[0]); const subjects = courseMap[course] || []; const [subject, setSubject] = useState(subjects[0]); const [present, setPresent] = useState<Record<string, boolean>>({ s1: true, s2: true, s3: true, s4: false, s5: true }); useEffect(() => setSubject(subjects[0]), [course]); const students = lecturerStudentRows.filter((st) => st.course === course || (course === lecturerCourses[0] && st.id === "s1")); const trend = subjects.map((item, i) => ({ item, value: 78 + ((i + course.length) * 7) % 19 })); return <><PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart." actions={<Button onClick={() => toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>} /><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Selected course" value={course === lecturerCourses[0] ? "Electrical" : "IT"} detail={`${subjects.length} subjects available`} icon={BookOpen} /><MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green" /><MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp} /></div><div className="mt-6 portal-card"><div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">{lecturerCourses.map((item) => <button key={item} className={`filter-chip ${course === item ? "active" : ""}`} onClick={() => setCourse(item)}>{item}</button>)}</div><div className="mt-5 flex flex-wrap gap-2">{subjects.map((item) => <button key={item} className={`filter-chip ${subject === item ? "active" : ""}`} onClick={() => setSubject(item)}>{item}</button>)}</div></div><div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="portal-card"><p className="eyebrow">Mark attendance</p><h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3><div className="mt-5">{students.map((student) => <label className="attendance-row" key={student.id}><span className="flex items-center gap-3"><span className="avatar-small">{initials(student.name)}</span><span><strong className="block text-sm text-slate-950">{student.name}</strong><small className="text-xs text-slate-500">{student.course}</small></span></span><input type="checkbox" checked={Boolean(present[student.id])} onChange={(e) => setPresent((old) => ({ ...old, [student.id]: e.target.checked }))} /></label>)}</div></div><div className="portal-card"><p className="eyebrow">Attendance trend</p><h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3><div className="mt-6 flex h-56 items-end gap-3">{trend.map(({ item, value }) => <div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}><span className="text-xs font-bold text-slate-700">{value}%</span><div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(28, value * 1.7)}px` }} /><span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span></div>)}</div><p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p></div></div></>; }
+
+function LecturerAttendance() {
+  const courseMap: Record<string, string[]> = {
+    "Electrical Engineering N1–N6": ["Engineering Science", "Mathematics N2", "Electrical Trade Theory", "Logic Systems"],
+    "Information Technology": ["Networking", "Database Fundamentals", "Technical Support"]
+  };
+  const [course, setCourse] = useState(lecturerCourses[0]);
+  const subjects = courseMap[course] || [];
+  const [subject, setSubject] = useState(subjects[0]);
+  const [present, setPresent] = useState<Record<string, boolean>>({ s1: true, s2: true, s3: true, s4: false, s5: true });
+
+  useEffect(() => setSubject(subjects[0]), [course]);
+  const students = lecturerStudentRows.filter((st) => st.course === course || (course === lecturerCourses[0] && st.id === "s1"));
+  const trend = subjects.map((item, i) => ({ item, value: 78 + ((i + course.length) * 7) % 19 }));
+
+  return (
+    <>
+      <PageHeading eyebrow="Class register" title="Attendance" body="Choose a course, focus its subjects and monitor attendance as a responsive bar chart."
+        actions={
+          <Button onClick={() => toast.success(`Attendance saved for ${course} · ${subject}.`)}>Save attendance <Check className="h-4 w-4" /></Button>}
+      />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <MetricCard label="Selected course" value={course === lecturerCourses[0] ? "Electrical" : "IT"} detail={`${subjects.length} subjects available`} icon={BookOpen} />
+        <MetricCard label="Present today" value={`${Object.values(present).filter(Boolean).length} / ${students.length}`} detail={subject} icon={ClipboardCheck} tone="green" />
+        <MetricCard label="Aggregate attendance" value="94%" detail="Selected course trend" icon={TrendingUp} />
+      </div>
+      <div className="mt-6 portal-card">
+        <div className="flex flex-wrap gap-2 border-b border-slate-100 pb-5">
+          {lecturerCourses.map((item) =>
+            <button key={item} className={`filter-chip ${course === item ? "active" : ""}`} onClick={() => setCourse(item)}>{item}</button>
+          )}
+        </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {subjects.map((item) =>
+            <button key={item} className={`filter-chip ${subject === item ? "active" : ""}`} onClick={() => setSubject(item)}>{item}</button>
+          )}
+        </div>
+      </div>
+      <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_.8fr]">
+        <div className="portal-card">
+          <p className="eyebrow">Mark attendance</p>
+          <h3 className="mt-2 font-display text-2xl text-slate-950">08 June 2026 · {subject}</h3>
+          <div className="mt-5">
+            {students.map((student) =>
+              <label className="attendance-row" key={student.id}>
+                <span className="flex items-center gap-3">
+                  <span className="avatar-small">{initials(student.name)}</span>
+                  <span>
+                    <strong className="block text-sm text-slate-950">{student.name}</strong>
+                    <small className="text-xs text-slate-500">{student.course}</small>
+                  </span>
+                </span>
+                <input type="checkbox" checked={Boolean(present[student.id])} onChange={(e) => setPresent((old) => ({ ...old, [student.id]: e.target.checked }))} />
+              </label>
+            )}
+          </div>
+        </div>
+        <div className="portal-card">
+          <p className="eyebrow">Attendance trend</p>
+          <h3 className="mt-2 font-display text-2xl text-slate-950">{course}</h3>
+          <div className="mt-6 flex h-56 items-end gap-3">
+            {trend.map(({ item, value }) =>
+              <div className="flex min-w-0 flex-1 flex-col items-center gap-2" key={item}>
+                <span className="text-xs font-bold text-slate-700">{value}%</span>
+                <div className="w-full rounded-t-md bg-[#D4AF37]" style={{ height: `${Math.max(28, value * 1.7)}px` }} />
+                <span className="w-full truncate text-center text-[9px] text-slate-400" title={item}>{item}</span>
+              </div>
+            )}
+          </div>
+          <p className="mt-4 text-xs text-slate-500">Figures recalculate when the course or subject focus changes.</p>
+        </div>
+      </div>
+    </>
+  );
+}
 
 function LecturerResults() {
   const [course, setCourse] = useState("All courses");
@@ -4253,19 +4522,291 @@ function AdminAuth({ onAuthenticated }: { onAuthenticated: () => void }) {
 
 function AdminLecturers({ data, setData, navigate }: { data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>; navigate: (path: string) => void }) {
   const blank: LecturerRecord = { id: "", name: "", email: "", phone: "", employeeNo: "", campus: "Middelburg", courses: [], subjects: [], status: "Active", employeeType: "Permanent", profession: "", bankAccount: "" };
-  const [editing, setEditing] = useState<LecturerRecord | null>(null); const [step, setStep] = useState(0); const [errors, setErrors] = useState<string[]>([]); const [notice, setNotice] = useState<LecturerRecord | null>(null); const [temporaryPassword, setTemporaryPassword] = useState(""); const [query, setQuery] = useState(""); const [draft, setDraft] = useState<LecturerRecord>(blank); const [courseSelections, setCourseSelections] = useState<string[]>([]); const [subjectSelections, setSubjectSelections] = useState<string[]>([]); const formRef = useRef<HTMLFormElement>(null);
+  const [editing, setEditing] = useState<LecturerRecord | null>(null);
+  const [step, setStep] = useState(0); const [errors, setErrors] = useState<string[]>([]); const [notice, setNotice] = useState<LecturerRecord | null>(null); const [temporaryPassword, setTemporaryPassword] = useState(""); const [query, setQuery] = useState(""); const [draft, setDraft] = useState<LecturerRecord>(blank); const [courseSelections, setCourseSelections] = useState<string[]>([]); const [subjectSelections, setSubjectSelections] = useState<string[]>([]); const formRef = useRef<HTMLFormElement>(null);
   const list = data.lecturers.filter((l) => `${l.name} ${l.email} ${l.employeeNo} ${l.profession || ""}`.toLowerCase().includes(query.toLowerCase())); const selectedCourseObjects = courses.filter((c) => courseSelections.includes(c.name)); const availableSubjects = Array.from(new Set(selectedCourseObjects.flatMap((c) => c.subjects.map((sub) => sub.name))));
-  const openEditor = (record: LecturerRecord) => { setDraft(record); setCourseSelections(record.courses); setSubjectSelections(record.subjects); setStep(0); setErrors([]); setEditing(record); }; const updateDraft = (key: keyof LecturerRecord, value: string) => setDraft((old) => ({ ...old, [key]: value }));
-  const validateStep = (index: number) => { const next: string[] = []; if (index === 0) { if (!draft.name.trim()) next.push("Full name is required."); if (!draft.employeeNo.trim()) next.push("Employee number is required."); if (!draft.profession?.trim()) next.push("Profession is required."); const file = formRef.current?.elements.namedItem("cv") as HTMLInputElement | null; if (!draft.id && !file?.files?.length) next.push("Upload a CV document before continuing."); } if (index === 1) { if (!draft.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(draft.email)) next.push("Enter a valid employee email address."); if (!draft.phone.trim()) next.push("Phone number is required."); if (!draft.employeeType) next.push("Choose an employment type."); } if (index === 2) { if (courseSelections.length && !subjectSelections.length) next.push("Select at least one subject for the selected course(s)."); } setErrors(next); return next.length === 0; };
+  const openEditor = (record: LecturerRecord) => {
+    setDraft(record);
+    setCourseSelections(record.courses);
+    setSubjectSelections(record.subjects);
+    setStep(0);
+    setErrors([]);
+    setEditing(record);
+  };
+  const updateDraft = (key: keyof LecturerRecord, value: string) => setDraft((old) => ({ ...old, [key]: value }));
+
+  const validateStep = (index: number) => {
+    const next: string[] = [];
+    if (index === 0) {
+      if (!draft.name.trim()) next.push("Full name is required.");
+      if (!draft.employeeNo.trim()) next.push("Employee number is required.");
+      if (!draft.profession?.trim()) next.push("Profession is required.");
+      const file = formRef.current?.elements.namedItem("cv") as HTMLInputElement | null;
+      if (!draft.id && !file?.files?.length) next.push("Upload a CV document before continuing.");
+    }
+    if (index === 1) {
+      if (!draft.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(draft.email)) next.push("Enter a valid employee email address.");
+      if (!draft.phone.trim()) next.push("Phone number is required.");
+      if (!draft.employeeType) next.push("Choose an employment type.");
+    }
+    if (index === 2) {
+      if (courseSelections.length && !subjectSelections.length) next.push("Select at least one subject for the selected course(s).");
+    }
+    setErrors(next); return next.length === 0;
+  };
   const nextStep = () => { if (validateStep(step)) setStep((value) => Math.min(2, value + 1)); };
-  const save = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); if (step !== 2 || !validateStep(0) || !validateStep(1) || !validateStep(2)) return; const f = new FormData(e.currentTarget); const cvDoc = f.get("cv"); const password = `NSTC-${Math.random().toString(36).slice(2, 8).toUpperCase()}!`; const next: LecturerRecord = { ...draft, id: draft.id || crypto.randomUUID(), courses: courseSelections, cv: cvDoc instanceof File && cvDoc.name ? cvDoc : draft.cv, subjects: subjectSelections, temporaryPassword: password }; setData((old) => ({ ...old, lecturers: draft.id ? old.lecturers.map((l) => l.id === draft.id ? next : l) : [next, ...old.lecturers] })); setEditing(null); setErrors([]); setTemporaryPassword(password); toast.success("Employee account created with a temporary password."); };
-  const updateStatus = (status: LecturerRecord["status"]) => { if (!notice) return; const text = (document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value || "Status changed by the NSTC admin team."; setData((old) => ({ ...old, lecturers: old.lecturers.map((l) => l.id === notice.id ? { ...l, status, notice: text } : l) })); setNotice(null); toast.success(`${status} notice drafted for ${notice.email}.`); };
-  return <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}><PageHeading eyebrow="People & permissions" title="Manage employees" body="Create employee accounts, record particulars and assign teaching courses where applicable." actions={<Button onClick={() => openEditor(blank)}><Plus className="h-4 w-4" /> Create employee</Button>} /><div className="portal-card"><div className="flex flex-col justify-between gap-4 md:flex-row md:items-center"><div><p className="eyebrow">Employee directory</p><h3 className="mt-2 font-display text-2xl text-slate-950">Staff accounts</h3></div><input className="field mt-0 max-w-sm" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, profession or employee no." /></div><div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{list.map((l) => <details className="employee-card" key={l.id}><summary className="flex cursor-pointer list-none items-start justify-between gap-3"><div className="min-w-0"><div className="flex items-center gap-3"><div className="avatar-small">{initials(l.name)}</div><div><p className="font-semibold text-slate-950">{l.name}</p><p className="text-xs text-slate-500">{l.employeeNo} · {l.profession || "Employee"}</p></div></div></div><Pill tone={l.status === "Active" ? "green" : "red"}>{l.status}</Pill></summary><div className="mt-5 border-t border-slate-100 pt-4"><div className="grid gap-3 text-sm sm:grid-cols-2"><p><span className="block text-xs text-slate-400">Email</span><strong>{l.email}</strong></p><p><span className="block text-xs text-slate-400">Phone</span><strong>{l.phone}</strong></p><p><span className="block text-xs text-slate-400">Campus</span><strong>{l.campus}</strong></p><p><span className="block text-xs text-slate-400">Employment</span><strong>{l.employeeType || "Permanent"}</strong></p></div><p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Courses</p><p className="mt-1 text-sm text-slate-700">{l.courses.join(" · ") || "No teaching allocation"}</p><p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Subjects</p><p className="mt-1 text-sm text-slate-700">{l.subjects.join(" · ") || "No subjects assigned"}</p><div className="mt-5 flex flex-wrap gap-2"><button className="filter-chip" onClick={() => openEditor(l)}>Edit</button><button className="filter-chip" onClick={() => setNotice(l)}>{l.status === "Active" ? "Disable / remove" : "Draft notice"}</button></div></div></details>)}</div>{!list.length && <div className="empty-state"><Users /><h3>No employees found</h3><p>Try a different search term.</p></div>}</div>{editing && <Modal title={draft.id ? "Edit employee account" : "Create employee account"} onClose={() => setEditing(null)}><div className="mt-5 flex gap-2 border-b border-slate-100 pb-4">{["Demographics", "Account", "Courses & subjects"].map((label, index) => <button type="button" key={label} className={`filter-chip ${step === index ? "active" : ""}`} onClick={() => index <= step && setStep(index)}>{index + 1}. {label}</button>)}</div><form ref={formRef} onSubmit={save} className="mt-5"><div className={step === 0 ? "grid gap-4 md:grid-cols-2" : "hidden"}><label>Full name<input className="field" value={draft.name} onChange={(e) => updateDraft("name", e.target.value)} /></label><label>Employee number<input className="field" value={draft.employeeNo} onChange={(e) => updateDraft("employeeNo", e.target.value)} /></label><label>Profession<input className="field" value={draft.profession || ""} onChange={(e) => updateDraft("profession", e.target.value)} placeholder="e.g. Lecturer, Finance Officer" /></label><label>CV document<input type="file" name="cv" className="field" accept=".pdf,.doc,.docx" /></label></div><div className={step === 1 ? "grid gap-4 md:grid-cols-2" : "hidden"}><label>Email address<input className="field" type="email" value={draft.email} onChange={(e) => updateDraft("email", e.target.value)} /></label><label>Phone<input className="field" value={draft.phone} onChange={(e) => updateDraft("phone", e.target.value)} /></label><label>Bank account<input className="field" value={draft.bankAccount || ""} onChange={(e) => updateDraft("bankAccount", e.target.value)} placeholder="Account number / payroll reference" /></label><div><span className="field-label">Employment type</span><div className="mt-2 flex flex-wrap gap-2">{["Contract", "Permanent", "Part-time"].map((type) => <button type="button" key={type} className={`filter-chip ${draft.employeeType === type ? "active" : ""}`} onClick={() => updateDraft("employeeType", type)}>{type}</button>)}</div></div></div><div className={step === 2 ? "space-y-5" : "hidden"}><div><p className="field-label">Courses from the academic catalogue</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{courses.map((course) => <label className="check-option" key={course.id}><input type="checkbox" checked={courseSelections.includes(course.name)} onChange={(e) => setCourseSelections((old) => e.target.checked ? [...old, course.name] : old.filter((v) => v !== course.name))} />{course.name}</label>)}</div></div><div><p className="field-label">Subjects corresponding to selected courses</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{availableSubjects.map((subject) => <label className="check-option" key={subject}><input type="checkbox" checked={subjectSelections.includes(subject)} onChange={(e) => setSubjectSelections((old) => e.target.checked ? [...old, subject] : old.filter((v) => v !== subject))} />{subject}</label>)}</div>{!availableSubjects.length && <p className="mt-2 text-sm text-slate-500">Select at least one course to reveal its subjects.</p>}</div></div>{errors.length > 0 && <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><p className="font-bold">Please correct the following:</p><ul className="mt-2 list-disc pl-5">{errors.map((error) => <li key={error}>{error}</li>)}</ul></div>}<div className="mt-7 flex justify-between gap-3"><Button variant="light" type="button" onClick={() => step === 0 ? setEditing(null) : setStep(step - 1)}>{step === 0 ? "Cancel" : "Back"}</Button>{step < 2 ? <Button type="button" onClick={nextStep}>Validate & continue <ArrowRight className="h-4 w-4" /></Button> : <Button type="submit"><Check className="h-4 w-4" /> Submit account</Button>}</div></form></Modal>}{temporaryPassword && <Modal title="Temporary password generated" onClose={() => setTemporaryPassword("")}><div className="mt-5 rounded-xl bg-slate-950 p-5 text-center"><p className="text-xs uppercase tracking-wider text-white/50">Temporary password</p><p className="mt-3 font-mono text-2xl font-bold tracking-widest text-[#D4AF37]">{temporaryPassword}</p></div><p className="mt-5 text-sm leading-6 text-slate-600">Share this password securely with the employee. It must be reset when the account logs in for the first time.</p><div className="mt-5 flex justify-end"><Button onClick={() => setTemporaryPassword("")}>Done</Button></div></Modal>}{notice && <Modal title={`Status notice · ${notice.name}`} onClose={() => setNotice(null)}><p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this employee. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p><textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice || "Your account has been placed under review because..."} /><div className="mt-5 flex flex-wrap justify-end gap-3"><Button variant="light" onClick={() => setNotice(null)}>Cancel</Button><Button variant="light" onClick={() => updateStatus("Disabled")}>Disable</Button><Button onClick={() => updateStatus("Removed")}>Remove</Button></div></Modal>}</PortalShell>;
+
+  const save = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (step !== 2 || !validateStep(0) || !validateStep(1) || !validateStep(2)) return;
+    const f = new FormData(e.currentTarget);
+    const cvDoc = f.get("cv");
+    const password = `NSTC-${Math.random().toString(36).slice(2, 8).toUpperCase()}!`;
+    const next: LecturerRecord = {
+      ...draft,
+      id: draft.id || crypto.randomUUID(),
+      courses: courseSelections,
+      cv: cvDoc instanceof File && cvDoc.name ? cvDoc : draft.cv, subjects: subjectSelections,
+      temporaryPassword: password
+    };
+    setData((old) => ({
+      ...old,
+      lecturers: draft.id
+        ? old.lecturers.map((l) => l.id === draft.id ? next : l)
+        : [next, ...old.lecturers]
+    }));
+    setEditing(null);
+    setErrors([]);
+    setTemporaryPassword(password);
+    toast.success("Employee account created with a temporary password.");
+  };
+
+  const updateStatus = (status: LecturerRecord["status"]) => {
+    if (!notice) return;
+    const text = (document.getElementById("lecturer-notice") as HTMLTextAreaElement)?.value || "Status changed by the NSTC admin team.";
+    setData((old) => ({ ...old, lecturers: old.lecturers.map((l) => l.id === notice.id ? { ...l, status, notice: text } : l) }));
+    setNotice(null);
+    toast.success(`${status} notice drafted for ${notice.email}.`);
+  };
+
+  return (
+    <PortalShell role="Admin" active="/admin/lecturers" onNavigate={navigate}>
+      <PageHeading eyebrow="People & permissions" title="Manage employees" body="Create employee accounts, record particulars and assign teaching courses where applicable."
+        actions={<Button onClick={() => openEditor(blank)}><Plus className="h-4 w-4" /> Create employee</Button>}
+      />
+      <div className="portal-card">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <p className="eyebrow">Employee directory</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">Staff accounts</h3>
+          </div>
+          <input className="field mt-0 max-w-sm" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, profession or employee no." />
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {list.map((l) =>
+            <details className="employee-card" key={l.id}>
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-3">
+                    <div className="avatar-small">{initials(l.name)}</div>
+                    <div>
+                      <p className="font-semibold text-slate-950">{l.name}</p>
+                      <p className="text-xs text-slate-500">{l.employeeNo} · {l.profession || "Employee"}</p>
+                    </div>
+                  </div>
+                </div>
+                <Pill tone={l.status === "Active" ? "green" : "red"}>{l.status}</Pill>
+              </summary>
+              <div className="mt-5 border-t border-slate-100 pt-4">
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
+                  <p><span className="block text-xs text-slate-400">Email</span><strong>{l.email}</strong></p>
+                  <p><span className="block text-xs text-slate-400">Phone</span><strong>{l.phone}</strong></p>
+                  <p><span className="block text-xs text-slate-400">Campus</span><strong>{l.campus}</strong></p>
+                  <p><span className="block text-xs text-slate-400">Employment</span><strong>{l.employeeType || "Permanent"}</strong></p>
+                </div>
+                <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Courses</p>
+                <p className="mt-1 text-sm text-slate-700">{l.courses.join(" · ") || "No teaching allocation"}</p>
+                <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Subjects</p>
+                <p className="mt-1 text-sm text-slate-700">{l.subjects.join(" · ") || "No subjects assigned"}</p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button className="filter-chip" onClick={() => openEditor(l)}>Edit</button>
+                  <button className="filter-chip" onClick={() => setNotice(l)}>{l.status === "Active" ? "Disable / remove" : "Draft notice"}</button>
+                </div>
+              </div>
+            </details>
+          )}
+        </div>
+        {!list.length && <div className="empty-state"><Users /><h3>No employees found</h3><p>Try a different search term.</p></div>}
+      </div>
+      {editing &&
+        <Modal title={draft.id ? "Edit employee account" : "Create employee account"} onClose={() => setEditing(null)}>
+          <div className="mt-5 flex gap-2 border-b border-slate-100 pb-4">
+            {["Demographics", "Account", "Courses & subjects"].map((label, index) => <button type="button" key={label} className={`filter-chip ${step === index ? "active" : ""}`} onClick={() => index <= step && setStep(index)}>{index + 1}. {label}</button>)}
+          </div>
+          <form ref={formRef} onSubmit={save} className="mt-5">
+            <div className={step === 0 ? "grid gap-4 md:grid-cols-2" : "hidden"}>
+              <label>Full name<input className="field" value={draft.name} onChange={(e) => updateDraft("name", e.target.value)} /></label>
+              <label>Employee number<input className="field" value={draft.employeeNo} onChange={(e) => updateDraft("employeeNo", e.target.value)} /></label>
+              <label>Profession<input className="field" value={draft.profession || ""} onChange={(e) => updateDraft("profession", e.target.value)} placeholder="e.g. Lecturer, Finance Officer" /></label>
+              <label>CV document<input type="file" name="cv" className="field" accept=".pdf,.doc,.docx" /></label>
+            </div>
+            <div className={step === 1 ? "grid gap-4 md:grid-cols-2" : "hidden"}>
+              <label>Email address<input className="field" type="email" value={draft.email} onChange={(e) => updateDraft("email", e.target.value)} /></label>
+              <label>Phone<input className="field" value={draft.phone} onChange={(e) => updateDraft("phone", e.target.value)} /></label>
+              <label>Bank account<input className="field" value={draft.bankAccount || ""} onChange={(e) => updateDraft("bankAccount", e.target.value)} placeholder="Account number / payroll reference" /></label>
+              <div>
+                <span className="field-label">Employment type</span>
+                <div className="mt-2 flex flex-wrap gap-2">{["Contract", "Permanent", "Part-time"].map((type) =>
+                  <button type="button" key={type} className={`filter-chip ${draft.employeeType === type ? "active" : ""}`} onClick={() => updateDraft("employeeType", type)}>{type}</button>
+                )}
+                </div>
+              </div>
+            </div>
+            <div className={step === 2 ? "space-y-5" : "hidden"}>
+              <div>
+                <p className="field-label">Courses from the academic catalogue</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">{courses.map((course) =>
+                  <label className="check-option" key={course.id}>
+                    <input type="checkbox" checked={courseSelections.includes(course.name)} onChange={(e) =>
+                      setCourseSelections((old) => e.target.checked
+                        ? [...old, course.name] : old.filter((v) => v !== course.name)
+                      )}
+                    />{course.name}
+                  </label>
+                )}
+                </div>
+              </div>
+              <div>
+                <p className="field-label">Subjects corresponding to selected courses</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {availableSubjects.map((subject) =>
+                    <label className="check-option" key={subject}>
+                      <input type="checkbox" checked={subjectSelections.includes(subject)} onChange={(e) => setSubjectSelections((old) => e.target.checked
+                        ? [...old, subject] : old.filter((v) => v !== subject))}
+                      />{subject}
+                    </label>
+                  )}
+                </div>
+                {!availableSubjects.length && <p className="mt-2 text-sm text-slate-500">Select at least one course to reveal its subjects.</p>}
+              </div>
+            </div>
+            {errors.length > 0 && <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <p className="font-bold">Please correct the following:</p>
+              <ul className="mt-2 list-disc pl-5">{errors.map((error) => <li key={error}>{error}</li>)}</ul></div>
+            }
+            <div className="mt-7 flex justify-between gap-3">
+              <Button variant="light" type="button" onClick={() => step === 0 ? setEditing(null) : setStep(step - 1)}>
+                {step === 0 ? "Cancel" : "Back"}
+              </Button>
+              {step < 2
+                ? <Button type="button" onClick={nextStep}>Validate & continue <ArrowRight className="h-4 w-4" /></Button>
+                : <Button type="submit"><Check className="h-4 w-4" /> Submit account</Button>
+              }
+            </div>
+          </form>
+        </Modal>
+      }
+      {temporaryPassword &&
+        <Modal title="Temporary password generated" onClose={() => setTemporaryPassword("")}>
+          <div className="mt-5 rounded-xl bg-slate-950 p-5 text-center">
+            <p className="text-xs uppercase tracking-wider text-white/50">Temporary password</p>
+            <p className="mt-3 font-mono text-2xl font-bold tracking-widest text-[#D4AF37]">{temporaryPassword}</p>
+          </div>
+          <p className="mt-5 text-sm leading-6 text-slate-600">Share this password securely with the employee. It must be reset when the account logs in for the first time.</p>
+          <div className="mt-5 flex justify-end">
+            <Button onClick={() => setTemporaryPassword("")}>Done</Button>
+          </div>
+        </Modal>
+      }
+      {notice &&
+        <Modal title={`Status notice · ${notice.name}`} onClose={() => setNotice(null)}>
+          <p className="mt-5 text-sm leading-6 text-slate-600">Draft the reason for disabling or removing this employee. The notice will be addressed to <strong>{notice.email}</strong> when connected to the email service.</p>
+          <textarea id="lecturer-notice" className="field mt-4 min-h-[130px] py-3" defaultValue={notice.notice || "Your account has been placed under review because..."} />
+          <div className="mt-5 flex flex-wrap justify-end gap-3">
+            <Button variant="light" onClick={() => setNotice(null)}>Cancel</Button>
+            <Button variant="light" onClick={() => updateStatus("Disabled")}>Disable</Button>
+            <Button onClick={() => updateStatus("Removed")}>Remove</Button>
+          </div>
+        </Modal>
+      }
+    </PortalShell>
+  );
 }
+
 function AdminComplaints({ data, navigate }: { data: AppData; navigate: (path: string) => void }) {
-  const [status, setStatus] = useState("All statuses"); const [selected, setSelected] = useState<Complaint | null>(null); const list = data.complaints.filter((c) => (status === "All statuses" || c.status === status));
-  return <PortalShell role="Admin" active="/admin/complaints" onNavigate={navigate}><PageHeading eyebrow="Student success desk" title="Complaints submitted" body="Review submitted complaints and support requests, including anonymous reports." /><div className="portal-card"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow">Case queue</p><h3 className="mt-2 font-display text-2xl text-slate-950">{list.length} submitted cases</h3></div><select className="field mt-0 max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}><option>All statuses</option>{Array.from(new Set(data.complaints.map((c) => c.status))).map((v) => <option key={v}>{v}</option>)}</select></div><div className="mt-6 space-y-3">{list.map((c) => <button className="list-row w-full text-left" key={c.id} onClick={() => setSelected(c)}><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-slate-950">{c.subject}</p><Pill tone={c.status === "Open" ? "gold" : c.status === "Resolved" ? "green" : "slate"}>{c.status}</Pill></div><p className="mt-1 truncate text-sm text-slate-600">{c.message}</p><p className="mt-1 text-xs text-slate-400">{c.date} · {c.time || "Time not recorded"} · {c.anonymous ? "Anonymous" : c.name || "Name not recorded"}</p></div><ArrowRight className="shrink-0 text-slate-400" /></button>)}{!list.length && <div className="empty-state"><MessageCircle /><h3>No complaints submitted</h3><p>New complaints will appear here when students submit support requests.</p></div>}</div></div>{selected && <Modal title={`Complaint · ${selected.subject}`} onClose={() => setSelected(null)}><div className="mt-5 grid gap-4 sm:grid-cols-2"><p className="text-sm"><span className="block text-xs text-slate-400">Submitted</span><strong>{selected.date} · {selected.time || "Time not recorded"}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Status</span><Pill tone={selected.status === "Open" ? "gold" : "green"}>{selected.status}</Pill></p><p className="text-sm"><span className="block text-xs text-slate-400">Name</span><strong>{selected.anonymous ? "Anonymous" : selected.name || "Not recorded"}</strong></p><p className="text-sm"><span className="block text-xs text-slate-400">Email / phone</span><strong>{selected.anonymous ? "Withheld" : [selected.email, selected.phone].filter(Boolean).join(" · ") || "Not recorded"}</strong></p></div><div className="mt-5 rounded-xl bg-slate-50 p-4"><p className="eyebrow">Complaint</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">{selected.message}</p></div><div className="mt-5 flex justify-end"><Button onClick={() => setSelected(null)}>Close</Button></div></Modal>}</PortalShell>;
+  const [status, setStatus] = useState("All statuses");
+  const [selected, setSelected] = useState<Complaint | null>(null);
+  const list = data.complaints.filter((c) => (status === "All statuses" || c.status === status));
+
+  return (
+    <PortalShell role="Admin" active="/admin/complaints" onNavigate={navigate}>
+      <PageHeading eyebrow="Student success desk" title="Complaints submitted" body="Review submitted complaints and support requests, including anonymous reports." />
+      <div className="portal-card">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="eyebrow">Case queue</p>
+            <h3 className="mt-2 font-display text-2xl text-slate-950">{list.length} submitted cases</h3>
+          </div>
+          <select className="field mt-0 max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option>All statuses</option>
+            {Array.from(new Set(data.complaints.map((c) => c.status))).map((v) => <option key={v}>{v}</option>)}
+          </select>
+        </div>
+        <div className="mt-6 space-y-3">
+          {list.map((c) =>
+            <button className="list-row w-full text-left" key={c.id} onClick={() => setSelected(c)}>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-semibold text-slate-950">{c.subject}</p>
+                  <Pill tone={c.status === "Open" ? "gold" : c.status === "Resolved" ? "green" : "slate"}>{c.status}</Pill>
+                </div>
+                <p className="mt-1 truncate text-sm text-slate-600">{c.message}</p>
+                <p className="mt-1 text-xs text-slate-400">{c.date} · {c.time || "Time not recorded"} · {c.anonymous ? "Anonymous" : c.name || "Name not recorded"}</p>
+              </div>
+              <ArrowRight className="shrink-0 text-slate-400" />
+            </button>
+          )}
+          {!list.length &&
+            <div className="empty-state">
+              <MessageCircle /><h3>No complaints submitted</h3>
+              <p>New complaints will appear here when students submit support requests.</p>
+            </div>
+          }
+        </div>
+      </div>
+      {selected &&
+        <Modal title={`Complaint · ${selected.subject}`} onClose={() => setSelected(null)}>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <p className="text-sm">
+              <span className="block text-xs text-slate-400">Submitted</span>
+              <strong>{selected.date} · {selected.time || "Time not recorded"}</strong>
+            </p>
+            <p className="text-sm">
+              <span className="block text-xs text-slate-400">Status</span>
+              <Pill tone={selected.status === "Open" ? "gold" : "green"}>{selected.status}</Pill>
+            </p>
+            <p className="text-sm">
+              <span className="block text-xs text-slate-400">Name</span>
+              <strong>{selected.anonymous ? "Anonymous" : selected.name || "Not recorded"}</strong>
+            </p>
+            <p className="text-sm">
+              <span className="block text-xs text-slate-400">Email / phone</span>
+              <strong>{selected.anonymous ? "Withheld" : [selected.email, selected.phone].filter(Boolean).join(" · ") || "Not recorded"}</strong>
+            </p>
+          </div>
+          <div className="mt-5 rounded-xl bg-slate-50 p-4">
+            <p className="eyebrow">Complaint</p>
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">{selected.message}</p>
+          </div>
+          <div className="mt-5 flex justify-end">
+            <Button onClick={() => setSelected(null)}>Close</Button>
+          </div>
+        </Modal>
+      }
+    </PortalShell>
+  );
 }
+
 function AdminPortal({ data, setData, path, navigate }: {
   data: AppData; setData: React.Dispatch<React.SetStateAction<AppData>>;
   path: string; navigate: (path: string) => void
@@ -4274,7 +4815,7 @@ function AdminPortal({ data, setData, path, navigate }: {
 
   if (!loggedIn) return <AdminAuth onAuthenticated={() => setLoggedIn(true)} />;
   if (path === "/admin/lecturers") return <AdminLecturers data={data} setData={setData} navigate={navigate} />;
-  if (path === "/admin/students") return <AdminStudents data={data} navigate={navigate} />;
+  if (path === "/admin/students") return <AdminStudents data={data} setData={setData} navigate={navigate} />;
   // if (path === "/admin/academics") return <AdminAcademics data={data} setData={setData} navigate={navigate} />;
   if (path === "/admin/attendance") return <AdminAttendance data={data} navigate={navigate} />;
   if (path === "/admin/complaints") return <AdminComplaints data={data} navigate={navigate} />;
@@ -4474,7 +5015,7 @@ function AdminDashboard({ data, setData, navigate }: {
 
 function AdminStudents({ data, setData, navigate }: {
   data: AppData;
-  setData?: React.Dispatch<React.SetStateAction<AppData>>;
+  setData: React.Dispatch<React.SetStateAction<AppData>>;
   navigate: (path: string) => void
 }) {
   const [query, setQuery] = useState("");
@@ -4503,7 +5044,10 @@ function AdminStudents({ data, setData, navigate }: {
         const missing = required.filter((key) => !String(row[key] ?? "").trim());
         const statusValue = String(row.status || "Active");
         if (missing.length) { errors.push(`Row ${index + 2}: missing ${missing.join(", ")}.`); return; }
-        if (!["Active", "Suspended", "Completed", "Alumni"].includes(statusValue)) { errors.push(`Row ${index + 2}: status must be Active, Suspended, Completed or Alumni.`); return; }
+        if (!["Active", "Suspended", "Completed", "Alumni"].includes(statusValue)) {
+          errors.push(`Row ${index + 2}: status must be Active, Suspended, Completed or Alumni.`);
+          return;
+        }
         accepted.push({
           id: crypto.randomUUID(),
           name: String(row.name),
@@ -4522,7 +5066,9 @@ function AdminStudents({ data, setData, navigate }: {
           remarks: String(row.remarks || "Imported in bulk")
         });
       });
+
       setData((old) => ({ ...old, students: [...accepted, ...old.students] }));
+
       setImportErrors(errors);
       setImportSummary(`${accepted.length} record${accepted.length === 1 ? "" : "s"} imported successfully${errors.length ? `; ${errors.length} failed validation` : ""}.`);
     } catch {
