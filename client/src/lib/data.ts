@@ -146,10 +146,9 @@ const getSubject = (name: string): Subject => {
 
 export const courses: Course[] = [
   {
-    id: "eng-electrical", image: "/assets/engineering.jpg",
-    name: "Electrical Engineering",
-    category: "Engineering Studies",
-    // level: "N1–N6",
+    id: "eng-electrical", image: "/assets/justthree.jpeg",
+    name: "Crops & Animals",
+    category: "Agriculture",
     duration: "3 months", fee: 18500, regFee: 500, popular: true,
     mode: "Hybrid",
     subjects: [
@@ -175,9 +174,8 @@ export const courses: Course[] = [
     ]
   },
   {
-    id: "business-management", image: "/assets/management.jpg",
-    name: "Business Management", category: "Business & Management",
-    // level: "N4–N6", 
+    id: "business-management", image: "/assets/justsix.jpeg",
+    name: "Fashion & Fabric", category: "Skills",
     duration: "6 months", fee: 16500, regFee: 500, popular: true,
     mode: "On campus",
     subjects: [
@@ -191,9 +189,8 @@ export const courses: Course[] = [
     ]
   },
   {
-    id: "it", image: "/assets/it.jpg", name: "Information Technology",
-    category: "Information Technology",
-    // level: "Certificate", 
+    id: "it", image: "/assets/justtwo.jpeg", name: "Wood-Work",
+    category: "Carpentry",
     duration: "12 months",
     fee: 14500, regFee: 500, popular: true, mode: "Hybrid",
     subjects: [
@@ -212,9 +209,8 @@ export const courses: Course[] = [
     ]
   },
   {
-    id: "health-safety", image: "/assets/health&safety.jpg",
-    name: "Health & Safety Officer", category: "Health & Safety",
-    // level: "Occupational", 
+    id: "health-safety", image: "/assets/justone.jpeg",
+    name: "Building", category: "Health & Safety",
     duration: "12 months", fee: 22000, regFee: 500,
     mode: "On campus",
     subjects: [
@@ -226,9 +222,8 @@ export const courses: Course[] = [
     ]
   },
   {
-    id: "bricklayer", image: "/assets/bricklayer.jpg",
-    name: "Occupational Certificate: Bricklayer", category: "QCTO Skills",
-    // level: "Occupational", 
+    id: "bricklayer", image: "/assets/justfour.jpeg",
+    name: "Metal & Steel", category: "Metal-Work",
     duration: "18 months", fee: 32000, regFee: 500,
     mode: "On campus",
     subjects: [
@@ -239,9 +234,8 @@ export const courses: Course[] = [
     ]
   },
   {
-    id: "supply-chain", image: "/assets/supplychain.jpg",
-    name: "Supply Chain Practitioner", category: "Logistics & Transport",
-    // level: "Occupational", 
+    id: "supply-chain", image: "/assets/justfive.jpeg",
+    name: "Motor Mechanics", category: "Logistics & Transport",
     duration: "12 months", fee: 24000, regFee: 500,
     mode: "Hybrid",
     subjects: [
@@ -252,17 +246,15 @@ export const courses: Course[] = [
     ]
   },
   {
-    id: "matric", image: "/assets/matric.jpg", name: "Matric Rewrite & Upgrade",
+    id: "matric", image: "/assets/justseven.jpeg", name: "Computer",
     category: "Matric Rewrite",
-    // level: "Grade 12", 
     duration: "6 months", fee: 8500,
     regFee: 500, mode: "On campus",
     subjects: [getSubject("Mathematics"), getSubject("Physical Science"), getSubject("Life Science"), getSubject("English"), getSubject("Accounting")]
   },
   {
-    id: "solar", image: "/assets/solar.jpg", name: "Solar Panel Installation",
+    id: "solar", image: "/assets/justeight.jpg", name: "Electrical Installation",
     category: "Short Course",
-    // level: "Skills", 
     duration: "2 months", fee: 7500,
     regFee: 2500, monthly: 2500, mode: "On campus",
     subjects: [getSubject("Solar Theory"), getSubject("Panel Installation"), getSubject("Wiring & Testing")]

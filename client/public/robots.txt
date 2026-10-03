@@ -1,6 +1,0 @@
-User-agent: *
-Disallow: /admin
-Disallow: /lecturer
-Disallow: /portal
-
-Sitemap: https://nationalskills.org.za/sitemap.xml
