@@ -1,1 +1,1 @@
-export async function delay(ms = 650) { return new Promise((resolve) => window.setTimeout(resolve, ms)); }
+export function delay(ms = 650) { return new Promise((resolve) => window.setTimeout(resolve, ms)); }

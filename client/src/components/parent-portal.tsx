@@ -11,7 +11,7 @@ import { PageHeading } from "./page-heading";
 import { MetricCard } from "./metric-card";
 import { ProgressBar } from "./progress-bar";
 
-export async function ParentPortal({ data, navigate }: {
+export function ParentPortal({ data, navigate }: {
   data: AppData;
   navigate: (path: string) => void
 }) {

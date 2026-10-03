@@ -7,7 +7,7 @@ import { Check, ArrowRight, Plus, CircleDollarSign, FileText, ChevronLeft } from
 import { Spinner } from "./spinner";
 import { Button } from "./button";
 
-export async function Registration({ onComplete }: {
+export function Registration({ onComplete }: {
   onComplete: (application?: ApplicationDraft) => void | Promise<void>
 }) {
   const [step, setStep] = useState(1);

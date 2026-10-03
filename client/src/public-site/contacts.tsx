@@ -97,11 +97,10 @@ export function Contact() {
             className="h-full w-full"
             initialCenter={{ lat: -25.94, lng: 28.74 }}
             initialZoom={7}
+            // MITC Manzini campus coordinates:
+            // -26.484688266900275, 31.381542493924844
             markers={[
-              { id: "midrand", lat: -25.9897, lng: 28.1284, label: "Midrand Campus", sublabel: "675 Old Pretoria Road" },
-              { id: "middelburg", lat: -25.7731, lng: 29.4689, label: "Middelburg Campus", sublabel: "22 OR Tambo Street" },
-              { id: "sandton", lat: -26.1076, lng: 28.0567, label: "Sandton Campus", sublabel: "Wynberg Johannesburg area" },
-              { id: "burgersfort", lat: -24.6667, lng: 30.3333, label: "Burgersfort Campus", sublabel: "OR Tambo Street" },
+              { id: "mitc", lat: -26.484688266900275, lng: 31.381542493924844, label: "Manzini Indusrial Training Center", sublabel: "St Michael's Road, Emakhonweni" }
             ]}
           />
         </div>

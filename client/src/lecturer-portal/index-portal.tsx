@@ -14,7 +14,7 @@ import { LecturerShell } from "./lecturer-shell";
 
 
 
-export async function LecturerPortal({ data, setData, path, navigate }: {
+export function LecturerPortal({ data, setData, path, navigate }: {
   data: AppData;
   setData: React.Dispatch<React.SetStateAction<AppData>>;
   path: string;

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Assignment, Schedule } from "../lib/types";
 
 // Calendar Drawer Component
-export async function CalendarDrawer({ schedules, assignments, onClose }: {
+export function CalendarDrawer({ schedules, assignments, onClose }: {
   schedules: Schedule[];
   assignments: Assignment[];
   onClose: () => void

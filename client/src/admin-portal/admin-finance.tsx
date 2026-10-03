@@ -7,7 +7,7 @@ import { Button } from "@/components/button";
 import { MetricCard } from "@/components/metric-card";
 import { Download, FileText, CircleDollarSign, Plus, WalletCards } from "lucide-react";
 
-export async function AdminFinance({ data, navigate }: {
+export function AdminFinance({ data, navigate }: {
   data: AppData;
   navigate: (path: string) => void
 }) {

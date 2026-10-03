@@ -3,7 +3,7 @@ import { Spinner } from "./spinner";
 import { Modal } from "./modal";
 
 // Confirmation Modal Component
-export async function Confirm({ title, body, onCancel, onConfirm, loading }: {
+export function Confirm({ title, body, onCancel, onConfirm, loading }: {
   title: string;
   body: string;
   onCancel: () => void;
