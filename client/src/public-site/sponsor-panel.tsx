@@ -30,22 +30,19 @@ export function SponsorPanel() {
           <span className="rounded-full bg-[#D4AF37] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-black">News & Gallery</span>
         </div>
         <div className="sponsor-message-stack" aria-live="polite">
-          {messages.map((message, index) => {
-            const isActive = index === active;
-            return (
-              <div
-                key={`${message.title}-${index}-${isActive ? "active" : "idle"}`}
-                className={`sponsor-message sponsor-message--${message.variant} ${isActive ? "is-active" : "is-hidden"}`}
-                style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(16, 24, 40, 0.15), rgba(9, 11, 18, 0.72)), url(${message.background})`
-                }}
-              >
-                <p className="text-sm text-[#f7d77e]">Manzini Industrial Training Center</p>
-                <h3 className="mt-3 max-w-md font-display text-3xl leading-tight text-white">{message.title}</h3>
-                <p className="mt-4 text-sm leading-6 text-white/70">{message.body}</p>
-              </div>
-            );
-          })}
+          {messages[active] && (
+            <div
+              key={active}
+              className={`sponsor-message sponsor-message--${messages[active].variant} is-active`}
+              style={{
+                backgroundImage: `linear-gradient(180deg, rgba(16, 24, 40, 0.15), rgba(9, 11, 18, 0.72)), url(${messages[active].background})`
+              }}
+            >
+              <p className="text-sm text-[#f7d77e]">Manzini Industrial Training Center</p>
+              <h3 className="mt-3 max-w-md font-display text-3xl leading-tight text-white">{messages[active].title}</h3>
+              <p className="mt-4 text-sm leading-6 text-white/70">{messages[active].body}</p>
+            </div>
+          )}
         </div>
         <div className="mt-9 flex gap-2">
           {messages.map((_, i) =>
