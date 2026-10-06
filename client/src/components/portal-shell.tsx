@@ -39,106 +39,106 @@ export function PortalShell({
   const items =
     role === "Student"
       ? [
-          { label: "Overview", icon: LayoutDashboard, path: "/portal" },
-          { label: "My learning", icon: BookOpen, path: "/portal/learning" },
-          {
-            label: "Assignments",
-            icon: ClipboardCheck,
-            path: "/portal/assignments",
-          },
-          {
-            label: "Results & attendance",
-            icon: BarChart3,
-            path: "/portal/results",
-          },
-          { label: "Finances", icon: WalletCards, path: "/portal/finances" },
-          {
-            label: "Complaints & queries",
-            icon: MessageCircle,
-            path: "/portal/support",
-          },
-          {
-            label: "Account settings",
-            icon: ShieldCheck,
-            path: "/portal/settings",
-          },
-        ]
+        { label: "Overview", icon: LayoutDashboard, path: "/portal" },
+        { label: "My learning", icon: BookOpen, path: "/portal/learning" },
+        {
+          label: "Assignments",
+          icon: ClipboardCheck,
+          path: "/portal/assignments",
+        },
+        {
+          label: "Results & attendance",
+          icon: BarChart3,
+          path: "/portal/results",
+        },
+        { label: "Finances", icon: WalletCards, path: "/portal/finances" },
+        {
+          label: "Complaints & queries",
+          icon: MessageCircle,
+          path: "/portal/support",
+        },
+        {
+          label: "Account settings",
+          icon: ShieldCheck,
+          path: "/portal/settings",
+        },
+      ]
       : role === "HOD"
         ? [
-            {
-              label: "Department overview",
-              icon: LayoutDashboard,
-              path: "/hod",
-            },
-            { label: "Students & results", icon: Users, path: "/hod/students" },
-            {
-              label: "Staff & communications",
-              icon: MessageCircle,
-              path: "/hod/communications",
-            },
-          ]
+          {
+            label: "Department overview",
+            icon: LayoutDashboard,
+            path: "/hod",
+          },
+          { label: "Students & results", icon: Users, path: "/hod/students" },
+          {
+            label: "Staff & communications",
+            icon: MessageCircle,
+            path: "/hod/communications",
+          },
+        ]
         : role === "IT Officer"
           ? [
-              { label: "User operations", icon: ShieldCheck, path: "/it" },
-              {
-                label: "Department IDs",
-                icon: Building2,
-                path: "/it/departments",
-              },
-              {
-                label: "Audit history",
-                icon: ClipboardCheck,
-                path: "/it/audit",
-              },
-            ]
+            { label: "User operations", icon: ShieldCheck, path: "/it" },
+            {
+              label: "Department IDs",
+              icon: Building2,
+              path: "/it/departments",
+            },
+            {
+              label: "Audit history",
+              icon: ClipboardCheck,
+              path: "/it/audit",
+            },
+          ]
           : role === "Accountant"
             ? [
-                {
-                  label: "Student ledger",
-                  icon: WalletCards,
-                  path: "/accounting",
-                },
-                {
-                  label: "Fee schedules",
-                  icon: WalletCards,
-                  path: "/accounting/fees",
-                },
-                {
-                  label: "Payment reminders",
-                  icon: MessageCircle,
-                  path: "/accounting/reminders",
-                },
-              ]
+              {
+                label: "Student ledger",
+                icon: WalletCards,
+                path: "/accounting",
+              },
+              {
+                label: "Fee schedules",
+                icon: WalletCards,
+                path: "/accounting/fees",
+              },
+              {
+                label: "Payment reminders",
+                icon: MessageCircle,
+                path: "/accounting/reminders",
+              },
+            ]
             : [
-                { label: "Overview", icon: LayoutDashboard, path: "/admin" },
-                { label: "Students", icon: Users, path: "/admin/students" },
-                {
-                  label: "Staff Members",
-                  icon: UserCog,
-                  path: "/admin/lecturers",
-                },
-                {
-                  label: "Departments & HODs",
-                  icon: Building2,
-                  path: "/admin/departments",
-                },
-                // { label: "Academics", icon: BookOpen, path: "/admin/academics" },
-                {
-                  label: "Attendance",
-                  icon: ClipboardCheck,
-                  path: "/admin/attendance",
-                },
-                {
-                  label: "Complaints",
-                  icon: MessageCircle,
-                  path: "/admin/complaints",
-                },
-                { label: "Reports", icon: BarChart3, path: "/admin/reports" },
-                { label: "IT operations", icon: ShieldCheck, path: "/it" },
-                { label: "HOD portal", icon: Users, path: "/hod" },
-                { label: "Accounting", icon: WalletCards, path: "/accounting" },
-                // { label: "Finance", icon: WalletCards, path: "/admin/finance" }
-              ];
+              { label: "Overview", icon: LayoutDashboard, path: "/admin" },
+              { label: "Students", icon: Users, path: "/admin/students" },
+              {
+                label: "Staff Members",
+                icon: UserCog,
+                path: "/admin/lecturers",
+              },
+              {
+                label: "Departments",
+                icon: Building2,
+                path: "/admin/departments",
+              },
+              // { label: "Academics", icon: BookOpen, path: "/admin/academics" },
+              {
+                label: "Attendance",
+                icon: ClipboardCheck,
+                path: "/admin/attendance",
+              },
+              {
+                label: "Complaints",
+                icon: MessageCircle,
+                path: "/admin/complaints",
+              },
+              { label: "Reports", icon: BarChart3, path: "/admin/reports" },
+              // { label: "IT operations", icon: ShieldCheck, path: "/it" },
+              // { label: "HOD portal", icon: Users, path: "/hod" },
+              // { label: "Accounting", icon: WalletCards, path: "/accounting" },
+              // { label: "Finance", icon: WalletCards, path: "/admin/finance" }
+            ];
 
   return (
     <div className="portal-shell">
