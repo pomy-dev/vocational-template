@@ -2,14 +2,71 @@ import { ArrowRight } from "lucide-react";
 
 export type Icon = typeof ArrowRight;
 export type Status = "Active" | "Suspended" | "Completed" | "Alumni";
-export type NextOfKin = { name: string; relationship: string; email: string; phone: string };
-export type ApprenticeshipPost = { id: string; title: string; employer: string; location: string; type: string; closing: string; description: string };
-export type Suggestion = { id: string; name: string; email: string; category: string; message: string; date: string };
-export type Complaint = { id: string; subject: string; category: string; message: string; status: string; date: string; time?: string; name?: string; email?: string; phone?: string; anonymous?: boolean; evidence?: string; source?: "Student" | "Lecturer"; reply?: string; repliedBy?: string; repliedAt?: string; deleted?: boolean };
-export type LearningResource = { id: string; title: string; course: string; subject: string; fileType: string; published: boolean; uploaded: string };
-export type LecturerNotification = { id: string; title: string; body: string; date: string; read: boolean };
-export type TutorProfile = { name: string; initials: string; email: string; phone: string; courses: string[] };
-
+export type NextOfKin = {
+  name: string;
+  relationship: string;
+  email: string;
+  phone: string;
+};
+export type ApprenticeshipPost = {
+  id: string;
+  title: string;
+  employer: string;
+  location: string;
+  type: string;
+  closing: string;
+  description: string;
+};
+export type Suggestion = {
+  id: string;
+  name: string;
+  email: string;
+  category: string;
+  message: string;
+  date: string;
+};
+export type Complaint = {
+  id: string;
+  subject: string;
+  category: string;
+  message: string;
+  status: string;
+  date: string;
+  time?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  anonymous?: boolean;
+  evidence?: string;
+  source?: "Student" | "Lecturer";
+  reply?: string;
+  repliedBy?: string;
+  repliedAt?: string;
+  deleted?: boolean;
+};
+export type LearningResource = {
+  id: string;
+  title: string;
+  course: string;
+  subject: string;
+  fileType: string;
+  published: boolean;
+  uploaded: string;
+};
+export type LecturerNotification = {
+  id: string;
+  title: string;
+  body: string;
+  date: string;
+  read: boolean;
+};
+export type TutorProfile = {
+  name: string;
+  initials: string;
+  email: string;
+  phone: string;
+  courses: string[];
+};
 
 export type StudentRegistrationInput = {
   name: string;
@@ -59,8 +116,16 @@ export type StudentRegistration = {
 };
 
 export enum Level {
-  N1 = "N1", N2 = "N2", N3 = "N3", N4 = "N4", N5 = "N5", N6 = "N6", Certificate = "Certificate",
-  Diploma = "Diploma", Occupational = "Occupational", Skills = "Skills"
+  N1 = "N1",
+  N2 = "N2",
+  N3 = "N3",
+  N4 = "N4",
+  N5 = "N5",
+  N6 = "N6",
+  Certificate = "Certificate",
+  Diploma = "Diploma",
+  Occupational = "Occupational",
+  Skills = "Skills",
 }
 
 export type Subject = {
@@ -78,7 +143,7 @@ export type Course = {
   monthly?: number;
   popular?: boolean;
   subjects: Subject[];
-  mode: "Online" | "On campus" | "Hybrid",
+  mode: "Online" | "On campus" | "Hybrid";
   image?: string;
 };
 export type Student = {
@@ -101,13 +166,16 @@ export type Student = {
   subjects?: string[];
   courseSubjects?: Record<string, string[]>;
   avatarUrl?: string;
+  examinationNumber?: string;
+  temporaryPassword?: string;
+  mustResetPassword?: boolean;
 };
 export type Announcement = {
   id: string;
   title: string;
   body: string;
   date: string;
-  audience: string
+  audience: string;
 };
 export type Assignment = {
   id: string;
@@ -139,6 +207,42 @@ export type LecturerRecord = {
   bankAccount?: string;
   temporaryPassword?: string;
   avatarUrl?: string;
+  departmentId?: string;
+};
+export type DepartmentRecord = {
+  id: string;
+  name: string;
+  code: string;
+  hodId: string;
+  courseNames: string[];
+  programmeNames: string[];
+  subjectNames: string[];
+  active: boolean;
+};
+export type AuditRecord = {
+  id: string;
+  entityId: string;
+  entityType: string;
+  action: string;
+  actor: string;
+  date: string;
+  details: string;
+};
+export type FeePlan = {
+  course: string;
+  total: number;
+  intervals: string[];
+  options: string[];
+};
+export type LedgerEntry = {
+  id: string;
+  studentId: string;
+  studentName: string;
+  kind: "Payment" | "Charge";
+  label: string;
+  amount: number;
+  date: string;
+  reference: string;
 };
 export type Schedule = {
   id: string;
@@ -146,14 +250,14 @@ export type Schedule = {
   kind: string;
   date: string;
   time: string;
-  location: string
+  location: string;
 };
 export type Payment = {
   id: string;
   label: string;
   amount: number;
   date: string;
-  status: string
+  status: string;
 };
 export type AppData = {
   students: Student[];
@@ -167,7 +271,7 @@ export type AppData = {
     quantity: number;
     requester: string;
     email: string;
-    status: string
+    status: string;
   }[];
   suggestions: Suggestion[];
   apprenticeships: ApprenticeshipPost[];
@@ -176,6 +280,24 @@ export type AppData = {
   lecturerNotifications: LecturerNotification[];
   tutors: TutorProfile[];
   lecturers: LecturerRecord[];
+  departments?: DepartmentRecord[];
+  auditLog?: AuditRecord[];
+  feePlans?: FeePlan[];
+  ledgerEntries?: LedgerEntry[];
+  financeNotices?: {
+    studentId: string;
+    studentName: string;
+    email: string;
+    message: string;
+    date: string;
+  }[];
+  userPermissions?: {
+    userId: string;
+    permissionKey: string;
+    granted: boolean;
+    changedBy: string;
+    changedAt: string;
+  }[];
 };
 export type ApplicationDraft = {
   name: string;

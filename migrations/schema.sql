@@ -555,3 +555,114 @@ create table if not exists complaint_responses (
 create index if not exists complaints_status_idx on complaints(status);
 create index if not exists complaints_source_idx on complaints(source);
 create index if not exists complaint_responses_complaint_idx on complaint_responses(complaint_id);
+
+-- Department leadership, IT governance, reporting and accountant operations
+alter type user_role add value if not exists 'hod';
+alter type user_role add value if not exists 'it_officer';
+alter type user_role add value if not exists 'accountant';
+
+create table if not exists departments (
+  id uuid primary key default gen_random_uuid(),
+  department_code text not null unique,
+  name text not null unique,
+  hod_lecturer_id uuid references lecturers(id) on delete set null,
+  is_active boolean not null default true,
+  created_by uuid references users(id) on delete set null,
+  updated_by uuid references users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table lecturers add column if not exists department_id uuid references departments(id) on delete set null;
+create table if not exists department_courses (
+  department_id uuid not null references departments(id) on delete cascade,
+  course_id uuid not null references courses(id) on delete restrict,
+  primary key (department_id, course_id)
+);
+create table if not exists department_subjects (
+  department_id uuid not null references departments(id) on delete cascade,
+  subject_id uuid not null references subjects(id) on delete restrict,
+  primary key (department_id, subject_id)
+);
+create table if not exists user_permissions (
+  user_id uuid not null references users(id) on delete cascade,
+  permission_key text not null,
+  granted boolean not null default true,
+  changed_by uuid references users(id) on delete set null,
+  changed_at timestamptz not null default now(),
+  primary key (user_id, permission_key)
+);
+create table if not exists user_audit_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete set null,
+  entity_type text not null,
+  entity_id uuid,
+  action text not null,
+  details jsonb not null default '{}'::jsonb,
+  actor_user_id uuid references users(id) on delete set null,
+  actor_display_name text not null,
+  created_at timestamptz not null default now()
+);
+create index if not exists user_audit_events_entity_idx on user_audit_events(entity_type, entity_id, created_at desc);
+create index if not exists lecturers_department_idx on lecturers(department_id);
+
+create table if not exists course_fee_plans (
+  id uuid primary key default gen_random_uuid(),
+  course_id uuid not null references courses(id) on delete cascade,
+  total_fee numeric(12,2) not null check (total_fee >= 0),
+  payment_intervals text[] not null default '{monthly,per_term,annual}',
+  payment_options text[] not null default '{eft,cash_office}',
+  effective_from date not null default current_date,
+  effective_to date,
+  active boolean not null default true,
+  updated_by uuid references users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  check (cardinality(payment_intervals) > 0)
+);
+create table if not exists student_ledger_entries (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references students(id) on delete cascade,
+  enrollment_id uuid references enrollments(id) on delete set null,
+  entry_type text not null check (entry_type in ('charge','payment','credit','adjustment')),
+  label text not null,
+  amount numeric(12,2) not null check (amount >= 0),
+  transaction_date date not null default current_date,
+  reference text unique,
+  notes text,
+  recorded_by uuid references users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+create index if not exists student_ledger_student_date_idx on student_ledger_entries(student_id, transaction_date desc);
+create table if not exists finance_reminders (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references students(id) on delete cascade,
+  due_date date not null,
+  message text not null,
+  delivery_status text not null default 'prepared' check (delivery_status in ('prepared','sent','failed')),
+  prepared_by uuid references users(id) on delete set null,
+  prepared_at timestamptz not null default now(),
+  sent_at timestamptz
+);
+create table if not exists finance_bulk_messages (
+  id uuid primary key default gen_random_uuid(),
+  subject text not null,
+  body text not null,
+  recipient_count integer not null check (recipient_count >= 0),
+  recipients jsonb not null default '[]'::jsonb,
+  status text not null default 'prepared',
+  prepared_by uuid references users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+-- Every printable/exported report is attributable to the authenticated operator.
+create table if not exists generated_reports (
+  id uuid primary key default gen_random_uuid(),
+  report_type text not null,
+  filters jsonb not null default '{}'::jsonb,
+  format text not null check (format in ('print','csv','docx','xlsx','slides')),
+  generated_by uuid references users(id) on delete set null,
+  generated_by_name text not null,
+  generated_at timestamptz not null default now()
+);
+create index if not exists generated_reports_owner_date_idx on generated_reports(generated_by, generated_at desc);
+
+alter table students add column if not exists examination_number text unique;

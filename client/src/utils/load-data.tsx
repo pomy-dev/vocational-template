@@ -14,11 +14,14 @@ export function loadData(): AppData {
         apprenticeships: parsed.apprenticeships ?? seedData.apprenticeships,
         complaints: parsed.complaints ?? [],
         resources: parsed.resources ?? seedData.resources,
-        lecturerNotifications: parsed.lecturerNotifications ?? seedData.lecturerNotifications,
+        lecturerNotifications:
+          parsed.lecturerNotifications ?? seedData.lecturerNotifications,
         tutors: parsed.tutors ?? seedData.tutors,
-        lecturers: parsed.lecturers ?? seedData.lecturers
+        lecturers: parsed.lecturers ?? seedData.lecturers,
       };
-    } catch { return seedData; }
+    } catch {
+      return seedData;
+    }
   }
   localStorage.setItem("nstc-data", JSON.stringify(seedData));
   return seedData;
