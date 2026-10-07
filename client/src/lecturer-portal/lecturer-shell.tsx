@@ -15,7 +15,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { unreadNotificationCount } from "@/utils/unread-notification-count";
+import { unreadNotificationCount } from "@/lib/unread-notification-count";
 
 export function LecturerShell({
   children,

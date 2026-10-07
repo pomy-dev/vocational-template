@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppData, Student } from "@/lib/types";
 import type { ChangeEvent } from "react";
-import { delay } from "@/utils/delay";
+import { delay } from "@/lib/delay";
 import * as XLSX from 'xlsx';
 import { initials } from "@/const";
 import { PortalShell } from "@/components/portal-shell";

@@ -1,5 +1,5 @@
-import { AppData } from "../lib/types";
-import { seedData } from "../lib/data";
+import { AppData } from "./types";
+import { seedData } from "./data";
 
 export function loadData(): AppData {
   if (typeof window === "undefined") return seedData;

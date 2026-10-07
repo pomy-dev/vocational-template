@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ApplicationDraft, StudentRegistration, RegistrationProgramme } from "@/lib/types";
 import { courses, shortCourses, machineCourses, artisanFields, firstClassFields, weldingFields } from "@/lib/data";
-import { useAction } from "@/utils/use-action";
+import { useAction } from "@/lib/use-action";
 import { registerStudent, sendConfirmationEmail, uploadRegistrationFiles, removeRegistrationFiles } from "@/lib/studentRegistration";
 import { Check, ArrowRight, Plus, CircleDollarSign, FileText, ChevronLeft } from "lucide-react";
 import { Spinner } from "./spinner";

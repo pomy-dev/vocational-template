@@ -16,7 +16,6 @@ import {
   Building2,
 } from "lucide-react";
 
-// Portal Shell Component
 export function PortalShell({
   children,
   active,
@@ -122,7 +121,6 @@ export function PortalShell({
                 icon: Building2,
                 path: "/admin/departments",
               },
-              // { label: "Academics", icon: BookOpen, path: "/admin/academics" },
               {
                 label: "Attendance",
                 icon: ClipboardCheck,
@@ -133,11 +131,7 @@ export function PortalShell({
                 icon: MessageCircle,
                 path: "/admin/complaints",
               },
-              { label: "Reports", icon: BarChart3, path: "/admin/reports" },
-              // { label: "IT operations", icon: ShieldCheck, path: "/it" },
-              // { label: "HOD portal", icon: Users, path: "/hod" },
-              // { label: "Accounting", icon: WalletCards, path: "/accounting" },
-              // { label: "Finance", icon: WalletCards, path: "/admin/finance" }
+              { label: "Analysis", icon: BarChart3, path: "/admin/reports" }
             ];
 
   return (

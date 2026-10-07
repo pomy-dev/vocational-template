@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useAction } from "@/utils/use-action";
+import { useAction } from "@/lib/use-action";
 import { SectionTitle } from "@/components/section-title";
 import { MapView } from "@/components/Map";
 import { MapPin, Mail, Phone, Check, ArrowRight } from "lucide-react";

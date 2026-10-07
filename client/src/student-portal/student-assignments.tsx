@@ -5,7 +5,7 @@ import {
   Download
 } from "lucide-react";
 import { toast } from "sonner";
-import { useAction } from "@/utils/use-action";
+import { useAction } from "@/lib/use-action";
 import { Assignment } from "@/lib/types";
 import { PageHeading } from "@/components/page-heading";
 import { MetricCard } from "@/components/metric-card";

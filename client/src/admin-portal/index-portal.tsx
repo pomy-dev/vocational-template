@@ -7,7 +7,8 @@ import { AdminLecturers } from "./admin-lecturers";
 import { AdminStudents } from "./admin-students";
 import { AdminComplaints } from "./admin-complaints";
 import { AdminFinance } from "./admin-finance";
-import { AdminDepartments, AdminReports } from "./extended-portals";
+import { AdminDepartments } from "./admin-departments";
+import { AdminReports } from "./admin-reports";
 
 export function AdminPortal({
   data,
@@ -20,9 +21,7 @@ export function AdminPortal({
   path: string;
   navigate: (path: string) => void;
 }) {
-  const [loggedIn, setLoggedIn] = useState(
-    () => localStorage.getItem("nstc-admin-session") === "active"
-  );
+  const [loggedIn, setLoggedIn] = useState(() => localStorage.getItem("nstc-admin-session") === "active");
 
   if (!loggedIn) return <AdminAuth onAuthenticated={() => setLoggedIn(true)} />;
   if (path === "/admin/lecturers")
@@ -35,7 +34,6 @@ export function AdminPortal({
     return <AdminReports data={data} navigate={navigate} />;
   if (path === "/admin/students")
     return <AdminStudents data={data} setData={setData} navigate={navigate} />;
-  // if (path === "/admin/academics") return <AdminAcademics data={data} setData={setData} navigate={navigate} />;
   if (path === "/admin/attendance")
     return <AdminAttendance data={data} navigate={navigate} />;
   if (path === "/admin/complaints")

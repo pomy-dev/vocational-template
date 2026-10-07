@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useLocation } from "wouter";
 import { Toaster } from "sonner";
-import { useData } from "./utils/use-data";
+import { useData } from "./lib/use-data";
 import { Landing } from "@/public-site/landing-page";
 import { SalesPortal } from "@/public-site/sales";
 import { StudentPortal } from "@/student-portal/index-portal";
@@ -13,11 +13,9 @@ import { SectionTitle } from "@/components/section-title";
 import { PublicNav } from "@/public-site/nav";
 import { Footer } from "react-day-picker";
 import { ApprenticeshipPortal } from "./public-site/apprenticeship-portal";
-import {
-  HodPortal,
-  ItPortal,
-  AccountantPortal,
-} from "@/admin-portal/extended-portals";
+import { HodPortal } from "@/hod-portal/index-portal";
+import { ItPortal } from "@/it-portal/index-portal";
+import { AccountantPortal } from "@/accountant-portal/index-portal";
 
 function App() {
   const [location, navigate] = useLocation();

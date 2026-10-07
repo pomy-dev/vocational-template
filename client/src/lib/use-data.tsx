@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadData } from "../utils/load-data";
+import { loadData } from "./load-data";
 import { AppData } from "../lib/types";
 
 export function useData() {
