@@ -98,9 +98,8 @@ export function AdminLecturers({
     setErrors(next);
     return next.length === 0;
   };
-  const nextStep = () => {
-    if (validateStep(step)) setStep(value => Math.min(2, value + 1));
-  };
+
+  const nextStep = () => { if (validateStep(step)) setStep((value) => Math.min(2, value + 1)); };
 
   const save = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,6 +108,7 @@ export function AdminLecturers({
     const f = new FormData(e.currentTarget);
     const cvDoc = f.get("cv");
     const password = `NSTC-${Math.random().toString(36).slice(2, 8).toUpperCase()}!`;
+
     const next: LecturerRecord = {
       ...draft,
       id: draft.id || crypto.randomUUID(),
@@ -117,7 +117,8 @@ export function AdminLecturers({
       subjects: subjectSelections,
       temporaryPassword: password,
     };
-    setData(old => ({
+
+    setData((old) => ({
       ...old,
       lecturers: draft.id
         ? old.lecturers.map(l => (l.id === draft.id ? next : l))
@@ -171,8 +172,8 @@ export function AdminLecturers({
             placeholder="Search name, email, profession or employee no."
           />
         </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {list.map(l => (
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-2">
+          {list.map((l) =>
             <details className="employee-card" key={l.id}>
               <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -191,34 +192,11 @@ export function AdminLecturers({
                 </Pill>
               </summary>
               <div className="mt-5 border-t border-slate-100 pt-4">
-                <div className="grid gap-3 text-sm sm:grid-cols-2">
-                  <p>
-                    <span className="block text-xs text-slate-400">Email</span>
-                    <strong>{l.email}</strong>
-                  </p>
-                  <p>
-                    <span className="block text-xs text-slate-400">Phone</span>
-                    <strong>{l.phone}</strong>
-                  </p>
-                  <p>
-                    <span className="block text-xs text-slate-400">Campus</span>
-                    <strong>{l.campus}</strong>
-                  </p>
-                  <p>
-                    <span className="block text-xs text-slate-400">
-                      Employment
-                    </span>
-                    <strong>{l.employeeType || "Permanent"}</strong>
-                  </p>
-                  <p>
-                    <span className="block text-xs text-slate-400">
-                      Department
-                    </span>
-                    <strong>
-                      {data.departments?.find(d => d.id === l.departmentId)
-                        ?.name || "Unallocated"}
-                    </strong>
-                  </p>
+                <div className="grid gap-12 text-sm sm:grid-cols-2">
+                  <p><span className="block text-xs text-slate-400">Email</span><strong>{l.email.length > 25 ? l.email.slice(0, 25).concat("...") : l.email}</strong></p>
+                  <p><span className="block text-xs text-slate-400">Phone</span><strong>{l.phone}</strong></p>
+                  <p><span className="block text-xs text-slate-400">Campus</span><strong>{l.campus}</strong></p>
+                  <p><span className="block text-xs text-slate-400">Employment</span><strong>{l.employeeType || "Permanent"}</strong></p>
                 </div>
                 <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">
                   Courses
@@ -244,7 +222,7 @@ export function AdminLecturers({
                 </div>
               </div>
             </details>
-          ))}
+          )}
         </div>
         {!list.length && (
           <div className="empty-state">
